@@ -5,9 +5,24 @@ import BillGenerator from './BillGenerator';
 import DataReports from './DataReports';
 import SellModule from './SellModule';
 import CashModule from './CashModule';
+import { useDairyKeyboardShortcuts } from '@/hooks/useDairyKeyboardShortcuts';
 
-export default function DairySection() {
+interface DairySectionProps {
+  isActive: boolean;
+}
+
+export default function DairySection({ isActive }: DairySectionProps) {
   const [activeTab, setActiveTab] = useState('collection');
+
+  // Dairy-specific keyboard shortcuts
+  useDairyKeyboardShortcuts({
+    isActive,
+    onNavigateToMilkCollection: () => setActiveTab('collection'),
+    onNavigateToBill: () => setActiveTab('bill'),
+    onNavigateToData: () => setActiveTab('data'),
+    onNavigateToSell: () => setActiveTab('sell'),
+    onNavigateToCash: () => setActiveTab('cash'),
+  });
 
   const handleTabKeyDown = (e: React.KeyboardEvent, tabValue: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -35,8 +50,8 @@ export default function DairySection() {
           <TabsTrigger
             value="collection"
             onKeyDown={(e) => handleTabKeyDown(e, 'collection')}
-            className="focus:ring-2 focus:ring-ring focus:ring-offset-2"
             role="tab"
+            tabIndex={activeTab === 'collection' ? 0 : -1}
             aria-selected={activeTab === 'collection'}
           >
             Milk Collection
@@ -44,8 +59,8 @@ export default function DairySection() {
           <TabsTrigger
             value="bill"
             onKeyDown={(e) => handleTabKeyDown(e, 'bill')}
-            className="focus:ring-2 focus:ring-ring focus:ring-offset-2"
             role="tab"
+            tabIndex={activeTab === 'bill' ? 0 : -1}
             aria-selected={activeTab === 'bill'}
           >
             Bill
@@ -53,8 +68,8 @@ export default function DairySection() {
           <TabsTrigger
             value="data"
             onKeyDown={(e) => handleTabKeyDown(e, 'data')}
-            className="focus:ring-2 focus:ring-ring focus:ring-offset-2"
             role="tab"
+            tabIndex={activeTab === 'data' ? 0 : -1}
             aria-selected={activeTab === 'data'}
           >
             Data Reports
@@ -62,8 +77,8 @@ export default function DairySection() {
           <TabsTrigger
             value="sell"
             onKeyDown={(e) => handleTabKeyDown(e, 'sell')}
-            className="focus:ring-2 focus:ring-ring focus:ring-offset-2"
             role="tab"
+            tabIndex={activeTab === 'sell' ? 0 : -1}
             aria-selected={activeTab === 'sell'}
           >
             Sell
@@ -71,8 +86,8 @@ export default function DairySection() {
           <TabsTrigger
             value="cash"
             onKeyDown={(e) => handleTabKeyDown(e, 'cash')}
-            className="focus:ring-2 focus:ring-ring focus:ring-offset-2"
             role="tab"
+            tabIndex={activeTab === 'cash' ? 0 : -1}
             aria-selected={activeTab === 'cash'}
           >
             Cash

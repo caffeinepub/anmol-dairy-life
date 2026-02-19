@@ -1,32 +1,88 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Sales management system with SMS and print functionality for sell bills",
+  "summary": "New project",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-generate-a-printable-sell-bill-when-saving-a-product-sale-that-includes-farmer-name-product-name-price-per-unit-quantity-total-amount-date-and-time-and-company-header-anmol-dairy-life",
-      "title": "Generate a printable sell bill when saving a product sale that includes farmer name, product name, price per unit, quantity, total amount, date and time, and company header ('ANMOL DAIRY LIFE')",
+      "id": "feature-add-keyboard-shortcuts-for-quick-navigation-between-main-sections-ctrl-1-for-dairy-ctrl-2-for-transactions-ctrl-3-for-settings",
+      "title": "Add keyboard shortcuts for quick navigation between main sections: Ctrl+1 for Dairy, Ctrl+2 for Transactions, Ctrl+3 for Settings",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-in-sellmodule-tsx-trigger-the-print-dialog-immediately-after-successfully-saving-a-product-sale-to-the-backend",
-      "title": "In SellModule.tsx, trigger the print dialog immediately after successfully saving a product sale to the backend",
+      "id": "feature-add-keyboard-shortcuts-within-dairy-section-to-navigate-between-tabs-ctrl-m-for-milk-collection-ctrl-b-for-bill-ctrl-d-for-data-reports-ctrl-s-for-sell-ctrl-c-for-cash",
+      "title": "Add keyboard shortcuts within Dairy section to navigate between tabs: Ctrl+M for Milk Collection, Ctrl+B for Bill, Ctrl+D for Data Reports, Ctrl+S for Sell, Ctrl+C for Cash",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-create-a-reusable-utility-function-similar-to-pdfgenerator-ts-that-generates-html-content-for-the-sell-bill-with-proper-styling-for-print-media",
-      "title": "Create a reusable utility function similar to pdfGenerator.ts that generates HTML content for the sell bill with proper styling for print media",
+      "id": "feature-implement-enter-key-submission-for-all-forms-including-milk-collection-cash-transactions-product-sales-farmer-management-rate-settings-and-inventory-updates",
+      "title": "Implement Enter key submission for all forms including Milk Collection, Cash transactions, product sales, farmer management, rate settings, and inventory updates",
       "reqIds": [
         "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-escape-key-support-to-close-all-dialogs-and-modals-including-milk-collection-preview-farmer-add-edit-dialogs-inventory-dialogs-and-cancel-ongoing-operations",
+      "title": "Add Escape key support to close all dialogs and modals including Milk Collection preview, farmer add/edit dialogs, inventory dialogs, and cancel ongoing operations",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-tab-and-shift-tab-support-for-logical-focus-order-through-all-interactive-elements-in-forms-tables-and-navigation-components",
+      "title": "Add Tab and Shift+Tab support for logical focus order through all interactive elements in forms, tables, and navigation components",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-keyboard-shortcut-ctrl-p-to-trigger-print-pdf-generation-for-bills-and-transaction-history-when-viewing-those-sections",
+      "title": "Add keyboard shortcut Ctrl+P to trigger print/PDF generation for bills and transaction history when viewing those sections",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-visual-focus-indicators-with-clear-outlines-on-all-interactive-elements-including-buttons-inputs-tabs-and-table-rows-to-show-keyboard-focus-state",
+      "title": "Add visual focus indicators with clear outlines on all interactive elements including buttons, inputs, tabs, and table rows to show keyboard focus state",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-keyboard-shortcut-help-overlay-accessible-via-key-that-displays-all-available-shortcuts-organized-by-section",
+      "title": "Add keyboard shortcut help overlay accessible via '?' key that displays all available shortcuts organized by section",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-arrow-key-navigation-for-selecting-farmers-in-search-results-and-transaction-lists",
+      "title": "Add arrow key navigation for selecting farmers in search results and transaction lists",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-keyboard-shortcut-ctrl-f-to-focus-the-search-input-in-transactions-section-and-farmer-management",
+      "title": "Add keyboard shortcut Ctrl+F to focus the search input in Transactions section and Farmer Management",
+      "reqIds": [
+        "REQ-10"
       ],
       "version": 1
     }
@@ -34,7 +90,7 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Print sell bill while saving with farmer name, product name, price, quantity, amount, date/time, and company header",
+      "summary": "Add keyboard navigation and shortcuts for easy keyboard-only usage",
       "reqIds": [],
       "status": "pending"
     }

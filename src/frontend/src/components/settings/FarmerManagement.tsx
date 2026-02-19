@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -28,6 +28,10 @@ export default function FarmerManagement() {
     customerID: '',
   });
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const addButtonRef = useRef<HTMLButtonElement>(null);
+  const editButtonRef = useRef<HTMLButtonElement>(null);
+
   const farmersQuery = useGetAllFarmers();
   const addFarmerMutation = useAddFarmer();
   const updateFarmerMutation = useUpdateFarmerDetails();
@@ -38,6 +42,19 @@ export default function FarmerManagement() {
     farmer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     farmer.customerID.toString().includes(searchQuery)
   );
+
+  // Ctrl+F to focus search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleAddFarmer = async () => {
     if (!newFarmer.name || !newFarmer.phone) {
@@ -55,6 +72,9 @@ export default function FarmerManagement() {
       toast.success('Farmer added successfully');
       setShowAddDialog(false);
       setNewFarmer({ name: '', phone: '', milkType: MilkType.vlc });
+      
+      // Return focus to add button
+      setTimeout(() => addButtonRef.current?.focus(), 100);
     } catch (error) {
       toast.error('Failed to add farmer');
     }
@@ -102,6 +122,9 @@ export default function FarmerManagement() {
       toast.success('Farmer details updated successfully');
       setShowEditDialog(false);
       setSelectedFarmer(null);
+      
+      // Return focus to edit button
+      setTimeout(() => editButtonRef.current?.focus(), 100);
     } catch (error) {
       toast.error('Failed to update farmer details');
     }
@@ -111,9 +134,6 @@ export default function FarmerManagement() {
     if (e.key === 'Enter') {
       e.preventDefault();
       handler();
-    } else if (e.key === 'Escape') {
-      if (showAddDialog) setShowAddDialog(false);
-      if (showEditDialog) setShowEditDialog(false);
     }
   };
 
@@ -124,7 +144,7 @@ export default function FarmerManagement() {
           <CardTitle>Farmer Management</CardTitle>
           <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-2" aria-label="Add new farmer">
+              <Button ref={addButtonRef} className="flex items-center gap-2" aria-label="Add new farmer" tabIndex={0}>
                 <Plus className="h-4 w-4" />
                 Add Farmer
               </Button>
@@ -143,6 +163,7 @@ export default function FarmerManagement() {
                     onChange={(e) => setNewFarmer({ ...newFarmer, name: e.target.value })}
                     placeholder="Enter farmer name"
                     aria-required="true"
+                    tabIndex={0}
                   />
                 </div>
                 <div className="space-y-2">
@@ -153,6 +174,7 @@ export default function FarmerManagement() {
                     onChange={(e) => setNewFarmer({ ...newFarmer, phone: e.target.value })}
                     placeholder="Enter phone number"
                     aria-required="true"
+                    tabIndex={0}
                   />
                 </div>
                 <div className="space-y-2">
@@ -163,13 +185,13 @@ export default function FarmerManagement() {
                     aria-label="Select milk type"
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={MilkType.vlc} id="add-vlc" />
+                      <RadioGroupItem value={MilkType.vlc} id="add-vlc" tabIndex={0} />
                       <Label htmlFor="add-vlc" className="font-normal cursor-pointer">
                         VLC (Cow)
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={MilkType.thekadari} id="add-thekadari" />
+                      <RadioGroupItem value={MilkType.thekadari} id="add-thekadari" tabIndex={0} />
                       <Label htmlFor="add-thekadari" className="font-normal cursor-pointer">
                         Thekadari (Buffalo)
                       </Label>
@@ -178,10 +200,10 @@ export default function FarmerManagement() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+                <Button variant="outline" onClick={() => setShowAddDialog(false)} tabIndex={0}>
                   Cancel
                 </Button>
-                <Button onClick={handleAddFarmer} disabled={addFarmerMutation.isPending}>
+                <Button onClick={handleAddFarmer} disabled={addFarmerMutation.isPending} tabIndex={0}>
                   {addFarmerMutation.isPending ? 'Adding...' : 'Add Farmer'}
                 </Button>
               </DialogFooter>
@@ -191,11 +213,13 @@ export default function FarmerManagement() {
         <div className="relative mt-4">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by name or ID..."
+            ref={searchInputRef}
+            placeholder="Search by name or ID... (Ctrl+F)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
             aria-label="Search farmers"
+            tabIndex={0}
           />
         </div>
       </CardHeader>
@@ -206,6 +230,7 @@ export default function FarmerManagement() {
               key={farmer.customerID.toString()}
               farmer={farmer}
               onEdit={() => handleEditClick(farmer)}
+              editButtonRef={editButtonRef}
             />
           ))}
           {filteredFarmers.length === 0 && (
@@ -231,6 +256,7 @@ export default function FarmerManagement() {
                 onChange={(e) => setEditFarmer({ ...editFarmer, customerID: e.target.value })}
                 placeholder="Enter customer ID"
                 aria-required="true"
+                tabIndex={0}
               />
             </div>
             <div className="space-y-2">
@@ -241,6 +267,7 @@ export default function FarmerManagement() {
                 onChange={(e) => setEditFarmer({ ...editFarmer, name: e.target.value })}
                 placeholder="Enter farmer name"
                 aria-required="true"
+                tabIndex={0}
               />
             </div>
             <div className="space-y-2">
@@ -251,6 +278,7 @@ export default function FarmerManagement() {
                 onChange={(e) => setEditFarmer({ ...editFarmer, phone: e.target.value })}
                 placeholder="Enter phone number"
                 aria-required="true"
+                tabIndex={0}
               />
             </div>
             <div className="space-y-2">
@@ -261,13 +289,13 @@ export default function FarmerManagement() {
                 aria-label="Select milk type"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value={MilkType.vlc} id="edit-vlc" />
+                  <RadioGroupItem value={MilkType.vlc} id="edit-vlc" tabIndex={0} />
                   <Label htmlFor="edit-vlc" className="font-normal cursor-pointer">
                     VLC (Cow)
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value={MilkType.thekadari} id="edit-thekadari" />
+                  <RadioGroupItem value={MilkType.thekadari} id="edit-thekadari" tabIndex={0} />
                   <Label htmlFor="edit-thekadari" className="font-normal cursor-pointer">
                     Thekadari (Buffalo)
                   </Label>
@@ -276,10 +304,10 @@ export default function FarmerManagement() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)} tabIndex={0}>
               Cancel
             </Button>
-            <Button onClick={handleUpdateFarmer} disabled={updateFarmerMutation.isPending}>
+            <Button onClick={handleUpdateFarmer} disabled={updateFarmerMutation.isPending} tabIndex={0}>
               {updateFarmerMutation.isPending ? 'Updating...' : 'Update Farmer'}
             </Button>
           </DialogFooter>
@@ -289,7 +317,15 @@ export default function FarmerManagement() {
   );
 }
 
-function FarmerCard({ farmer, onEdit }: { farmer: Farmer; onEdit: () => void }) {
+function FarmerCard({ 
+  farmer, 
+  onEdit,
+  editButtonRef 
+}: { 
+  farmer: Farmer; 
+  onEdit: () => void;
+  editButtonRef: React.RefObject<HTMLButtonElement | null>;
+}) {
   const balanceQuery = useGetFarmerBalance(farmer.customerID);
   const balance = balanceQuery.data || 0;
 
@@ -304,7 +340,7 @@ function FarmerCard({ farmer, onEdit }: { farmer: Farmer; onEdit: () => void }) 
 
   return (
     <div
-      className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors"
       tabIndex={0}
       onKeyDown={handleKeyDown}
       role="listitem"
@@ -321,6 +357,7 @@ function FarmerCard({ farmer, onEdit }: { farmer: Farmer; onEdit: () => void }) 
           <p className="text-xs text-muted-foreground">Balance</p>
         </div>
         <Button
+          ref={editButtonRef}
           size="sm"
           variant="outline"
           onClick={(e) => {
@@ -329,6 +366,7 @@ function FarmerCard({ farmer, onEdit }: { farmer: Farmer; onEdit: () => void }) 
           }}
           className="flex items-center gap-2"
           aria-label={`Edit ${farmer.name}`}
+          tabIndex={0}
         >
           <Edit className="h-4 w-4" />
           Edit

@@ -33,8 +33,8 @@ export default function SettingsSection() {
           <TabsTrigger
             value="farmers"
             onKeyDown={(e) => handleTabKeyDown(e, 'farmers')}
-            className="focus:ring-2 focus:ring-ring focus:ring-offset-2"
             role="tab"
+            tabIndex={activeTab === 'farmers' ? 0 : -1}
             aria-selected={activeTab === 'farmers'}
           >
             Farmers
@@ -42,8 +42,8 @@ export default function SettingsSection() {
           <TabsTrigger
             value="rates"
             onKeyDown={(e) => handleTabKeyDown(e, 'rates')}
-            className="focus:ring-2 focus:ring-ring focus:ring-offset-2"
             role="tab"
+            tabIndex={activeTab === 'rates' ? 0 : -1}
             aria-selected={activeTab === 'rates'}
           >
             Rate Settings
@@ -51,8 +51,8 @@ export default function SettingsSection() {
           <TabsTrigger
             value="inventory"
             onKeyDown={(e) => handleTabKeyDown(e, 'inventory')}
-            className="focus:ring-2 focus:ring-ring focus:ring-offset-2"
             role="tab"
+            tabIndex={activeTab === 'inventory' ? 0 : -1}
             aria-selected={activeTab === 'inventory'}
           >
             Inventory

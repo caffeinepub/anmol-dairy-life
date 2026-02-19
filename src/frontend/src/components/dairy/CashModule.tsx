@@ -3,34 +3,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Textarea } from '@/components/ui/textarea';
 import { useGetFarmer, useAddTransaction } from '@/hooks/useQueries';
+import { formatCurrency } from '@/utils/formatters';
 import { toast } from 'sonner';
 
 export default function CashModule() {
-  const [farmerID, setFarmerID] = useState('');
-  const [transactionType, setTransactionType] = useState<'pay' | 'receive'>('receive');
+  const [customerID, setCustomerID] = useState('');
+  const [transactionType, setTransactionType] = useState<'pay' | 'receive'>('pay');
   const [amount, setAmount] = useState('');
   const [comment, setComment] = useState('');
 
-  const currentDate = new Date().toLocaleDateString('en-IN');
-  const currentTime = new Date().toLocaleTimeString('en-IN');
-
-  const farmerQuery = useGetFarmer(farmerID ? BigInt(farmerID) : null);
+  const farmerQuery = useGetFarmer(customerID ? BigInt(customerID) : null);
   const addTransactionMutation = useAddTransaction();
 
   const farmer = farmerQuery.data;
 
-  const handleSave = async () => {
+  const handleRecordTransaction = async () => {
     if (!farmer || !amount) {
       toast.error('Please fill all required fields');
       return;
     }
 
+    const amountValue = parseFloat(amount);
+    if (isNaN(amountValue) || amountValue <= 0) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+
     try {
-      const transactionAmount = transactionType === 'pay' ? -parseFloat(amount) : parseFloat(amount);
-      const description = `Cash ${transactionType}${comment ? `: ${comment}` : ''}`;
+      const transactionAmount = transactionType === 'pay' ? amountValue : -amountValue;
+      const description = comment || (transactionType === 'pay' ? 'Cash payment' : 'Cash received');
 
       await addTransactionMutation.mutateAsync({
         farmerID: farmer.customerID,
@@ -38,118 +42,124 @@ export default function CashModule() {
         amount: transactionAmount,
       });
 
-      toast.success('Cash transaction recorded successfully');
-      setFarmerID('');
+      toast.success('Transaction recorded successfully');
+      setCustomerID('');
       setAmount('');
       setComment('');
-      setTransactionType('receive');
+      setTransactionType('pay');
     } catch (error) {
       toast.error('Failed to record transaction');
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleFormKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && farmer && amount) {
-      handleSave();
+      e.preventDefault();
+      handleRecordTransaction();
     }
   };
 
   const handleRadioKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
       e.preventDefault();
-      setTransactionType(transactionType === 'receive' ? 'pay' : 'receive');
+      setTransactionType('pay');
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      setTransactionType('receive');
     }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Cash Transaction</CardTitle>
-        <CardDescription>
-          Date: {currentDate} | Time: {currentTime}
-        </CardDescription>
+        <CardTitle>Cash Module</CardTitle>
+        <CardDescription>Record cash payments and receipts</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4" onKeyDown={handleKeyDown}>
+        <div className="space-y-4" onKeyDown={handleFormKeyDown}>
           <div className="space-y-2">
-            <Label htmlFor="cashFarmerID">Farmer ID</Label>
+            <Label htmlFor="cash-customerID">Customer ID</Label>
             <Input
-              id="cashFarmerID"
+              id="cash-customerID"
               type="number"
-              value={farmerID}
-              onChange={(e) => setFarmerID(e.target.value)}
-              placeholder="Enter farmer ID"
-              aria-label="Farmer ID"
+              value={customerID}
+              onChange={(e) => setCustomerID(e.target.value)}
+              placeholder="Enter customer ID"
+              aria-label="Customer ID"
+              tabIndex={0}
             />
           </div>
 
           {farmer && (
-            <div className="space-y-2">
-              <Label>Farmer Name</Label>
-              <div className="p-2 border rounded-md bg-muted">
-                <span className="font-medium">{farmer.name}</span>
+            <>
+              <div className="space-y-2">
+                <Label>Farmer Name</Label>
+                <div className="p-2 border rounded-md bg-muted">
+                  <span className="font-medium">{farmer.name}</span>
+                </div>
               </div>
-            </div>
+
+              <div className="space-y-2">
+                <Label>Transaction Type</Label>
+                <RadioGroup
+                  value={transactionType}
+                  onValueChange={(v: 'pay' | 'receive') => setTransactionType(v)}
+                  aria-label="Select transaction type"
+                  onKeyDown={handleRadioKeyDown}
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="pay" id="pay" tabIndex={0} />
+                    <Label htmlFor="pay" className="font-normal cursor-pointer">
+                      Pay to Farmer (Credit)
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="receive" id="receive" tabIndex={0} />
+                    <Label htmlFor="receive" className="font-normal cursor-pointer">
+                      Receive from Farmer (Debit)
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="amount">Amount</Label>
+                <Input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="Enter amount"
+                  aria-label="Transaction amount"
+                  tabIndex={0}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="comment">Comment (Optional)</Label>
+                <Textarea
+                  id="comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Add a note about this transaction"
+                  aria-label="Transaction comment"
+                  tabIndex={0}
+                />
+              </div>
+
+              <Button
+                onClick={handleRecordTransaction}
+                disabled={addTransactionMutation.isPending}
+                className="w-full"
+                aria-label="Record transaction"
+                tabIndex={0}
+              >
+                {addTransactionMutation.isPending ? 'Recording...' : 'Record Transaction'}
+              </Button>
+            </>
           )}
-
-          <div className="space-y-2 md:col-span-2">
-            <Label>Transaction Type</Label>
-            <RadioGroup
-              value={transactionType}
-              onValueChange={(v: any) => setTransactionType(v)}
-              onKeyDown={handleRadioKeyDown}
-              aria-label="Transaction type"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="receive" id="receive" />
-                <Label htmlFor="receive" className="font-normal cursor-pointer">
-                  Receive (Positive Balance)
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="pay" id="pay" />
-                <Label htmlFor="pay" className="font-normal cursor-pointer">
-                  Pay (Negative Balance)
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="amount">Amount</Label>
-            <Input
-              id="amount"
-              type="number"
-              step="0.01"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter amount"
-              aria-label="Transaction amount"
-              aria-required="true"
-            />
-          </div>
-
-          <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="comment">Comment (Optional)</Label>
-            <Textarea
-              id="comment"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Add any notes or comments"
-              rows={3}
-              aria-label="Transaction comment"
-            />
-          </div>
         </div>
-
-        <Button
-          onClick={handleSave}
-          disabled={addTransactionMutation.isPending}
-          className="w-full focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          aria-label="Save cash transaction"
-        >
-          {addTransactionMutation.isPending ? 'Saving...' : 'Save Transaction'}
-        </Button>
       </CardContent>
     </Card>
   );

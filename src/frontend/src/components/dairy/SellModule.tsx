@@ -1,157 +1,95 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { useGetFarmer, useAddProductSale, useGetAllInventory } from '@/hooks/useQueries';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useGetFarmer, useGetAllInventory, useAddProductSale } from '@/hooks/useQueries';
 import { formatCurrency } from '@/utils/formatters';
-import { Printer } from 'lucide-react';
 import { toast } from 'sonner';
-import { generateSellBillHTML } from '@/utils/sellBillGenerator';
 
 export default function SellModule() {
-  const [farmerID, setFarmerID] = useState('');
-  const [productName, setProductName] = useState('');
+  const [customerID, setCustomerID] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [price, setPrice] = useState('');
-  const [lastSaleData, setLastSaleData] = useState<{
-    farmerName: string | null;
-    productName: string;
-    pricePerUnit: number;
-    quantity: number;
-    totalAmount: number;
-    timestamp: Date;
-  } | null>(null);
+  const [pricePerUnit, setPricePerUnit] = useState('');
+  const [printBill, setPrintBill] = useState(false);
 
-  const currentDate = new Date().toLocaleDateString('en-IN');
-  const currentTime = new Date().toLocaleTimeString('en-IN');
-
-  const farmerQuery = useGetFarmer(farmerID ? BigInt(farmerID) : null);
+  const farmerQuery = useGetFarmer(customerID ? BigInt(customerID) : null);
   const inventoryQuery = useGetAllInventory();
-  const addSaleMutation = useAddProductSale();
+  const addProductSaleMutation = useAddProductSale();
 
   const farmer = farmerQuery.data;
   const inventory = inventoryQuery.data || [];
 
-  const totalAmount = quantity && price ? parseFloat(quantity) * parseFloat(price) : 0;
-
-  const handleSave = async () => {
-    if (!productName || !quantity || !price) {
+  const handleRecordSale = async () => {
+    if (!selectedProduct || !quantity || !pricePerUnit) {
       toast.error('Please fill all required fields');
       return;
     }
 
-    try {
-      const timestamp = new Date();
-      const saleData = {
-        farmerName: farmer?.name || null,
-        productName,
-        pricePerUnit: parseFloat(price),
-        quantity: parseFloat(quantity),
-        totalAmount: parseFloat(quantity) * parseFloat(price),
-        timestamp,
-      };
+    const quantityValue = parseFloat(quantity);
+    const priceValue = parseFloat(pricePerUnit);
 
-      await addSaleMutation.mutateAsync({
-        farmerID: farmerID ? BigInt(farmerID) : null,
-        productName,
-        quantity: parseFloat(quantity),
-        pricePerUnit: parseFloat(price),
+    if (isNaN(quantityValue) || quantityValue <= 0 || isNaN(priceValue) || priceValue <= 0) {
+      toast.error('Please enter valid quantity and price');
+      return;
+    }
+
+    try {
+      await addProductSaleMutation.mutateAsync({
+        farmerID: farmer?.customerID || null,
+        productName: selectedProduct,
+        quantity: quantityValue,
+        pricePerUnit: priceValue,
       });
 
-      toast.success('Product sale recorded successfully');
-      setLastSaleData(saleData);
+      toast.success('Sale recorded successfully');
+      
+      if (printBill) {
+        window.print();
+      }
 
-      // Trigger print after successful save
-      setTimeout(() => {
-        triggerPrint(saleData);
-      }, 100);
-
-      // Reset form
-      setFarmerID('');
-      setProductName('');
+      setCustomerID('');
+      setSelectedProduct('');
       setQuantity('');
-      setPrice('');
+      setPricePerUnit('');
+      setPrintBill(false);
     } catch (error) {
       toast.error('Failed to record sale');
     }
   };
 
-  const triggerPrint = (saleData: typeof lastSaleData) => {
-    if (!saleData) return;
-
-    // Generate bill HTML
-    const billHTML = generateSellBillHTML(saleData);
-
-    // Create or get the hidden bill container
-    let billContainer = document.getElementById('sell-bill-container');
-    if (!billContainer) {
-      billContainer = document.createElement('div');
-      billContainer.id = 'sell-bill-container';
-      billContainer.className = 'bill-content';
-      document.body.appendChild(billContainer);
-    }
-
-    // Inject the bill HTML
-    billContainer.innerHTML = billHTML;
-
-    // Add no-print class to main app content
-    const appContent = document.getElementById('root');
-    if (appContent) {
-      appContent.classList.add('no-print');
-    }
-
-    // Trigger print
-    window.print();
-
-    // Cleanup after print (or cancel)
-    setTimeout(() => {
-      if (appContent) {
-        appContent.classList.remove('no-print');
-      }
-    }, 500);
-  };
-
-  const handlePrint = () => {
-    if (!lastSaleData) {
-      toast.error('No recent sale to print');
-      return;
-    }
-    triggerPrint(lastSaleData);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && productName && quantity && price) {
-      handleSave();
+  const handleFormKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && selectedProduct && quantity && pricePerUnit) {
+      e.preventDefault();
+      handleRecordSale();
     }
   };
 
-  const handleSelectKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      e.stopPropagation();
-    }
-  };
+  const totalAmount = quantity && pricePerUnit 
+    ? parseFloat(quantity) * parseFloat(pricePerUnit) 
+    : 0;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Sell Product</CardTitle>
-        <CardDescription>
-          Date: {currentDate} | Time: {currentTime}
-        </CardDescription>
+        <CardTitle>Sell Module</CardTitle>
+        <CardDescription>Record product sales</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4" onKeyDown={handleKeyDown}>
+        <div className="space-y-4" onKeyDown={handleFormKeyDown}>
           <div className="space-y-2">
-            <Label htmlFor="sellFarmerID">Farmer ID (Optional)</Label>
+            <Label htmlFor="sell-customerID">Customer ID (Optional)</Label>
             <Input
-              id="sellFarmerID"
+              id="sell-customerID"
               type="number"
-              value={farmerID}
-              onChange={(e) => setFarmerID(e.target.value)}
-              placeholder="Enter farmer ID"
-              aria-label="Farmer ID (optional)"
+              value={customerID}
+              onChange={(e) => setCustomerID(e.target.value)}
+              placeholder="Enter customer ID or leave blank"
+              aria-label="Customer ID"
+              tabIndex={0}
             />
           </div>
 
@@ -166,18 +104,14 @@ export default function SellModule() {
 
           <div className="space-y-2">
             <Label htmlFor="product">Product</Label>
-            <Select value={productName} onValueChange={setProductName}>
-              <SelectTrigger
-                id="product"
-                onKeyDown={handleSelectKeyDown}
-                aria-label="Select product"
-              >
-                <SelectValue placeholder="Select product" />
+            <Select value={selectedProduct} onValueChange={setSelectedProduct}>
+              <SelectTrigger id="product" aria-label="Select product" tabIndex={0}>
+                <SelectValue placeholder="Select a product" />
               </SelectTrigger>
               <SelectContent>
                 {inventory.map((item) => (
                   <SelectItem key={item.product.name} value={item.product.name}>
-                    {item.product.name} (Stock: {item.quantityInStock.toFixed(2)})
+                    {item.product.name} (Stock: {item.quantityInStock})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -193,52 +127,55 @@ export default function SellModule() {
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               placeholder="Enter quantity"
-              aria-label="Product quantity"
-              aria-required="true"
+              aria-label="Quantity"
+              tabIndex={0}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="price">Price per Unit</Label>
+            <Label htmlFor="pricePerUnit">Price per Unit</Label>
             <Input
-              id="price"
+              id="pricePerUnit"
               type="number"
               step="0.01"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="Enter price"
+              value={pricePerUnit}
+              onChange={(e) => setPricePerUnit(e.target.value)}
+              placeholder="Enter price per unit"
               aria-label="Price per unit"
-              aria-required="true"
+              tabIndex={0}
             />
           </div>
 
           {totalAmount > 0 && (
-            <div className="space-y-2">
-              <Label>Total Amount</Label>
-              <div className="p-2 border rounded-md bg-muted">
-                <span className="font-bold text-lg text-primary">{formatCurrency(totalAmount)}</span>
+            <div className="p-4 bg-muted rounded-lg">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Total Amount:</span>
+                <span className="text-xl font-bold text-primary">{formatCurrency(totalAmount)}</span>
               </div>
             </div>
           )}
-        </div>
 
-        <div className="flex gap-2">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="printBill"
+              checked={printBill}
+              onCheckedChange={(checked) => setPrintBill(checked as boolean)}
+              aria-label="Print bill after recording sale"
+              tabIndex={0}
+            />
+            <Label htmlFor="printBill" className="font-normal cursor-pointer">
+              Print bill after recording sale
+            </Label>
+          </div>
+
           <Button
-            onClick={handleSave}
-            disabled={addSaleMutation.isPending}
-            className="flex-1 focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            aria-label="Save product sale"
+            onClick={handleRecordSale}
+            disabled={addProductSaleMutation.isPending}
+            className="w-full"
+            aria-label="Record sale"
+            tabIndex={0}
           >
-            {addSaleMutation.isPending ? 'Saving...' : 'Save Sale'}
-          </Button>
-          <Button
-            onClick={handlePrint}
-            variant="outline"
-            className="flex items-center gap-2 focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            aria-label="Print receipt"
-          >
-            <Printer className="h-4 w-4" />
-            Print
+            {addProductSaleMutation.isPending ? 'Recording...' : 'Record Sale'}
           </Button>
         </div>
       </CardContent>

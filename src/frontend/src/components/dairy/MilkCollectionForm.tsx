@@ -95,16 +95,19 @@ export default function MilkCollectionForm() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && farmer) {
+  const handleFormKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && farmer && weight && fat) {
+      if (farmer.milkType === MilkType.vlc && !snf) {
+        return; // Don't submit if SNF is required but missing
+      }
+      e.preventDefault();
       handlePreview();
     }
   };
 
   const handleDialogKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setShowPreview(false);
-    } else if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !addCollectionMutation.isPending) {
+      e.preventDefault();
       handleSave();
     }
   };
@@ -119,7 +122,7 @@ export default function MilkCollectionForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4" onKeyDown={handleKeyDown}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4" onKeyDown={handleFormKeyDown}>
             <div className="space-y-2">
               <Label htmlFor="customerID">Customer ID</Label>
               <Input
@@ -129,6 +132,7 @@ export default function MilkCollectionForm() {
                 onChange={(e) => setCustomerID(e.target.value)}
                 placeholder="Enter customer ID"
                 aria-label="Customer ID"
+                tabIndex={0}
               />
             </div>
 
@@ -159,6 +163,7 @@ export default function MilkCollectionForm() {
                     onChange={(e) => setWeight(e.target.value)}
                     placeholder="Enter weight"
                     aria-label="Weight in kilograms"
+                    tabIndex={0}
                   />
                 </div>
 
@@ -172,6 +177,7 @@ export default function MilkCollectionForm() {
                     onChange={(e) => setFat(e.target.value)}
                     placeholder="Enter FAT"
                     aria-label="FAT percentage"
+                    tabIndex={0}
                   />
                 </div>
 
@@ -187,6 +193,7 @@ export default function MilkCollectionForm() {
                       placeholder="Enter SNF"
                       aria-label="SNF percentage"
                       aria-required="true"
+                      tabIndex={0}
                     />
                   </div>
                 )}
@@ -197,8 +204,9 @@ export default function MilkCollectionForm() {
           {farmer && (
             <Button
               onClick={handlePreview}
-              className="w-full focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="w-full"
               aria-label="Preview milk collection entry"
+              tabIndex={0}
             >
               Preview Entry
             </Button>
@@ -255,17 +263,19 @@ export default function MilkCollectionForm() {
                 <div className="font-medium">Rate:</div>
                 <div>{formatCurrency(previewData.rate)}</div>
 
-                <div className="font-medium text-lg">Amount:</div>
-                <div className="text-lg font-bold text-primary">{formatCurrency(previewData.amount)}</div>
+                <div className="font-medium text-lg pt-2 border-t">Total Amount:</div>
+                <div className="text-lg font-bold pt-2 border-t text-primary">
+                  {formatCurrency(previewData.amount)}
+                </div>
               </div>
             </div>
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowPreview(false)}>
+            <Button variant="outline" onClick={() => setShowPreview(false)} tabIndex={0}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={addCollectionMutation.isPending}>
+            <Button onClick={handleSave} disabled={addCollectionMutation.isPending} tabIndex={0}>
               {addCollectionMutation.isPending ? 'Saving...' : 'Save Entry'}
             </Button>
           </DialogFooter>

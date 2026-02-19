@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +15,9 @@ export default function InventoryManagement() {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [newProduct, setNewProduct] = useState({ name: '', quantity: '' });
   const [updateQuantity, setUpdateQuantity] = useState('');
+
+  const addButtonRef = useRef<HTMLButtonElement>(null);
+  const updateButtonRef = useRef<HTMLButtonElement>(null);
 
   const inventoryQuery = useGetAllInventory();
   const addInventoryMutation = useAddInventoryEntry();
@@ -37,6 +40,9 @@ export default function InventoryManagement() {
       toast.success('Product added successfully');
       setShowAddDialog(false);
       setNewProduct({ name: '', quantity: '' });
+      
+      // Return focus to add button
+      setTimeout(() => addButtonRef.current?.focus(), 100);
     } catch (error) {
       toast.error('Failed to add product');
     }
@@ -58,6 +64,9 @@ export default function InventoryManagement() {
       setShowUpdateDialog(false);
       setUpdateQuantity('');
       setSelectedProduct(null);
+      
+      // Return focus to update button
+      setTimeout(() => updateButtonRef.current?.focus(), 100);
     } catch (error) {
       toast.error('Failed to update stock');
     }
@@ -67,9 +76,6 @@ export default function InventoryManagement() {
     if (e.key === 'Enter') {
       e.preventDefault();
       handler();
-    } else if (e.key === 'Escape') {
-      if (showAddDialog) setShowAddDialog(false);
-      if (showUpdateDialog) setShowUpdateDialog(false);
     }
   };
 
@@ -80,7 +86,7 @@ export default function InventoryManagement() {
           <CardTitle>Inventory Management</CardTitle>
           <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-2" aria-label="Add new product">
+              <Button ref={addButtonRef} className="flex items-center gap-2" aria-label="Add new product" tabIndex={0}>
                 <Plus className="h-4 w-4" />
                 Add Product
               </Button>
@@ -99,6 +105,7 @@ export default function InventoryManagement() {
                     onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                     placeholder="Enter product name"
                     aria-required="true"
+                    tabIndex={0}
                   />
                 </div>
                 <div className="space-y-2">
@@ -111,14 +118,15 @@ export default function InventoryManagement() {
                     onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
                     placeholder="Enter quantity"
                     aria-required="true"
+                    tabIndex={0}
                   />
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+                <Button variant="outline" onClick={() => setShowAddDialog(false)} tabIndex={0}>
                   Cancel
                 </Button>
-                <Button onClick={handleAddProduct} disabled={addInventoryMutation.isPending}>
+                <Button onClick={handleAddProduct} disabled={addInventoryMutation.isPending} tabIndex={0}>
                   {addInventoryMutation.isPending ? 'Adding...' : 'Add Product'}
                 </Button>
               </DialogFooter>
@@ -128,9 +136,9 @@ export default function InventoryManagement() {
       </CardHeader>
       <CardContent>
         {inventory.length === 0 ? (
-          <div className="text-center py-8">
-            <Package className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-            <p className="text-muted-foreground">No products in inventory</p>
+          <div className="text-center py-8 text-muted-foreground">
+            <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>No products in inventory</p>
           </div>
         ) : (
           <Table role="table" aria-label="Inventory list">
@@ -145,57 +153,68 @@ export default function InventoryManagement() {
               {inventory.map((item) => (
                 <TableRow key={item.product.name}>
                   <TableCell className="font-medium">{item.product.name}</TableCell>
-                  <TableCell className="text-right">{item.quantityInStock.toFixed(2)}</TableCell>
+                  <TableCell className="text-right">{item.quantityInStock}</TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        setSelectedProduct(item.product.name);
-                        setShowUpdateDialog(true);
-                      }}
-                      className="focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                      aria-label={`Add stock to ${item.product.name}`}
-                    >
-                      Add Stock
-                    </Button>
+                    <Dialog open={showUpdateDialog && selectedProduct === item.product.name} onOpenChange={(open) => {
+                      setShowUpdateDialog(open);
+                      if (!open) setSelectedProduct(null);
+                    }}>
+                      <DialogTrigger asChild>
+                        <Button
+                          ref={updateButtonRef}
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setSelectedProduct(item.product.name)}
+                          aria-label={`Update stock for ${item.product.name}`}
+                          tabIndex={0}
+                        >
+                          Update Stock
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent role="dialog" aria-labelledby="update-stock-title" aria-describedby="update-stock-description">
+                        <DialogHeader>
+                          <DialogTitle id="update-stock-title">Update Stock</DialogTitle>
+                          <DialogDescription id="update-stock-description">
+                            Adjust stock for {item.product.name}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4" onKeyDown={(e) => handleDialogKeyDown(e, handleUpdateStock)}>
+                          <div className="space-y-2">
+                            <Label htmlFor="updateQuantity">Quantity to Add/Remove</Label>
+                            <Input
+                              id="updateQuantity"
+                              type="number"
+                              step="0.1"
+                              value={updateQuantity}
+                              onChange={(e) => setUpdateQuantity(e.target.value)}
+                              placeholder="Enter quantity (positive to add, negative to remove)"
+                              aria-required="true"
+                              tabIndex={0}
+                            />
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Current stock: {item.quantityInStock}
+                          </p>
+                        </div>
+                        <DialogFooter>
+                          <Button variant="outline" onClick={() => {
+                            setShowUpdateDialog(false);
+                            setSelectedProduct(null);
+                          }} tabIndex={0}>
+                            Cancel
+                          </Button>
+                          <Button onClick={handleUpdateStock} disabled={updateInventoryMutation.isPending} tabIndex={0}>
+                            {updateInventoryMutation.isPending ? 'Updating...' : 'Update Stock'}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         )}
-
-        <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
-          <DialogContent role="dialog" aria-labelledby="update-stock-title" aria-describedby="update-stock-description">
-            <DialogHeader>
-              <DialogTitle id="update-stock-title">Add Stock</DialogTitle>
-              <DialogDescription id="update-stock-description">
-                Add stock to {selectedProduct}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-2" onKeyDown={(e) => handleDialogKeyDown(e, handleUpdateStock)}>
-              <Label htmlFor="addQuantity">Quantity to Add</Label>
-              <Input
-                id="addQuantity"
-                type="number"
-                step="0.1"
-                value={updateQuantity}
-                onChange={(e) => setUpdateQuantity(e.target.value)}
-                placeholder="Enter quantity to add"
-                aria-required="true"
-              />
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowUpdateDialog(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleUpdateStock} disabled={updateInventoryMutation.isPending}>
-                {updateInventoryMutation.isPending ? 'Updating...' : 'Add Stock'}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </CardContent>
     </Card>
   );

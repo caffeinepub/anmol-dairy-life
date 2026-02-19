@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -7,7 +8,7 @@ import { generateTransactionPDF, cleanupPDFUrl } from '@/utils/pdfGenerator';
 import { openSMSApp } from '@/utils/smsHelper';
 import { FileText, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { FarmerID } from '../../backend';
 
 interface FarmerTransactionHistoryProps {
@@ -115,12 +116,18 @@ Thank you for your business.`;
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, handler: () => void) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handler();
-    }
-  };
+  // Ctrl+P to generate PDF
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p' && farmer) {
+        e.preventDefault();
+        handleCreatePDF();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [farmer, balance, transactions, pdfUrl]);
 
   if (!farmer) {
     return <p>Loading farmer details...</p>;
@@ -140,22 +147,22 @@ Thank you for your business.`;
           <div className="flex gap-2">
             <Button
               onClick={handleCreatePDF}
-              onKeyDown={(e) => handleKeyDown(e, handleCreatePDF)}
               variant="outline"
               size="sm"
               className="flex items-center gap-2"
-              aria-label="Create PDF"
+              aria-label="Create PDF (Ctrl+P)"
+              tabIndex={0}
             >
               <FileText className="h-4 w-4" />
               Create PDF
             </Button>
             <Button
               onClick={handleSendSMS}
-              onKeyDown={(e) => handleKeyDown(e, handleSendSMS)}
               variant="outline"
               size="sm"
               className="flex items-center gap-2"
               aria-label="Send SMS with PDF link"
+              tabIndex={0}
             >
               <MessageSquare className="h-4 w-4" />
               SMS

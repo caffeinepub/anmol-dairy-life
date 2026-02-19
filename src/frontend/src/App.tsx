@@ -3,10 +3,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DairySection from '@/components/dairy/DairySection';
 import TransactionsSection from '@/components/transactions/TransactionsSection';
 import SettingsSection from '@/components/settings/SettingsSection';
+import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
+import { useGlobalKeyboardShortcuts } from '@/hooks/useGlobalKeyboardShortcuts';
 import { Milk, Receipt, Settings } from 'lucide-react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dairy');
+  const [showHelp, setShowHelp] = useState(false);
+
+  // Global keyboard shortcuts
+  useGlobalKeyboardShortcuts({
+    onNavigateToDairy: () => setActiveTab('dairy'),
+    onNavigateToTransactions: () => setActiveTab('transactions'),
+    onNavigateToSettings: () => setActiveTab('settings'),
+    onShowHelp: () => setShowHelp(true),
+  });
 
   const handleTabKeyDown = (e: React.KeyboardEvent, tabValue: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -29,6 +40,14 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Skip to main content link */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded"
+      >
+        Skip to main content
+      </a>
+
       {/* Hero Background */}
       <div 
         className="fixed inset-0 z-0 opacity-10"
@@ -54,7 +73,7 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 container mx-auto px-4 py-8">
+      <main id="main-content" className="relative z-10 container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList
             className="grid w-full max-w-md mx-auto grid-cols-3 mb-8"
@@ -63,9 +82,10 @@ function App() {
           >
             <TabsTrigger
               value="dairy"
-              className="flex items-center gap-2 focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="flex items-center gap-2"
               onKeyDown={(e) => handleTabKeyDown(e, 'dairy')}
               role="tab"
+              tabIndex={activeTab === 'dairy' ? 0 : -1}
               aria-selected={activeTab === 'dairy'}
               aria-controls="dairy-panel"
             >
@@ -74,9 +94,10 @@ function App() {
             </TabsTrigger>
             <TabsTrigger
               value="transactions"
-              className="flex items-center gap-2 focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="flex items-center gap-2"
               onKeyDown={(e) => handleTabKeyDown(e, 'transactions')}
               role="tab"
+              tabIndex={activeTab === 'transactions' ? 0 : -1}
               aria-selected={activeTab === 'transactions'}
               aria-controls="transactions-panel"
             >
@@ -85,9 +106,10 @@ function App() {
             </TabsTrigger>
             <TabsTrigger
               value="settings"
-              className="flex items-center gap-2 focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="flex items-center gap-2"
               onKeyDown={(e) => handleTabKeyDown(e, 'settings')}
               role="tab"
+              tabIndex={activeTab === 'settings' ? 0 : -1}
               aria-selected={activeTab === 'settings'}
               aria-controls="settings-panel"
             >
@@ -103,7 +125,7 @@ function App() {
             role="tabpanel"
             aria-labelledby="dairy-tab"
           >
-            <DairySection />
+            <DairySection isActive={activeTab === 'dairy'} />
           </TabsContent>
 
           <TabsContent
@@ -147,6 +169,9 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* Keyboard Shortcuts Help Dialog */}
+      <KeyboardShortcutsHelp open={showHelp} onOpenChange={setShowHelp} />
     </div>
   );
 }
