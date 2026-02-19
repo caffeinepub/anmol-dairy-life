@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,13 +8,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { formatCurrency } from '@/utils/formatters';
 import { Printer } from 'lucide-react';
 import { toast } from 'sonner';
+import { generateSellBillHTML } from '@/utils/sellBillGenerator';
 
 export default function SellModule() {
   const [farmerID, setFarmerID] = useState('');
   const [productName, setProductName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
-  const [lastSaleId, setLastSaleId] = useState<bigint | null>(null);
+  const [lastSaleData, setLastSaleData] = useState<{
+    farmerName: string | null;
+    productName: string;
+    pricePerUnit: number;
+    quantity: number;
+    totalAmount: number;
+    timestamp: Date;
+  } | null>(null);
 
   const currentDate = new Date().toLocaleDateString('en-IN');
   const currentTime = new Date().toLocaleTimeString('en-IN');
@@ -35,7 +43,17 @@ export default function SellModule() {
     }
 
     try {
-      const saleId = await addSaleMutation.mutateAsync({
+      const timestamp = new Date();
+      const saleData = {
+        farmerName: farmer?.name || null,
+        productName,
+        pricePerUnit: parseFloat(price),
+        quantity: parseFloat(quantity),
+        totalAmount: parseFloat(quantity) * parseFloat(price),
+        timestamp,
+      };
+
+      await addSaleMutation.mutateAsync({
         farmerID: farmerID ? BigInt(farmerID) : null,
         productName,
         quantity: parseFloat(quantity),
@@ -43,7 +61,14 @@ export default function SellModule() {
       });
 
       toast.success('Product sale recorded successfully');
-      setLastSaleId(saleId);
+      setLastSaleData(saleData);
+
+      // Trigger print after successful save
+      setTimeout(() => {
+        triggerPrint(saleData);
+      }, 100);
+
+      // Reset form
       setFarmerID('');
       setProductName('');
       setQuantity('');
@@ -53,12 +78,47 @@ export default function SellModule() {
     }
   };
 
+  const triggerPrint = (saleData: typeof lastSaleData) => {
+    if (!saleData) return;
+
+    // Generate bill HTML
+    const billHTML = generateSellBillHTML(saleData);
+
+    // Create or get the hidden bill container
+    let billContainer = document.getElementById('sell-bill-container');
+    if (!billContainer) {
+      billContainer = document.createElement('div');
+      billContainer.id = 'sell-bill-container';
+      billContainer.className = 'bill-content';
+      document.body.appendChild(billContainer);
+    }
+
+    // Inject the bill HTML
+    billContainer.innerHTML = billHTML;
+
+    // Add no-print class to main app content
+    const appContent = document.getElementById('root');
+    if (appContent) {
+      appContent.classList.add('no-print');
+    }
+
+    // Trigger print
+    window.print();
+
+    // Cleanup after print (or cancel)
+    setTimeout(() => {
+      if (appContent) {
+        appContent.classList.remove('no-print');
+      }
+    }, 500);
+  };
+
   const handlePrint = () => {
-    if (!lastSaleId) {
+    if (!lastSaleData) {
       toast.error('No recent sale to print');
       return;
     }
-    window.print();
+    triggerPrint(lastSaleData);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-debug-and-fix-the-billgenerator-component-s-pdf-generation-to-ensure-all-farmer-details-name-customer-id-phone-billing-period-dates-collection-data-table-rows-and-totals-are-properly-populated-in-the-print-dialog-instead-of-showing-an-empty-pdf",
-      "featureTitle": "Debug and fix the BillGenerator component's PDF generation to ensure all farmer details (name, customer ID, phone), billing period dates, collection data table rows, and totals are properly populated in the print dialog instead of showing an empty PDF",
+      "featureId": "feature-generate-a-printable-sell-bill-when-saving-a-product-sale-that-includes-farmer-name-product-name-price-per-unit-quantity-total-amount-date-and-time-and-company-header-anmol-dairy-life",
+      "featureTitle": "Generate a printable sell bill when saving a product sale that includes farmer name, product name, price per unit, quantity, total amount, date and time, and company header ('ANMOL DAIRY LIFE')",
       "files": [
-        "frontend/src/components/dairy/BillGenerator.tsx"
+        "frontend/src/utils/sellBillGenerator.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -15,15 +15,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-33"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-verify-that-the-print-styles-in-frontend-src-index-css-are-correctly-applied-to-the-bill-content-when-the-print-dialog-is-triggered-ensuring-proper-layout-typography-and-visibility-of-all-bill-elements",
-      "featureTitle": "Verify that the print styles in frontend/src/index.css are correctly applied to the bill content when the print dialog is triggered, ensuring proper layout, typography, and visibility of all bill elements",
+      "featureId": "feature-in-sellmodule-tsx-trigger-the-print-dialog-immediately-after-successfully-saving-a-product-sale-to-the-backend",
+      "featureTitle": "In SellModule.tsx, trigger the print dialog immediately after successfully saving a product sale to the backend",
       "files": [
-        "frontend/src/index.css"
+        "frontend/src/components/dairy/SellModule.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -33,7 +33,25 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-34"
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-reusable-utility-function-similar-to-pdfgenerator-ts-that-generates-html-content-for-the-sell-bill-with-proper-styling-for-print-media",
+      "featureTitle": "Create a reusable utility function similar to pdfGenerator.ts that generates HTML content for the sell bill with proper styling for print media",
+      "files": [
+        "frontend/src/utils/sellBillGenerator.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

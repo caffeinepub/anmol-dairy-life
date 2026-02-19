@@ -1,59 +1,77 @@
 {
   "kind": "build_request",
-  "title": "Fix empty PDF generation in BillGenerator component",
-  "priority": "high",
+  "title": "Add printable sell bill with company header and transaction details",
+  "projectName": "Anmol Dairy Life",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-33",
-      "text": "Debug and fix the BillGenerator component's PDF generation to ensure all farmer details (name, customer ID, phone), billing period dates, collection data table rows, and totals are properly populated in the print dialog instead of showing an empty PDF",
+      "id": "REQ-1",
+      "text": "Generate a printable sell bill when saving a product sale that includes farmer name, product name, price per unit, quantity, total amount, date and time, and company header ('ANMOL DAIRY LIFE')",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-latest"
         ],
         "quotes": [
-          "No it is showing empty pdf"
+          "Allow to print sell bill while saving",
+          "bill contain farmer name , product name , price, quantity, amount, date and time company header"
         ]
       },
       "acceptanceCriteria": [
-        "When 'Generate PDF' button is clicked in BillGenerator, the browser print dialog opens with fully populated bill content",
-        "PDF contains farmer name, customer ID, and phone number in the header section",
-        "PDF shows billing period 'From' and 'To' dates",
-        "PDF displays a table with all collection entries showing Date, Shift, Fat, SNF/CLR, Qty (L), Rate, and Amount columns",
-        "PDF includes totals section with Total Quantity, Average Fat, Average Rate, and Net Payable amount",
-        "All numeric values display with proper formatting (2 decimal places for decimals, currency format for amounts)"
+        "Sell bill displays company header 'ANMOL DAIRY LIFE' at the top",
+        "Bill includes farmer name (when a farmer is selected for the sale)",
+        "Bill shows product name, price per unit, quantity, and calculated total amount",
+        "Bill displays the current date and time of the transaction",
+        "Print dialog opens automatically after saving a product sale",
+        "Bill format is clean and suitable for printing on standard paper"
       ]
     },
     {
-      "id": "REQ-34",
-      "text": "Verify that the print styles in frontend/src/index.css are correctly applied to the bill content when the print dialog is triggered, ensuring proper layout, typography, and visibility of all bill elements",
+      "id": "REQ-2",
+      "text": "In SellModule.tsx, trigger the print dialog immediately after successfully saving a product sale to the backend",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-latest"
         ],
         "quotes": [
-          "No it is showing empty pdf"
+          "Allow to print sell bill while saving"
         ]
       },
       "acceptanceCriteria": [
-        "Print preview shows the bill with correct layout matching the reference design",
-        "All bill sections are visible in print preview without being hidden or cut off",
-        "Navigation elements and UI controls are hidden in print view",
-        "Print styles apply proper page breaks and margins"
+        "Print dialog appears automatically after the sale is saved",
+        "User can proceed with printing or cancel the dialog",
+        "The print action does not interfere with the form reset or success feedback"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Create a reusable utility function similar to pdfGenerator.ts that generates HTML content for the sell bill with proper styling for print media",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Utility function accepts sale details (farmer, product, price, quantity, amount, timestamp) as parameters",
+        "Generated HTML includes print-specific CSS styles",
+        "Bill layout is optimized for A4 or letter-size paper",
+        "Function is located in frontend/src/utils/ directory"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the backend schema or API endpoints",
-    "Maintain the existing bill layout design matching the reference image format",
-    "Keep all existing print styles and only fix the content population issue"
+    "Do not modify backend schema or main.mo",
+    "Use browser's native print dialog (window.print()) rather than external PDF libraries",
+    "Follow existing print styling patterns from index.css (@media print rules)",
+    "Maintain the existing SellModule.tsx form flow and validation"
   ],
   "nonGoals": [
-    "Changing the bill design or layout",
-    "Adding new fields to the bill",
-    "Modifying the backend data structures",
-    "Implementing new PDF libraries or generation methods"
+    "Email or SMS delivery of the sell bill",
+    "PDF file download functionality for sell bills",
+    "Batch printing of multiple sell bills",
+    "Custom print layout settings or configuration"
   ],
   "imageRequirements": {
     "required": [],

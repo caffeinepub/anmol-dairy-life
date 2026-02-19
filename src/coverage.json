@@ -1,35 +1,47 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-19T18:05:27.513Z",
+  "generatedAt": "2026-02-19T19:26:09.891Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-33",
-        "summary": "Debug and fix the BillGenerator component's PDF generation to ensure all farmer details (name, customer ID, phone), billing period dates, collection data table rows, and totals are properly populated in the print dialog instead of showing an empty PDF",
+        "id": "REQ-1",
+        "summary": "Generate a printable sell bill when saving a product sale that includes farmer name, product name, price per unit, quantity, total amount, date and time, and company header ('ANMOL DAIRY LIFE')",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/dairy/BillGenerator.tsx"
+          "frontend/src/utils/sellBillGenerator.ts",
+          "frontend/src/index.css"
         ],
         "matchedFiles": [
-          "frontend/src/components/dairy/BillGenerator.tsx"
+          "frontend/src/utils/sellBillGenerator.ts"
         ]
       },
       {
-        "id": "REQ-34",
-        "summary": "Verify that the print styles in frontend/src/index.css are correctly applied to the bill content when the print dialog is triggered, ensuring proper layout, typography, and visibility of all bill elements",
+        "id": "REQ-2",
+        "summary": "In SellModule.tsx, trigger the print dialog immediately after successfully saving a product sale to the backend",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css"
+          "frontend/src/components/dairy/SellModule.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/index.css"
+          "frontend/src/components/dairy/SellModule.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Create a reusable utility function similar to pdfGenerator.ts that generates HTML content for the sell bill with proper styling for print media",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/sellBillGenerator.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/sellBillGenerator.ts"
         ]
       }
     ]
@@ -39,8 +51,8 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/dairy/BillGenerator.tsx",
-    "frontend/src/index.css",
+    "frontend/src/components/dairy/SellModule.tsx",
+    "frontend/src/utils/sellBillGenerator.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

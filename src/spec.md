@@ -1,10 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the BillGenerator component to properly populate and display farmer billing data in the PDF print dialog instead of showing an empty page.
+**Goal:** Add printable sell bill functionality with company header and transaction details.
 
 **Planned changes:**
-- Debug and fix the BillGenerator component to ensure farmer details (name, customer ID, phone), billing period dates, collection data table, and totals are rendered correctly in the print dialog
-- Verify that print styles in frontend/src/index.css are properly applied to show all bill elements with correct layout and formatting
+- Create a printable sell bill template that displays company header "ANMOL DAIRY LIFE", farmer name, product details (name, price per unit, quantity), total amount, and transaction date/time
+- Trigger browser's native print dialog automatically after successfully saving a product sale
+- Build a reusable utility function to generate HTML content for the sell bill with print-optimized styling
 
-**User-visible outcome:** When users click "Generate PDF" in the BillGenerator, the browser print dialog will open with a fully populated bill showing all farmer information, collection entries, and calculated totals ready to print or save.
+**User-visible outcome:** When saving a product sale, users can immediately print a formatted bill containing all transaction details with the company header.

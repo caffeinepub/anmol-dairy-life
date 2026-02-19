@@ -3,8 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useGetFarmer, useGetFarmerTransactions, useGetFarmerBalance } from '@/hooks/useQueries';
 import { formatCurrency, formatDateTime } from '@/utils/formatters';
+import { generateTransactionPDF, cleanupPDFUrl } from '@/utils/pdfGenerator';
+import { openSMSApp } from '@/utils/smsHelper';
 import { FileText, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { useState, useEffect } from 'react';
 import type { FarmerID } from '../../backend';
 
 interface FarmerTransactionHistoryProps {
@@ -20,47 +23,95 @@ export default function FarmerTransactionHistory({ farmerID }: FarmerTransaction
   const transactions = transactionsQuery.data || [];
   const balance = balanceQuery.data || 0;
 
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+
   const balanceColor = balance < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400';
 
+  // Cleanup PDF URL on unmount or when new PDF is generated
+  useEffect(() => {
+    return () => {
+      if (pdfUrl) {
+        cleanupPDFUrl(pdfUrl);
+      }
+    };
+  }, [pdfUrl]);
+
   const handleCreatePDF = () => {
-    toast.info('PDF generation feature coming soon');
+    if (!farmer) {
+      toast.error('Farmer data not available');
+      return;
+    }
+
+    try {
+      // Clean up previous PDF URL if exists
+      if (pdfUrl) {
+        cleanupPDFUrl(pdfUrl);
+      }
+
+      // Generate new PDF
+      const url = generateTransactionPDF({
+        farmer,
+        balance,
+        transactions,
+      });
+
+      setPdfUrl(url);
+
+      // Open PDF in new tab
+      window.open(url, '_blank');
+      toast.success('PDF generated successfully');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast.error('Failed to generate PDF');
+    }
   };
 
-  const handleSendSMS = async () => {
-    if (!farmer) return;
+  const handleSendSMS = () => {
+    if (!farmer) {
+      toast.error('Farmer data not available');
+      return;
+    }
 
-    // Get last 3 transactions for summary
-    const recentTransactions = transactions.slice(-3).reverse();
-    
-    // Format SMS message
-    const transactionSummary = recentTransactions
-      .map((txn) => {
-        const date = new Date(Number(txn.timestamp) / 1000000).toLocaleDateString('en-IN');
-        return `${date}: ${formatCurrency(txn.amount)}`;
-      })
-      .join('\n');
+    if (!farmer.phone) {
+      toast.error('Farmer phone number not available');
+      return;
+    }
 
-    const smsMessage = `${farmer.name}\nBalance: ${formatCurrency(balance)}\n\nRecent Transactions:\n${transactionSummary}\n\nView full details: ${window.location.origin}`;
-
-    // Try to use Web Share API for SMS
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Transaction Summary - ${farmer.name}`,
-          text: smsMessage,
+    try {
+      // Generate PDF first
+      let url = pdfUrl;
+      if (!url) {
+        url = generateTransactionPDF({
+          farmer,
+          balance,
+          transactions,
         });
-        toast.success('SMS prepared for sending');
-      } catch (error) {
-        if ((error as Error).name !== 'AbortError') {
-          // Fallback to SMS URI
-          window.location.href = `sms:${farmer.phone}?body=${encodeURIComponent(smsMessage)}`;
-          toast.success('Opening SMS app...');
-        }
+        setPdfUrl(url);
       }
-    } else {
-      // Fallback to SMS URI
-      window.location.href = `sms:${farmer.phone}?body=${encodeURIComponent(smsMessage)}`;
+
+      // Create SMS message with PDF link
+      const message = `Dear ${farmer.name},
+
+Your transaction history is ready to view.
+
+Current Balance: ${formatCurrency(balance)}
+Total Transactions: ${transactions.length}
+
+View your complete transaction history here:
+${url}
+
+Thank you for your business.`;
+
+      // Open SMS app with pre-filled message
+      openSMSApp({
+        phoneNumber: farmer.phone,
+        message,
+      });
+
       toast.success('Opening SMS app...');
+    } catch (error) {
+      console.error('Error preparing SMS:', error);
+      toast.error('Failed to prepare SMS');
     }
   };
 
@@ -104,7 +155,7 @@ export default function FarmerTransactionHistory({ farmerID }: FarmerTransaction
               variant="outline"
               size="sm"
               className="flex items-center gap-2"
-              aria-label="Send SMS"
+              aria-label="Send SMS with PDF link"
             >
               <MessageSquare className="h-4 w-4" />
               SMS

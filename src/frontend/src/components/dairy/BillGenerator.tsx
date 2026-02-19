@@ -9,9 +9,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { CalendarIcon, FileText, Share2, Printer } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import { Session, MilkType } from '../../backend';
+import { Session } from '../../backend';
 import { calculateAmount } from '@/utils/calculations';
-import { formatCurrency, formatLessAdd } from '@/utils/formatters';
+import { formatCurrency } from '@/utils/formatters';
 
 export default function BillGenerator() {
   const [customerID, setCustomerID] = useState('');
@@ -46,19 +46,16 @@ export default function BillGenerator() {
       const calc = calculateAmount(entry.milkType, entry.weight, entry.fat, entry.snf || undefined, entry.rate);
       return {
         quantity: acc.quantity + entry.weight,
-        lessAdd: acc.lessAdd + (calc.lessAdd || 0),
-        netMilk: acc.netMilk + (calc.netMilk || entry.weight),
         amount: acc.amount + calc.amount,
         totalFat: acc.totalFat + entry.fat,
-        totalRate: acc.totalRate + entry.rate,
         count: acc.count + 1,
       };
     },
-    { quantity: 0, lessAdd: 0, netMilk: 0, amount: 0, totalFat: 0, totalRate: 0, count: 0 }
+    { quantity: 0, amount: 0, totalFat: 0, count: 0 }
   );
 
   const averageFat = billTotals.count > 0 ? billTotals.totalFat / billTotals.count : 0;
-  const averageRate = billTotals.count > 0 ? billTotals.totalRate / billTotals.count : 0;
+  const averageRate = billTotals.quantity > 0 ? billTotals.amount / billTotals.quantity : 0;
 
   const handleGeneratePDF = () => {
     if (!farmer || !fromDate || !toDate) {
@@ -218,18 +215,6 @@ export default function BillGenerator() {
                   <span>Average Rate:</span>
                   <span className="font-medium">{formatCurrency(averageRate)}</span>
                 </div>
-                {farmer.milkType === MilkType.thekadari && (
-                  <>
-                    <div className="flex justify-between">
-                      <span>Total Less/Add:</span>
-                      <span className="font-medium">{formatLessAdd(billTotals.lessAdd)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Total Net Milk:</span>
-                      <span className="font-medium">{billTotals.netMilk.toFixed(2)} L</span>
-                    </div>
-                  </>
-                )}
                 <div className="flex justify-between pt-2 border-t">
                   <span className="font-bold">Net Payable:</span>
                   <span className="font-bold text-primary">{formatCurrency(billTotals.amount)}</span>
@@ -276,49 +261,27 @@ export default function BillGenerator() {
       {farmer && fromDate && toDate && filteredCollections.length > 0 && (
         <div className="bill-content">
           <div className="print-bill">
-            {/* Header */}
-            <div className="bill-header">
-              <h1>DAIRYFLOW MILK COLLECTION</h1>
-            </div>
+            {/* Top border */}
+            <div className="bill-top-border"></div>
 
-            {/* Main content grid */}
-            <div className="bill-info-grid">
-              {/* Left section - Farmer details */}
-              <div className="bill-left-section">
-                <div className="info-row">
-                  <span className="info-label">Village/Center Name, District</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Phone:</span>
-                  <span className="info-value">+91 9876543210</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Farmer Details:</span>
-                </div>
-                <div className="info-row indent">
-                  <span className="info-value">{farmer.name}</span>
-                </div>
-                <div className="info-row indent">
-                  <span className="info-label">ID:</span>
-                  <span className="info-value">{farmer.customerID.toString()}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Mobile:</span>
-                  <span className="info-value">{farmer.phone}</span>
-                </div>
+            {/* Header section with two columns */}
+            <div className="bill-header-section">
+              {/* Left column - Farmer Details */}
+              <div className="bill-header-left">
+                <div className="bill-section-title">Farmer Details:</div>
+                <div className="bill-farmer-name">{farmer.name}</div>
+                <div className="bill-farmer-info">ID: {farmer.customerID.toString()}</div>
+                <div className="bill-farmer-info">Mobile: {farmer.phone}</div>
               </div>
 
-              {/* Center section - Bill period */}
-              <div className="bill-center-section">
-                <div className="info-row">
-                  <span className="info-label">Bill Period:</span>
+              {/* Right column - Bill Period */}
+              <div className="bill-header-right">
+                <div className="bill-section-title">Bill Period:</div>
+                <div className="bill-period-date">
+                  {format(fromDate, 'dd MMM yyyy')} to {format(toDate, 'dd MMM yyyy')}
                 </div>
-                <div className="info-row">
-                  <span className="info-value">{format(fromDate, 'dd MMM yyyy')} to {format(toDate, 'dd MMM yyyy')}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Generated:</span>
-                  <span className="info-value">{format(new Date(), 'dd/MM/yyyy HH:mm')}</span>
+                <div className="bill-generated">
+                  Generated: {format(new Date(), 'dd/MM/yyyy HH:mm')}
                 </div>
               </div>
             </div>
@@ -327,7 +290,8 @@ export default function BillGenerator() {
             <table className="bill-table">
               <thead>
                 <tr>
-                  <th>Date Shift</th>
+                  <th>Date</th>
+                  <th>Shift</th>
                   <th>Fat</th>
                   <th>SNF/CLR</th>
                   <th>Qty (L)</th>
@@ -342,10 +306,11 @@ export default function BillGenerator() {
                   const shift = entry.session === Session.morning ? 'M' : 'E';
                   return (
                     <tr key={index}>
-                      <td>{format(entryDate, 'dd/MM/yyyy')} {shift}</td>
-                      <td>{entry.fat.toFixed(1)}</td>
-                      <td>{entry.snf ? entry.snf.toFixed(1) : (farmer.milkType === MilkType.thekadari ? formatLessAdd(calc.lessAdd || 0) : '-')}</td>
-                      <td>{entry.weight.toFixed(2)}</td>
+                      <td>{format(entryDate, 'dd/MM/yyyy')}</td>
+                      <td>{shift}</td>
+                      <td>{entry.fat.toFixed(1)}%</td>
+                      <td>{entry.snf ? entry.snf.toFixed(1) : '-'}</td>
+                      <td>{entry.weight.toFixed(2)} L</td>
                       <td>₹{entry.rate.toFixed(2)}</td>
                       <td>₹{calc.amount.toFixed(2)}</td>
                     </tr>
@@ -354,35 +319,33 @@ export default function BillGenerator() {
               </tbody>
             </table>
 
-            {/* Totals box */}
-            <div className="bill-totals-box">
-              <div className="totals-row">
-                <span className="totals-label">Total Quantity:</span>
-                <span className="totals-value">{billTotals.quantity.toFixed(2)} L</span>
+            {/* Summary section */}
+            <div className="bill-summary">
+              <div className="bill-summary-row">
+                <span className="bill-summary-label">Total Quantity:</span>
+                <span className="bill-summary-value">{billTotals.quantity.toFixed(2)} L</span>
               </div>
-              <div className="totals-row">
-                <span className="totals-label">Average Fat:</span>
-                <span className="totals-value">{averageFat.toFixed(1)}%</span>
+              <div className="bill-summary-row">
+                <span className="bill-summary-label">Average Fat:</span>
+                <span className="bill-summary-value">{averageFat.toFixed(1)}%</span>
               </div>
-              <div className="totals-row">
-                <span className="totals-label">Average Rate:</span>
-                <span className="totals-value">₹{averageRate.toFixed(2)}</span>
+              <div className="bill-summary-row">
+                <span className="bill-summary-label">Average Rate:</span>
+                <span className="bill-summary-value">₹{averageRate.toFixed(2)}</span>
               </div>
-              <div className="totals-row totals-final">
-                <span className="totals-label">Net Payable:</span>
-                <span className="totals-value">₹{billTotals.amount.toFixed(2)}</span>
+              <div className="bill-summary-row bill-summary-final">
+                <span className="bill-summary-label">Net Payable:</span>
+                <span className="bill-summary-value">₹{billTotals.amount.toFixed(2)}</span>
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="bill-footer">
-              <div className="signature-section">
-                <div className="signature-line"></div>
-                <div className="signature-label">Collector Signature</div>
+            {/* Signature section */}
+            <div className="bill-signatures">
+              <div className="bill-signature-block">
+                <div className="bill-signature-label">Farmer Signature</div>
               </div>
-              <div className="signature-section">
-                <div className="signature-line"></div>
-                <div className="signature-label">Farmer Signature</div>
+              <div className="bill-signature-block">
+                <div className="bill-signature-label">Collector Signature</div>
               </div>
             </div>
           </div>
