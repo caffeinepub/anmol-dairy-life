@@ -1,166 +1,46 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-19T20:15:18.480Z",
+  "generatedAt": "2026-02-19T20:23:43.169Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 10,
-    "implemented": 10,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Add keyboard shortcuts for quick navigation between main sections: Ctrl+1 for Dairy, Ctrl+2 for Transactions, Ctrl+3 for Settings",
+        "summary": "In the milk collection form, pressing Enter in the farmer ID field should move focus to the quantity field",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useGlobalKeyboardShortcuts.ts",
-          "frontend/src/App.tsx"
+          "frontend/src/components/dairy/MilkCollectionForm.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useGlobalKeyboardShortcuts.ts",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-10",
-        "summary": "Add keyboard shortcut Ctrl+F to focus the search input in Transactions section and Farmer Management",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/transactions/TransactionsSection.tsx",
-          "frontend/src/components/settings/FarmerManagement.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/transactions/TransactionsSection.tsx",
-          "frontend/src/components/settings/FarmerManagement.tsx"
+          "frontend/src/components/dairy/MilkCollectionForm.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Add keyboard shortcuts within Dairy section to navigate between tabs: Ctrl+M for Milk Collection, Ctrl+B for Bill, Ctrl+D for Data Reports, Ctrl+S for Sell, Ctrl+C for Cash",
+        "summary": "In the milk collection form, pressing Enter in the quantity field should move focus to the fat field",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useDairyKeyboardShortcuts.ts",
-          "frontend/src/components/dairy/DairySection.tsx"
+          "frontend/src/components/dairy/MilkCollectionForm.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useDairyKeyboardShortcuts.ts",
-          "frontend/src/components/dairy/DairySection.tsx"
+          "frontend/src/components/dairy/MilkCollectionForm.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Implement Enter key submission for all forms including Milk Collection, Cash transactions, product sales, farmer management, rate settings, and inventory updates",
+        "summary": "In the milk collection form, pressing Enter in the fat field should trigger the save action",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "frontend/src/components/dairy/CashModule.tsx",
-          "frontend/src/components/dairy/SellModule.tsx",
-          "frontend/src/components/settings/FarmerManagement.tsx",
-          "frontend/src/components/settings/InventoryManagement.tsx"
+          "frontend/src/components/dairy/MilkCollectionForm.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "frontend/src/components/dairy/CashModule.tsx",
-          "frontend/src/components/dairy/SellModule.tsx",
-          "frontend/src/components/settings/FarmerManagement.tsx",
-          "frontend/src/components/settings/InventoryManagement.tsx"
-        ]
-      },
-      {
-        "id": "REQ-4",
-        "summary": "Add Escape key support to close all dialogs and modals including Milk Collection preview, farmer add/edit dialogs, inventory dialogs, and cancel ongoing operations",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useEscapeKey.ts",
-          "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "frontend/src/components/settings/FarmerManagement.tsx",
-          "frontend/src/components/settings/InventoryManagement.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "frontend/src/components/settings/FarmerManagement.tsx",
-          "frontend/src/components/settings/InventoryManagement.tsx"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Add Tab and Shift+Tab support for logical focus order through all interactive elements in forms, tables, and navigation components",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "frontend/src/components/dairy/CashModule.tsx",
-          "frontend/src/components/dairy/SellModule.tsx",
-          "frontend/src/components/dairy/DataReports.tsx",
-          "frontend/src/components/settings/SettingsSection.tsx",
-          "frontend/src/components/dairy/DairySection.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "frontend/src/components/dairy/CashModule.tsx",
-          "frontend/src/components/dairy/SellModule.tsx",
-          "frontend/src/components/settings/SettingsSection.tsx",
-          "frontend/src/components/dairy/DairySection.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-6",
-        "summary": "Add keyboard shortcut Ctrl+P to trigger print/PDF generation for bills and transaction history when viewing those sections",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/dairy/BillGenerator.tsx",
-          "frontend/src/components/transactions/FarmerTransactionHistory.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/dairy/BillGenerator.tsx",
-          "frontend/src/components/transactions/FarmerTransactionHistory.tsx"
-        ]
-      },
-      {
-        "id": "REQ-7",
-        "summary": "Add visual focus indicators with clear outlines on all interactive elements including buttons, inputs, tabs, and table rows to show keyboard focus state",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/components/dairy/SessionEntriesList.tsx",
-          "frontend/src/components/transactions/TransactionsSection.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/components/transactions/TransactionsSection.tsx"
-        ]
-      },
-      {
-        "id": "REQ-8",
-        "summary": "Add keyboard shortcut help overlay accessible via '?' key that displays all available shortcuts organized by section",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/KeyboardShortcutsHelp.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/KeyboardShortcutsHelp.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-9",
-        "summary": "Add arrow key navigation for selecting farmers in search results and transaction lists",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useArrowKeyNavigation.ts",
-          "frontend/src/components/transactions/TransactionsSection.tsx",
-          "frontend/src/components/dairy/CashModule.tsx",
-          "frontend/src/components/dairy/BillGenerator.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useArrowKeyNavigation.ts",
-          "frontend/src/components/transactions/TransactionsSection.tsx",
-          "frontend/src/components/dairy/CashModule.tsx",
-          "frontend/src/components/dairy/BillGenerator.tsx"
+          "frontend/src/components/dairy/MilkCollectionForm.tsx"
         ]
       }
     ]
@@ -170,22 +50,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/components/KeyboardShortcutsHelp.tsx",
-    "frontend/src/components/dairy/BillGenerator.tsx",
-    "frontend/src/components/dairy/CashModule.tsx",
-    "frontend/src/components/dairy/DairySection.tsx",
     "frontend/src/components/dairy/MilkCollectionForm.tsx",
-    "frontend/src/components/dairy/SellModule.tsx",
-    "frontend/src/components/settings/FarmerManagement.tsx",
-    "frontend/src/components/settings/InventoryManagement.tsx",
-    "frontend/src/components/settings/SettingsSection.tsx",
-    "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
-    "frontend/src/components/transactions/TransactionsSection.tsx",
-    "frontend/src/hooks/useArrowKeyNavigation.ts",
-    "frontend/src/hooks/useDairyKeyboardShortcuts.ts",
-    "frontend/src/hooks/useGlobalKeyboardShortcuts.ts",
-    "frontend/src/index.css",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

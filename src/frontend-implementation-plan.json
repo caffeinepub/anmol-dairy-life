@@ -1,290 +1,50 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add comprehensive keyboard navigation and shortcuts",
+  "title": "Add Enter key navigation between form fields",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add global keyboard shortcuts for main section navigation (Ctrl+1/2/3)",
+      "summary": "Enable Enter key navigation from farmer ID field to quantity field in milk collection form",
       "acceptanceCriteria": [
-        "Pressing Ctrl+1 switches to Dairy section",
-        "Pressing Ctrl+2 switches to Transactions section",
-        "Pressing Ctrl+3 switches to Settings section",
-        "Shortcuts work from any view within the application"
+        "Pressing Enter in the farmer ID input moves focus to the quantity input",
+        "The Enter key behavior does not interfere with existing farmer lookup functionality"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useGlobalKeyboardShortcuts.ts",
-          "operation": "create",
-          "description": "Create a custom hook to manage global keyboard shortcuts. Handle Ctrl+1/2/3 for switching between main tabs, prevent default browser behavior, and ensure shortcuts work from any view by attaching to document level."
-        },
-        {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
           "operation": "modify",
-          "description": "Import and use useGlobalKeyboardShortcuts hook to enable global section navigation shortcuts. Pass setActiveTab function to the hook so Ctrl+1/2/3 can programmatically switch tabs."
+          "description": "Add onKeyDown handler to farmer ID input field that detects Enter key press and programmatically focuses the weight/quantity input field using a ref. Ensure the handler does not prevent the existing farmer lookup functionality from working."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add keyboard shortcuts for Dairy section tab navigation (Ctrl+M/B/D/S/C)",
+      "summary": "Enable Enter key navigation from quantity field to fat field in milk collection form",
       "acceptanceCriteria": [
-        "Shortcuts work when Dairy section is active",
-        "Each shortcut switches to the corresponding tab",
-        "Visual indication shows which tab is active"
+        "Pressing Enter in the quantity input moves focus to the fat input"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useDairyKeyboardShortcuts.ts",
-          "operation": "create",
-          "description": "Create a custom hook to manage Dairy-specific keyboard shortcuts. Handle Ctrl+M (Milk Collection), Ctrl+B (Bill), Ctrl+D (Data Reports), Ctrl+S (Sell), Ctrl+C (Cash). Only activate when Dairy section is active to avoid conflicts."
-        },
-        {
-          "path": "frontend/src/components/dairy/DairySection.tsx",
+          "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
           "operation": "modify",
-          "description": "Import and use useDairyKeyboardShortcuts hook to enable tab switching via keyboard. Pass setActiveTab function to the hook. Add ARIA live region to announce tab changes for screen readers."
+          "description": "Add onKeyDown handler to weight/quantity input field that detects Enter key press and programmatically focuses the fat input field using a ref."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Implement Enter key submission for all forms",
+      "summary": "Enable Enter key to trigger save action from fat field in milk collection form",
       "acceptanceCriteria": [
-        "Pressing Enter in any form submits the form if all required fields are filled",
-        "Enter key works in Milk Collection form to save entries",
-        "Enter key works in Cash Module to record transactions",
-        "Enter key works in Sell Module to record sales",
-        "Enter key works in farmer add/edit dialogs",
-        "Enter key works in inventory dialogs"
+        "Pressing Enter in the fat input submits the form",
+        "Form validation runs before submission",
+        "Success/error feedback is displayed after submission attempt"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
           "operation": "modify",
-          "description": "Add onKeyDown handler to form elements to detect Enter key. When Enter is pressed and all required fields are valid, trigger the handlePreview function to show preview dialog. Prevent Enter from submitting when fields are incomplete."
-        },
-        {
-          "path": "frontend/src/components/dairy/CashModule.tsx",
-          "operation": "modify",
-          "description": "Add onKeyDown handler to form to detect Enter key. When pressed with valid farmer, transaction type, and amount, trigger handleRecordTransaction. Show validation errors if fields are incomplete."
-        },
-        {
-          "path": "frontend/src/components/dairy/SellModule.tsx",
-          "operation": "modify",
-          "description": "Add onKeyDown handler to form to detect Enter key. When pressed with valid product, quantity, and price, trigger handleRecordSale. Validate all required fields before submission."
-        },
-        {
-          "path": "frontend/src/components/settings/FarmerManagement.tsx",
-          "operation": "modify",
-          "description": "Add onKeyDown handlers to both Add Farmer and Edit Farmer dialogs. When Enter is pressed in either dialog with all required fields filled (name, phone, milk type), trigger the respective save handler (handleAddFarmer or handleUpdateFarmer)."
-        },
-        {
-          "path": "frontend/src/components/settings/InventoryManagement.tsx",
-          "operation": "modify",
-          "description": "Add onKeyDown handlers to both Add Product and Update Stock dialogs. When Enter is pressed with valid product name and quantity, trigger the respective handler (handleAddProduct or handleUpdateStock)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Add Escape key support to close all dialogs and modals",
-      "acceptanceCriteria": [
-        "Pressing Escape closes any open dialog",
-        "Escape works for Milk Collection preview dialog",
-        "Escape works for farmer management dialogs",
-        "Escape works for inventory add/update dialogs",
-        "Closing dialogs returns focus to the triggering element"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useEscapeKey.ts",
-          "operation": "create",
-          "description": "Create a reusable hook to handle Escape key press. Accept a callback and isOpen flag. When Escape is pressed and dialog is open, execute the callback to close the dialog. Store reference to the element that opened the dialog and restore focus to it when closing."
-        },
-        {
-          "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "operation": "modify",
-          "description": "Use useEscapeKey hook to close the preview dialog when Escape is pressed. Store reference to the preview button and restore focus to it when dialog closes."
-        },
-        {
-          "path": "frontend/src/components/settings/FarmerManagement.tsx",
-          "operation": "modify",
-          "description": "Use useEscapeKey hook for both Add and Edit dialogs. When Escape closes a dialog, restore focus to the button that opened it (Add Farmer button or Edit icon respectively)."
-        },
-        {
-          "path": "frontend/src/components/settings/InventoryManagement.tsx",
-          "operation": "modify",
-          "description": "Use useEscapeKey hook for both Add and Update dialogs. Restore focus to the triggering button (Add Product or Update icon) when Escape closes the dialog."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Add Tab and Shift+Tab support for logical focus order",
-      "acceptanceCriteria": [
-        "Tab moves focus forward through all interactive elements in a logical order",
-        "Shift+Tab moves focus backward",
-        "Focus order follows visual layout top-to-bottom, left-to-right",
-        "Skip links or focus traps prevent tabbing into hidden content"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "operation": "modify",
-          "description": "Ensure logical tabIndex order for form fields: customer ID, weight, fat, SNF (if applicable), session radio buttons, then action buttons. Use tabIndex=0 for natural DOM order or explicit values if needed."
-        },
-        {
-          "path": "frontend/src/components/dairy/CashModule.tsx",
-          "operation": "modify",
-          "description": "Set tabIndex order: farmer search input, transaction type radio buttons, amount input, then Record Transaction button. Ensure focus moves logically through each field."
-        },
-        {
-          "path": "frontend/src/components/dairy/SellModule.tsx",
-          "operation": "modify",
-          "description": "Set tabIndex order: optional farmer search, product select, quantity input, price input, then Record Sale button. Skip hidden farmer field when not in use."
-        },
-        {
-          "path": "frontend/src/components/dairy/DataReports.tsx",
-          "operation": "modify",
-          "description": "Set tabIndex order for filters: date input, session radio buttons, then table becomes focusable for keyboard navigation through rows if needed."
-        },
-        {
-          "path": "frontend/src/components/settings/SettingsSection.tsx",
-          "operation": "modify",
-          "description": "Ensure tab navigation through settings tabs is logical. Use roving tabindex pattern for tabs: only the active tab is focusable, arrow keys move between tabs."
-        },
-        {
-          "path": "frontend/src/components/dairy/DairySection.tsx",
-          "operation": "modify",
-          "description": "Ensure tab navigation through dairy tabs follows roving tabindex pattern. Only the active tab should have tabIndex=0, inactive tabs have tabIndex=-1, arrow keys navigate between tabs."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Implement roving tabindex for main navigation tabs. Only active tab has tabIndex=0, others have tabIndex=-1. Add skip link at the top to jump directly to main content, bypassing navigation."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Add Ctrl+P keyboard shortcut for print/PDF generation",
-      "acceptanceCriteria": [
-        "Ctrl+P generates bill PDF when in Bill Generator view",
-        "Ctrl+P generates transaction history PDF when viewing a farmer's transactions",
-        "Shortcut only works when relevant data is loaded"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/dairy/BillGenerator.tsx",
-          "operation": "modify",
-          "description": "Add onKeyDown handler to detect Ctrl+P. When pressed and a farmer is selected with data loaded, trigger handleGenerateBill. Prevent default browser print dialog behavior."
-        },
-        {
-          "path": "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
-          "operation": "modify",
-          "description": "Add onKeyDown handler to detect Ctrl+P. When pressed and transaction history is loaded, trigger handleGeneratePDF. Prevent default browser print dialog behavior."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Add visual focus indicators with clear outlines on all interactive elements",
-      "acceptanceCriteria": [
-        "All focusable elements have visible focus indicators",
-        "Focus indicators have sufficient contrast against backgrounds",
-        "Focus indicators are consistent across the application",
-        "Focus states are distinct from hover states"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add global CSS rules for focus indicators using :focus-visible pseudo-class. Define consistent outline styles (e.g., 2px solid ring with offset) with high contrast colors. Ensure focus rings are visible on all interactive elements including buttons, inputs, links, and custom components. Make focus state visually distinct from hover state."
-        },
-        {
-          "path": "frontend/src/components/dairy/SessionEntriesList.tsx",
-          "operation": "modify",
-          "description": "Ensure table rows are keyboard focusable if interactive. Add focus-visible styles to highlight the focused row with a clear border or background change."
-        },
-        {
-          "path": "frontend/src/components/transactions/TransactionsSection.tsx",
-          "operation": "modify",
-          "description": "Ensure farmer list items are keyboard focusable and have clear focus indicators. Add focus-visible styles to show which farmer is currently focused."
-        }
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "summary": "Add keyboard shortcut help overlay accessible via '?' key",
-      "acceptanceCriteria": [
-        "Pressing '?' opens a help dialog showing all keyboard shortcuts",
-        "Shortcuts are organized by section (Navigation, Dairy, Forms, etc.)",
-        "Dialog is dismissible with Escape key",
-        "Help overlay is accessible from any view"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/KeyboardShortcutsHelp.tsx",
-          "operation": "create",
-          "description": "Create a dialog component that displays all keyboard shortcuts organized by section: Global Navigation (Ctrl+1/2/3), Dairy Section (Ctrl+M/B/D/S/C), Forms (Enter to submit, Escape to cancel), Print (Ctrl+P), Search (Ctrl+F), and Arrow Keys. Include dismissal with Escape and a close button. Style for readability with clear section headers."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Add state to manage KeyboardShortcutsHelp dialog visibility. Add global keydown listener for '?' key to open the help dialog. Render KeyboardShortcutsHelp component and pass open state and close handler."
-        }
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "summary": "Add arrow key navigation for selecting farmers in search results and transaction lists",
-      "acceptanceCriteria": [
-        "Up/Down arrows navigate through farmer lists",
-        "Enter selects the focused farmer",
-        "Visual highlight shows which farmer is focused",
-        "Focus wraps from bottom to top and vice versa"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useArrowKeyNavigation.ts",
-          "operation": "create",
-          "description": "Create a reusable hook for arrow key navigation through lists. Track focused index, handle Up/Down arrow keys with wrapping, handle Enter key for selection. Return focused index and selection handler for the parent component to use."
-        },
-        {
-          "path": "frontend/src/components/transactions/TransactionsSection.tsx",
-          "operation": "modify",
-          "description": "Use useArrowKeyNavigation hook to enable arrow key navigation through the farmers list. Highlight the focused farmer with a distinct background or border. Press Enter to select the focused farmer and show their transaction history."
-        },
-        {
-          "path": "frontend/src/components/dairy/CashModule.tsx",
-          "operation": "modify",
-          "description": "If farmer search shows results dropdown, use useArrowKeyNavigation hook to navigate through search results with arrow keys. Enter selects the focused farmer."
-        },
-        {
-          "path": "frontend/src/components/dairy/BillGenerator.tsx",
-          "operation": "modify",
-          "description": "If farmer search shows results dropdown, use useArrowKeyNavigation hook to navigate through search results with arrow keys. Enter selects the focused farmer."
-        }
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "summary": "Add Ctrl+F keyboard shortcut to focus search inputs",
-      "acceptanceCriteria": [
-        "Ctrl+F focuses search input in Transactions section",
-        "Ctrl+F focuses search input in Farmer Management",
-        "Works from anywhere within those sections"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/transactions/TransactionsSection.tsx",
-          "operation": "modify",
-          "description": "Add useEffect hook with keydown listener for Ctrl+F. When pressed, focus the farmer search input using a ref. Prevent default browser find behavior within this section."
-        },
-        {
-          "path": "frontend/src/components/settings/FarmerManagement.tsx",
-          "operation": "modify",
-          "description": "Add useEffect hook with keydown listener for Ctrl+F. When pressed, focus the farmer search input using a ref. Prevent default browser find behavior within this section."
+          "description": "Add onKeyDown handler to fat input field that detects Enter key press and triggers the existing form submission logic (handleSubmit). Ensure all existing validation and error handling flows are preserved."
         }
       ]
     }

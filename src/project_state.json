@@ -7,82 +7,26 @@
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-add-keyboard-shortcuts-for-quick-navigation-between-main-sections-ctrl-1-for-dairy-ctrl-2-for-transactions-ctrl-3-for-settings",
-      "title": "Add keyboard shortcuts for quick navigation between main sections: Ctrl+1 for Dairy, Ctrl+2 for Transactions, Ctrl+3 for Settings",
+      "id": "feature-in-the-milk-collection-form-pressing-enter-in-the-farmer-id-field-should-move-focus-to-the-quantity-field",
+      "title": "In the milk collection form, pressing Enter in the farmer ID field should move focus to the quantity field",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-keyboard-shortcuts-within-dairy-section-to-navigate-between-tabs-ctrl-m-for-milk-collection-ctrl-b-for-bill-ctrl-d-for-data-reports-ctrl-s-for-sell-ctrl-c-for-cash",
-      "title": "Add keyboard shortcuts within Dairy section to navigate between tabs: Ctrl+M for Milk Collection, Ctrl+B for Bill, Ctrl+D for Data Reports, Ctrl+S for Sell, Ctrl+C for Cash",
+      "id": "feature-in-the-milk-collection-form-pressing-enter-in-the-quantity-field-should-move-focus-to-the-fat-field",
+      "title": "In the milk collection form, pressing Enter in the quantity field should move focus to the fat field",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-enter-key-submission-for-all-forms-including-milk-collection-cash-transactions-product-sales-farmer-management-rate-settings-and-inventory-updates",
-      "title": "Implement Enter key submission for all forms including Milk Collection, Cash transactions, product sales, farmer management, rate settings, and inventory updates",
+      "id": "feature-in-the-milk-collection-form-pressing-enter-in-the-fat-field-should-trigger-the-save-action",
+      "title": "In the milk collection form, pressing Enter in the fat field should trigger the save action",
       "reqIds": [
         "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-escape-key-support-to-close-all-dialogs-and-modals-including-milk-collection-preview-farmer-add-edit-dialogs-inventory-dialogs-and-cancel-ongoing-operations",
-      "title": "Add Escape key support to close all dialogs and modals including Milk Collection preview, farmer add/edit dialogs, inventory dialogs, and cancel ongoing operations",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-tab-and-shift-tab-support-for-logical-focus-order-through-all-interactive-elements-in-forms-tables-and-navigation-components",
-      "title": "Add Tab and Shift+Tab support for logical focus order through all interactive elements in forms, tables, and navigation components",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-keyboard-shortcut-ctrl-p-to-trigger-print-pdf-generation-for-bills-and-transaction-history-when-viewing-those-sections",
-      "title": "Add keyboard shortcut Ctrl+P to trigger print/PDF generation for bills and transaction history when viewing those sections",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-visual-focus-indicators-with-clear-outlines-on-all-interactive-elements-including-buttons-inputs-tabs-and-table-rows-to-show-keyboard-focus-state",
-      "title": "Add visual focus indicators with clear outlines on all interactive elements including buttons, inputs, tabs, and table rows to show keyboard focus state",
-      "reqIds": [
-        "REQ-7"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-keyboard-shortcut-help-overlay-accessible-via-key-that-displays-all-available-shortcuts-organized-by-section",
-      "title": "Add keyboard shortcut help overlay accessible via '?' key that displays all available shortcuts organized by section",
-      "reqIds": [
-        "REQ-8"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-arrow-key-navigation-for-selecting-farmers-in-search-results-and-transaction-lists",
-      "title": "Add arrow key navigation for selecting farmers in search results and transaction lists",
-      "reqIds": [
-        "REQ-9"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-keyboard-shortcut-ctrl-f-to-focus-the-search-input-in-transactions-section-and-farmer-management",
-      "title": "Add keyboard shortcut Ctrl+F to focus the search input in Transactions section and Farmer Management",
-      "reqIds": [
-        "REQ-10"
       ],
       "version": 1
     }
@@ -90,12 +34,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add keyboard navigation and shortcuts for easy keyboard-only usage",
+      "summary": "Use Enter key to move between form fields (farmer id → quantity → fat → save)",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Anmol Dairy Life",
+  "projectName": "Add Enter key navigation between form fields",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

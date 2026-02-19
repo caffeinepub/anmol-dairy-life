@@ -2,11 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-keyboard-shortcuts-for-quick-navigation-between-main-sections-ctrl-1-for-dairy-ctrl-2-for-transactions-ctrl-3-for-settings",
-      "featureTitle": "Add keyboard shortcuts for quick navigation between main sections: Ctrl+1 for Dairy, Ctrl+2 for Transactions, Ctrl+3 for Settings",
+      "featureId": "feature-in-the-milk-collection-form-pressing-enter-in-the-farmer-id-field-should-move-focus-to-the-quantity-field",
+      "featureTitle": "In the milk collection form, pressing Enter in the farmer ID field should move focus to the quantity field",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/hooks/useGlobalKeyboardShortcuts.ts"
+        "frontend/src/components/dairy/MilkCollectionForm.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -21,11 +20,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-keyboard-shortcuts-within-dairy-section-to-navigate-between-tabs-ctrl-m-for-milk-collection-ctrl-b-for-bill-ctrl-d-for-data-reports-ctrl-s-for-sell-ctrl-c-for-cash",
-      "featureTitle": "Add keyboard shortcuts within Dairy section to navigate between tabs: Ctrl+M for Milk Collection, Ctrl+B for Bill, Ctrl+D for Data Reports, Ctrl+S for Sell, Ctrl+C for Cash",
+      "featureId": "feature-in-the-milk-collection-form-pressing-enter-in-the-quantity-field-should-move-focus-to-the-fat-field",
+      "featureTitle": "In the milk collection form, pressing Enter in the quantity field should move focus to the fat field",
       "files": [
-        "frontend/src/components/dairy/DairySection.tsx",
-        "frontend/src/hooks/useDairyKeyboardShortcuts.ts"
+        "frontend/src/components/dairy/MilkCollectionForm.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -40,14 +38,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-enter-key-submission-for-all-forms-including-milk-collection-cash-transactions-product-sales-farmer-management-rate-settings-and-inventory-updates",
-      "featureTitle": "Implement Enter key submission for all forms including Milk Collection, Cash transactions, product sales, farmer management, rate settings, and inventory updates",
+      "featureId": "feature-in-the-milk-collection-form-pressing-enter-in-the-fat-field-should-trigger-the-save-action",
+      "featureTitle": "In the milk collection form, pressing Enter in the fat field should trigger the save action",
       "files": [
-        "frontend/src/components/dairy/CashModule.tsx",
-        "frontend/src/components/dairy/MilkCollectionForm.tsx",
-        "frontend/src/components/dairy/SellModule.tsx",
-        "frontend/src/components/settings/FarmerManagement.tsx",
-        "frontend/src/components/settings/InventoryManagement.tsx"
+        "frontend/src/components/dairy/MilkCollectionForm.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -58,146 +52,6 @@
       ],
       "testIds": [
         "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-escape-key-support-to-close-all-dialogs-and-modals-including-milk-collection-preview-farmer-add-edit-dialogs-inventory-dialogs-and-cancel-ongoing-operations",
-      "featureTitle": "Add Escape key support to close all dialogs and modals including Milk Collection preview, farmer add/edit dialogs, inventory dialogs, and cancel ongoing operations",
-      "files": [
-        "frontend/src/components/dairy/MilkCollectionForm.tsx",
-        "frontend/src/components/settings/FarmerManagement.tsx",
-        "frontend/src/components/settings/InventoryManagement.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-tab-and-shift-tab-support-for-logical-focus-order-through-all-interactive-elements-in-forms-tables-and-navigation-components",
-      "featureTitle": "Add Tab and Shift+Tab support for logical focus order through all interactive elements in forms, tables, and navigation components",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/dairy/CashModule.tsx",
-        "frontend/src/components/dairy/DairySection.tsx",
-        "frontend/src/components/dairy/MilkCollectionForm.tsx",
-        "frontend/src/components/dairy/SellModule.tsx",
-        "frontend/src/components/settings/SettingsSection.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-keyboard-shortcut-ctrl-p-to-trigger-print-pdf-generation-for-bills-and-transaction-history-when-viewing-those-sections",
-      "featureTitle": "Add keyboard shortcut Ctrl+P to trigger print/PDF generation for bills and transaction history when viewing those sections",
-      "files": [
-        "frontend/src/components/dairy/BillGenerator.tsx",
-        "frontend/src/components/transactions/FarmerTransactionHistory.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-visual-focus-indicators-with-clear-outlines-on-all-interactive-elements-including-buttons-inputs-tabs-and-table-rows-to-show-keyboard-focus-state",
-      "featureTitle": "Add visual focus indicators with clear outlines on all interactive elements including buttons, inputs, tabs, and table rows to show keyboard focus state",
-      "files": [
-        "frontend/src/components/transactions/TransactionsSection.tsx",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-keyboard-shortcut-help-overlay-accessible-via-key-that-displays-all-available-shortcuts-organized-by-section",
-      "featureTitle": "Add keyboard shortcut help overlay accessible via '?' key that displays all available shortcuts organized by section",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/KeyboardShortcutsHelp.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-arrow-key-navigation-for-selecting-farmers-in-search-results-and-transaction-lists",
-      "featureTitle": "Add arrow key navigation for selecting farmers in search results and transaction lists",
-      "files": [
-        "frontend/src/components/dairy/BillGenerator.tsx",
-        "frontend/src/components/dairy/CashModule.tsx",
-        "frontend/src/components/transactions/TransactionsSection.tsx",
-        "frontend/src/hooks/useArrowKeyNavigation.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-9"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-keyboard-shortcut-ctrl-f-to-focus-the-search-input-in-transactions-section-and-farmer-management",
-      "featureTitle": "Add keyboard shortcut Ctrl+F to focus the search input in Transactions section and Farmer Management",
-      "files": [
-        "frontend/src/components/settings/FarmerManagement.tsx",
-        "frontend/src/components/transactions/TransactionsSection.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-10"
       ],
       "confidence": "high"
     }

@@ -1,181 +1,68 @@
 {
   "kind": "build_request",
-  "title": "Add comprehensive keyboard navigation and shortcuts",
-  "projectName": "Anmol Dairy Life",
+  "title": "Add Enter key navigation between form fields",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add keyboard shortcuts for quick navigation between main sections: Ctrl+1 for Dairy, Ctrl+2 for Transactions, Ctrl+3 for Settings",
+      "text": "In the milk collection form, pressing Enter in the farmer ID field should move focus to the quantity field",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-keyboard"
+          "msg-user-latest"
+        ],
+        "quotes": [
+          "Use enter key to move to next box like move from farmer id to quantity"
         ]
       },
       "acceptanceCriteria": [
-        "Pressing Ctrl+1 switches to Dairy section",
-        "Pressing Ctrl+2 switches to Transactions section",
-        "Pressing Ctrl+3 switches to Settings section",
-        "Shortcuts work from any view within the application"
+        "Pressing Enter in the farmer ID input moves focus to the quantity input",
+        "The Enter key behavior does not interfere with existing farmer lookup functionality"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add keyboard shortcuts within Dairy section to navigate between tabs: Ctrl+M for Milk Collection, Ctrl+B for Bill, Ctrl+D for Data Reports, Ctrl+S for Sell, Ctrl+C for Cash",
+      "text": "In the milk collection form, pressing Enter in the quantity field should move focus to the fat field",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-keyboard"
+          "msg-user-latest"
+        ],
+        "quotes": [
+          "quantity to fat"
         ]
       },
       "acceptanceCriteria": [
-        "Shortcuts work when Dairy section is active",
-        "Each shortcut switches to the corresponding tab",
-        "Visual indication shows which tab is active"
+        "Pressing Enter in the quantity input moves focus to the fat input"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Implement Enter key submission for all forms including Milk Collection, Cash transactions, product sales, farmer management, rate settings, and inventory updates",
+      "text": "In the milk collection form, pressing Enter in the fat field should trigger the save action",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-keyboard"
+          "msg-user-latest"
+        ],
+        "quotes": [
+          "fat to save"
         ]
       },
       "acceptanceCriteria": [
-        "Pressing Enter in any form submits the form if all required fields are filled",
-        "Enter key works in Milk Collection form to save entries",
-        "Enter key works in Cash Module to record transactions",
-        "Enter key works in Sell Module to record sales",
-        "Enter key works in farmer add/edit dialogs",
-        "Enter key works in inventory dialogs"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Add Escape key support to close all dialogs and modals including Milk Collection preview, farmer add/edit dialogs, inventory dialogs, and cancel ongoing operations",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-keyboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Pressing Escape closes any open dialog",
-        "Escape works for Milk Collection preview dialog",
-        "Escape works for farmer management dialogs",
-        "Escape works for inventory add/update dialogs",
-        "Closing dialogs returns focus to the triggering element"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Add Tab and Shift+Tab support for logical focus order through all interactive elements in forms, tables, and navigation components",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-keyboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Tab moves focus forward through all interactive elements in a logical order",
-        "Shift+Tab moves focus backward",
-        "Focus order follows visual layout top-to-bottom, left-to-right",
-        "Skip links or focus traps prevent tabbing into hidden content"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Add keyboard shortcut Ctrl+P to trigger print/PDF generation for bills and transaction history when viewing those sections",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-keyboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Ctrl+P generates bill PDF when in Bill Generator view",
-        "Ctrl+P generates transaction history PDF when viewing a farmer's transactions",
-        "Shortcut only works when relevant data is loaded"
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Add visual focus indicators with clear outlines on all interactive elements including buttons, inputs, tabs, and table rows to show keyboard focus state",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-keyboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All focusable elements have visible focus indicators",
-        "Focus indicators have sufficient contrast against backgrounds",
-        "Focus indicators are consistent across the application",
-        "Focus states are distinct from hover states"
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Add keyboard shortcut help overlay accessible via '?' key that displays all available shortcuts organized by section",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-keyboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Pressing '?' opens a help dialog showing all keyboard shortcuts",
-        "Shortcuts are organized by section (Navigation, Dairy, Forms, etc.)",
-        "Dialog is dismissible with Escape key",
-        "Help overlay is accessible from any view"
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Add arrow key navigation for selecting farmers in search results and transaction lists",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-keyboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Up/Down arrows navigate through farmer lists",
-        "Enter selects the focused farmer",
-        "Visual highlight shows which farmer is focused",
-        "Focus wraps from bottom to top and vice versa"
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "text": "Add keyboard shortcut Ctrl+F to focus the search input in Transactions section and Farmer Management",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-keyboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Ctrl+F focuses search input in Transactions section",
-        "Ctrl+F focuses search input in Farmer Management",
-        "Works from anywhere within those sections"
+        "Pressing Enter in the fat input submits the form",
+        "Form validation runs before submission",
+        "Success/error feedback is displayed after submission attempt"
       ]
     }
   ],
   "constraints": [
-    "Do not modify immutable files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*",
-    "Preserve all existing functionality while adding keyboard support",
-    "Ensure keyboard shortcuts do not conflict with browser defaults",
-    "Maintain single-actor backend architecture"
+    "Preserve existing form submission behavior via save button",
+    "Do not interfere with existing keyboard shortcuts documented in KeyboardShortcutsHelp component"
   ],
   "nonGoals": [
-    "Changing the visual design or layout of existing components",
-    "Adding mouse-only features",
-    "Modifying backend data structures",
-    "Adding new business features beyond keyboard accessibility"
+    "Changing Enter key behavior in other forms or components",
+    "Adding Tab key navigation (already handled by browser defaults)",
+    "Modifying the form layout or field order"
   ],
   "imageRequirements": {
     "required": [],

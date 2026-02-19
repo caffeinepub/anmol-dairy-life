@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,6 +18,9 @@ export default function MilkCollectionForm() {
   const [snf, setSnf] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const [previewData, setPreviewData] = useState<any>(null);
+
+  const weightInputRef = useRef<HTMLInputElement>(null);
+  const fatInputRef = useRef<HTMLInputElement>(null);
 
   const currentDate = new Date().toLocaleDateString('en-IN');
   const currentSession = getCurrentSession();
@@ -95,13 +98,29 @@ export default function MilkCollectionForm() {
     }
   };
 
-  const handleFormKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && farmer && weight && fat) {
-      if (farmer.milkType === MilkType.vlc && !snf) {
-        return; // Don't submit if SNF is required but missing
-      }
+  const handleCustomerIDKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && farmer) {
       e.preventDefault();
-      handlePreview();
+      weightInputRef.current?.focus();
+    }
+  };
+
+  const handleWeightKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      fatInputRef.current?.focus();
+    }
+  };
+
+  const handleFatKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (farmer && weight && fat) {
+        if (farmer.milkType === MilkType.vlc && !snf) {
+          return; // Don't submit if SNF is required but missing
+        }
+        handlePreview();
+      }
     }
   };
 
@@ -122,7 +141,7 @@ export default function MilkCollectionForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4" onKeyDown={handleFormKeyDown}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="customerID">Customer ID</Label>
               <Input
@@ -130,6 +149,7 @@ export default function MilkCollectionForm() {
                 type="number"
                 value={customerID}
                 onChange={(e) => setCustomerID(e.target.value)}
+                onKeyDown={handleCustomerIDKeyDown}
                 placeholder="Enter customer ID"
                 aria-label="Customer ID"
                 tabIndex={0}
@@ -157,10 +177,12 @@ export default function MilkCollectionForm() {
                   <Label htmlFor="weight">Weight (kg)</Label>
                   <Input
                     id="weight"
+                    ref={weightInputRef}
                     type="number"
                     step="0.1"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
+                    onKeyDown={handleWeightKeyDown}
                     placeholder="Enter weight"
                     aria-label="Weight in kilograms"
                     tabIndex={0}
@@ -171,10 +193,12 @@ export default function MilkCollectionForm() {
                   <Label htmlFor="fat">FAT (%)</Label>
                   <Input
                     id="fat"
+                    ref={fatInputRef}
                     type="number"
                     step="0.1"
                     value={fat}
                     onChange={(e) => setFat(e.target.value)}
+                    onKeyDown={handleFatKeyDown}
                     placeholder="Enter FAT"
                     aria-label="FAT percentage"
                     tabIndex={0}
