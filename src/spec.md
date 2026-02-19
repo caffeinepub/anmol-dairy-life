@@ -1,16 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Implement global rate settings, enhance PDF/print/SMS features, add farmer edit functionality, and enable full keyboard navigation for the dairy management application.
+**Goal:** Fix the BillGenerator component to properly populate and display farmer billing data in the PDF print dialog instead of showing an empty page.
 
 **Planned changes:**
-- Switch from per-farmer rates to global rates for VLC and Thekadari milk types
-- Add Rate Settings tab in Settings to modify global milk rates
-- Enhance PDF generation to match professional bill format with proper layout and styling
-- Improve print functionality to output clean, professional bills without UI elements
-- Enhance SMS feature to generate formatted transaction summary messages
-- Add edit functionality to Farmer Management for updating farmer details
-- Implement comprehensive keyboard navigation throughout the entire application with Tab, Enter, Escape, and arrow key support
-- Add ARIA labels and keyboard event handlers to all interactive components for full accessibility
+- Debug and fix the BillGenerator component to ensure farmer details (name, customer ID, phone), billing period dates, collection data table, and totals are rendered correctly in the print dialog
+- Verify that print styles in frontend/src/index.css are properly applied to show all bill elements with correct layout and formatting
 
-**User-visible outcome:** Users can manage global milk rates from Settings, generate professional-looking PDF bills matching the reference format, print clean bills, send formatted SMS messages to farmers, edit farmer details, and navigate the entire application using only keyboard without requiring a mouse.
+**User-visible outcome:** When users click "Generate PDF" in the BillGenerator, the browser print dialog will open with a fully populated bill showing all farmer information, collection entries, and calculated totals ready to print or save.

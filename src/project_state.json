@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
+  "projectStateVersion": 11,
   "summary": "ANMOL DAIRY LIFE - A dairy management application with three main sections: Dairy (milk collection, bills, data reports, sell, cash), Transactions (search, farmer balances, PDF/SMS exports), and Settings (farmer management, rate settings, inventory). Supports two billing formulas: VLC for cow milk (based on FAT and SNF) and Thekadari for buffalo milk (quantity-adjusted based on FAT). Features automatic weekly billing on Mondays at 3am, inventory management, transaction tracking with color-coded balances, and SMS notifications.",
   "architectural_notes": [
     "Two billing systems: VLC (cow milk - FAT/SNF based) and Thekadari (buffalo milk - quantity adjusted by FAT)",
@@ -14,9 +14,12 @@
     "SMS integration for transaction notifications and shareable transaction links",
     "Print functionality targets bill content only, not full UI"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Professional dairy bill format template with header section, itemized entries table, and totals footer suitable for A4 printing (bill-template.dim_800x1000.png)",
+  "known_issues": [
+    "Keyboard navigation not working as expected",
+    "Less/Add values currently displaying as integers but need to show real numbers (decimals)",
+    "PDF generation still producing empty PDFs without farmer or transaction details"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-create-main-application-interface-with-three-primary-navigation-sections-dairy-transactions-and-settings",
@@ -167,6 +170,70 @@
       "title": "Add ARIA labels, roles, and keyboard event handlers to all custom components including dialogs, dropdowns, tabs, and cards to ensure full accessibility and keyboard operability",
       "reqIds": [
         "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-pdf-generation-functionality-in-billgenerator-component-to-ensure-the-generate-pdf-button-successfully-creates-and-downloads-a-properly-formatted-pdf-bill",
+      "title": "Fix PDF generation functionality in BillGenerator component to ensure the 'Generate PDF' button successfully creates and downloads a properly formatted PDF bill",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-keyboard-navigation-throughout-the-application-to-ensure-all-interactive-elements-respond-to-keyboard-inputs-including-tab-for-navigation-enter-space-for-activation-escape-for-closing-dialogs-and-arrow-keys-for-list-navigation",
+      "title": "Fix keyboard navigation throughout the application to ensure all interactive elements respond to keyboard inputs including Tab for navigation, Enter/Space for activation, Escape for closing dialogs, and arrow keys for list navigation",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-change-less-add-field-display-and-calculation-throughout-the-application-from-integers-to-decimal-numbers-with-proper-precision-e-g-2-decimal-places-in-all-views-including-milk-collection-preview-data-reports-bill-generation-and-transaction-history",
+      "title": "Change Less/Add field display and calculation throughout the application from integers to decimal numbers with proper precision (e.g., 2 decimal places) in all views including Milk Collection preview, Data Reports, Bill Generation, and transaction history",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-billgenerator-component-to-populate-pdf-content-with-all-bill-information-including-farmer-details-name-customer-id-phone-billing-period-dates-collection-data-table-with-columns-for-date-shift-fat-snf-clr-qty-l-rate-amount-and-totals-section-showing-total-quantity-average-fat-average-rate-and-net-payable-amount",
+      "title": "Update BillGenerator component to populate PDF content with all bill information including farmer details (name, customer ID, phone), billing period dates, collection data table with columns for Date, Shift, Fat, SNF/CLR, Qty (L), Rate, Amount, and totals section showing Total Quantity, Average Fat, Average Rate, and Net Payable amount",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-pdf-bill-layout-to-match-the-reference-image-format-with-heading-dairyflow-milk-collection-left-aligned-farmer-details-section-centered-date-shift-fat-snf-clr-qty-rate-amount-table-header-right-aligned-totals-summary-box-with-labels-and-values-and-include-village-center-name-phone-number-bill-period-and-generation-date-in-appropriate-sections",
+      "title": "Redesign PDF bill layout to match the reference image format with heading 'DAIRYFLOW MILK COLLECTION', left-aligned farmer details section, centered date shift/fat/SNF/CLR/qty/rate/amount table header, right-aligned totals summary box with labels and values, and include village/center name, phone number, bill period, and generation date in appropriate sections",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-pdf-print-functionality-triggers-browser-print-dialog-with-bill-content-pre-populated-and-formatted-according-to-the-reference-layout-excluding-any-navigation-or-ui-elements-from-the-print-view",
+      "title": "Ensure PDF print functionality triggers browser print dialog with bill content pre-populated and formatted according to the reference layout, excluding any navigation or UI elements from the print view",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-billgenerator-component-s-pdf-generation-to-ensure-all-farmer-details-name-customer-id-phone-billing-period-dates-collection-data-table-rows-and-totals-are-properly-populated-in-the-print-dialog-instead-of-showing-an-empty-pdf",
+      "title": "Debug and fix the BillGenerator component's PDF generation to ensure all farmer details (name, customer ID, phone), billing period dates, collection data table rows, and totals are properly populated in the print dialog instead of showing an empty PDF",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-print-styles-in-frontend-src-index-css-are-correctly-applied-to-the-bill-content-when-the-print-dialog-is-triggered-ensuring-proper-layout-typography-and-visibility-of-all-bill-elements",
+      "title": "Verify that the print styles in frontend/src/index.css are correctly applied to the bill content when the print dialog is triggered, ensuring proper layout, typography, and visibility of all bill elements",
+      "reqIds": [
+        "REQ-34"
       ],
       "version": 1
     }

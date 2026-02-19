@@ -2,27 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-rate-settings-component-in-settings-section-to-display-and-allow-modification-of-global-vlc-and-thekadari-rates-with-immediate-effect-on-all-farmers",
-      "featureTitle": "Update Rate Settings component in Settings section to display and allow modification of global VLC and Thekadari rates with immediate effect on all farmers",
-      "files": [
-        "frontend/src/components/settings/RateSettings.tsx",
-        "frontend/src/hooks/useQueries.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-19"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-enhance-pdf-generation-for-bills-to-match-the-format-shown-in-the-provided-reference-image-including-proper-layout-styling-headers-line-items-and-totals",
-      "featureTitle": "Enhance PDF generation for bills to match the format shown in the provided reference image, including proper layout, styling, headers, line items, and totals",
+      "featureId": "feature-debug-and-fix-the-billgenerator-component-s-pdf-generation-to-ensure-all-farmer-details-name-customer-id-phone-billing-period-dates-collection-data-table-rows-and-totals-are-properly-populated-in-the-print-dialog-instead-of-showing-an-empty-pdf",
+      "featureTitle": "Debug and fix the BillGenerator component's PDF generation to ensure all farmer details (name, customer ID, phone), billing period dates, collection data table rows, and totals are properly populated in the print dialog instead of showing an empty PDF",
       "files": [
         "frontend/src/components/dairy/BillGenerator.tsx"
       ],
@@ -34,15 +15,14 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-20"
+        "REQ-33"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-improve-print-functionality-to-ensure-only-the-bill-content-prints-with-proper-formatting-and-page-breaks-excluding-navigation-and-ui-elements",
-      "featureTitle": "Improve print functionality to ensure only the bill content prints with proper formatting and page breaks, excluding navigation and UI elements",
+      "featureId": "feature-verify-that-the-print-styles-in-frontend-src-index-css-are-correctly-applied-to-the-bill-content-when-the-print-dialog-is-triggered-ensuring-proper-layout-typography-and-visibility-of-all-bill-elements",
+      "featureTitle": "Verify that the print styles in frontend/src/index.css are correctly applied to the bill content when the print dialog is triggered, ensuring proper layout, typography, and visibility of all bill elements",
       "files": [
-        "frontend/src/components/dairy/BillGenerator.tsx",
         "frontend/src/index.css"
       ],
       "components": [
@@ -53,92 +33,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-21"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-enhance-sms-functionality-to-generate-and-send-properly-formatted-transaction-summary-messages-to-farmers-with-clear-balance-and-transaction-details",
-      "featureTitle": "Enhance SMS functionality to generate and send properly formatted transaction summary messages to farmers with clear balance and transaction details",
-      "files": [
-        "frontend/src/components/transactions/FarmerTransactionHistory.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-22"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-edit-functionality-to-farmer-management-in-settings-section-allowing-modification-of-farmer-name-phone-number-milk-type-and-customer-id-with-validation",
-      "featureTitle": "Add edit functionality to Farmer Management in Settings section allowing modification of farmer name, phone number, milk type, and customer ID with validation",
-      "files": [
-        "frontend/src/components/settings/FarmerManagement.tsx",
-        "frontend/src/hooks/useQueries.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-24"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-comprehensive-keyboard-navigation-throughout-the-entire-application-enabling-tab-navigation-between-all-interactive-elements-enter-space-for-button-activation-escape-to-close-dialogs-and-arrow-keys-for-list-navigation",
-      "featureTitle": "Implement comprehensive keyboard navigation throughout the entire application enabling tab navigation between all interactive elements, Enter/Space for button activation, Escape to close dialogs, and arrow keys for list navigation",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/dairy/BillGenerator.tsx",
-        "frontend/src/components/dairy/CashModule.tsx",
-        "frontend/src/components/dairy/MilkCollectionForm.tsx",
-        "frontend/src/components/dairy/SellModule.tsx",
-        "frontend/src/components/settings/FarmerManagement.tsx",
-        "frontend/src/components/settings/InventoryManagement.tsx",
-        "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
-        "frontend/src/components/transactions/TransactionsSection.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-25"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-aria-labels-roles-and-keyboard-event-handlers-to-all-custom-components-including-dialogs-dropdowns-tabs-and-cards-to-ensure-full-accessibility-and-keyboard-operability",
-      "featureTitle": "Add ARIA labels, roles, and keyboard event handlers to all custom components including dialogs, dropdowns, tabs, and cards to ensure full accessibility and keyboard operability",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/dairy/DataReports.tsx",
-        "frontend/src/components/dairy/MilkCollectionForm.tsx",
-        "frontend/src/components/settings/FarmerManagement.tsx",
-        "frontend/src/components/settings/InventoryManagement.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-26"
+        "REQ-34"
       ],
       "confidence": "high"
     }

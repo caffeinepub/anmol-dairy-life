@@ -1,217 +1,62 @@
 {
   "kind": "build_request",
-  "title": "Implement global rate settings, enhance PDF/print/SMS features, add farmer edit functionality, and enable full keyboard navigation",
-  "projectName": "Anmol Dairy Life",
-  "priority": "normal",
+  "title": "Fix empty PDF generation in BillGenerator component",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-18",
-      "text": "Modify backend to store global rates for VLC and Thekadari milk types instead of per-farmer rates, and provide methods to update these global rates",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "Price of milk for all farmers will be same and can be changed from rate setting tab in settings both for blc and thekadati"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend stores a single global rate for VLC milk type",
-        "Backend stores a single global rate for Thekadari milk type",
-        "Backend provides method to update VLC global rate",
-        "Backend provides method to update Thekadari global rate",
-        "Backend provides method to retrieve current rates",
-        "All billing calculations use the global rates instead of per-farmer rates"
-      ]
-    },
-    {
-      "id": "REQ-19",
-      "text": "Update Rate Settings component in Settings section to display and allow modification of global VLC and Thekadari rates with immediate effect on all farmers",
+      "id": "REQ-33",
+      "text": "Debug and fix the BillGenerator component's PDF generation to ensure all farmer details (name, customer ID, phone), billing period dates, collection data table rows, and totals are properly populated in the print dialog instead of showing an empty PDF",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-4"
         ],
         "quotes": [
-          "Price of milk for all farmers will be same and can be changed from rate setting tab in settings both for blc and thekadati"
+          "No it is showing empty pdf"
         ]
       },
       "acceptanceCriteria": [
-        "Rate Settings displays current global VLC rate with edit capability",
-        "Rate Settings displays current global Thekadari rate with edit capability",
-        "Changes to rates are saved to backend immediately",
-        "Success/error toast notifications appear after rate updates",
-        "Updated rates apply to all subsequent milk collection calculations"
+        "When 'Generate PDF' button is clicked in BillGenerator, the browser print dialog opens with fully populated bill content",
+        "PDF contains farmer name, customer ID, and phone number in the header section",
+        "PDF shows billing period 'From' and 'To' dates",
+        "PDF displays a table with all collection entries showing Date, Shift, Fat, SNF/CLR, Qty (L), Rate, and Amount columns",
+        "PDF includes totals section with Total Quantity, Average Fat, Average Rate, and Net Payable amount",
+        "All numeric values display with proper formatting (2 decimal places for decimals, currency format for amounts)"
       ]
     },
     {
-      "id": "REQ-20",
-      "text": "Enhance PDF generation for bills to match the format shown in the provided reference image, including proper layout, styling, headers, line items, and totals",
+      "id": "REQ-34",
+      "text": "Verify that the print styles in frontend/src/index.css are correctly applied to the bill content when the print dialog is triggered, ensuring proper layout, typography, and visibility of all bill elements",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-4"
         ],
         "quotes": [
-          "improve  pdf , print option, and sms option",
-          "Take prefrence of the image for bill pdf format"
+          "No it is showing empty pdf"
         ]
       },
       "acceptanceCriteria": [
-        "PDF bill layout matches the structure of the provided reference image",
-        "PDF includes dairy business header with name and contact information",
-        "PDF displays farmer details (customer ID, name, phone)",
-        "PDF shows date range of bill period",
-        "PDF lists all collection entries with date, session, quantity, fat, SNF (if applicable), rate, and amount",
-        "PDF displays calculated totals including total quantity, average FAT, total less/add, net milk, and final amount",
-        "PDF styling uses professional fonts and spacing matching the reference image"
-      ]
-    },
-    {
-      "id": "REQ-21",
-      "text": "Improve print functionality to ensure only the bill content prints with proper formatting and page breaks, excluding navigation and UI elements",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "improve  pdf , print option, and sms option"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Print preview shows only bill content without app navigation",
-        "Print layout matches the PDF format",
-        "Print CSS ensures proper page breaks for multi-page bills",
-        "Print output is clean and professional for physical distribution"
-      ]
-    },
-    {
-      "id": "REQ-22",
-      "text": "Enhance SMS functionality to generate and send properly formatted transaction summary messages to farmers with clear balance and transaction details",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "improve  pdf , print option, and sms option"
-        ]
-      },
-      "acceptanceCriteria": [
-        "SMS message includes farmer name and current balance",
-        "SMS message summarizes recent transactions with dates and amounts",
-        "SMS includes a shareable link to full transaction details",
-        "SMS format is concise and readable on mobile devices",
-        "Success confirmation appears after SMS is prepared for sending"
-      ]
-    },
-    {
-      "id": "REQ-23",
-      "text": "Add backend method to update farmer details including name, phone number, milk type, and customer ID",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "add edit option to change details of farmers"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend provides update method that accepts farmer ID and updated fields",
-        "Update method validates customer ID uniqueness",
-        "Update method persists changes to farmer record",
-        "Update method returns success/error response"
-      ]
-    },
-    {
-      "id": "REQ-24",
-      "text": "Add edit functionality to Farmer Management in Settings section allowing modification of farmer name, phone number, milk type, and customer ID with validation",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "add edit option to change details of farmers"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Each farmer in the list displays an edit button or icon",
-        "Clicking edit opens a dialog or form pre-populated with current farmer details",
-        "Form allows editing of name, phone, milk type (VLC/Thekadari), and customer ID",
-        "Customer ID field validates uniqueness before saving",
-        "Success/error toast appears after save attempt",
-        "Farmer list refreshes with updated information after successful edit"
-      ]
-    },
-    {
-      "id": "REQ-25",
-      "text": "Implement comprehensive keyboard navigation throughout the entire application enabling tab navigation between all interactive elements, Enter/Space for button activation, Escape to close dialogs, and arrow keys for list navigation",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "i could use keyboard so make it compatible for with mouse and without mouse only keyboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All buttons, inputs, and interactive elements are reachable via Tab key",
-        "Shift+Tab navigates backwards through elements",
-        "Enter or Space activates focused buttons and opens dropdowns",
-        "Escape key closes open dialogs and dropdowns",
-        "Arrow keys navigate through lists and dropdown options",
-        "Focused elements have visible focus indicators (outline or highlight)",
-        "All forms can be completed and submitted using only keyboard",
-        "Tab navigation follows logical reading order",
-        "No keyboard traps prevent users from navigating away from elements"
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "text": "Add ARIA labels, roles, and keyboard event handlers to all custom components including dialogs, dropdowns, tabs, and cards to ensure full accessibility and keyboard operability",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "i could use keyboard so make it compatible for with mouse and without mouse only keyboard"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All dialogs have role='dialog' and proper ARIA labels",
-        "Tab navigation moves focus appropriately within dialogs",
-        "Custom dropdowns respond to arrow key navigation",
-        "Tab components support arrow key switching between tabs",
-        "Card elements are keyboard focusable when interactive",
-        "All keyboard interactions provide visual feedback",
-        "Screen reader users can understand and navigate all components"
+        "Print preview shows the bill with correct layout matching the reference design",
+        "All bill sections are visible in print preview without being hidden or cut off",
+        "Navigation elements and UI controls are hidden in print view",
+        "Print styles apply proper page breaks and margins"
       ]
     }
   ],
   "constraints": [
-    "Maintain single-actor backend architecture in backend/main.mo",
-    "Do not modify immutable frontend paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui",
-    "Use only React, Tailwind CSS, Shadcn, and React Query for frontend implementation",
-    "Preserve existing VLC and Thekadari billing formulas",
-    "Maintain existing transaction history and farmer data structures"
+    "Do not modify the backend schema or API endpoints",
+    "Maintain the existing bill layout design matching the reference image format",
+    "Keep all existing print styles and only fix the content population issue"
   ],
   "nonGoals": [
-    "Adding new milk types beyond VLC and Thekadari",
-    "Implementing actual SMS sending infrastructure (only prepare messages)",
-    "Creating multi-user authentication or role-based access",
-    "Adding mobile-specific touch gestures",
-    "Implementing undo/redo functionality"
+    "Changing the bill design or layout",
+    "Adding new fields to the bill",
+    "Modifying the backend data structures",
+    "Implementing new PDF libraries or generation methods"
   ],
   "imageRequirements": {
-    "required": [
-      "Professional dairy bill format template with header section, itemized entries table, and totals footer suitable for A4 printing (bill-template.dim_800x1000.png)"
-    ],
+    "required": [],
     "edits": []
   }
 }

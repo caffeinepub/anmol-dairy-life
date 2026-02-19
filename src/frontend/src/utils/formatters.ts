@@ -1,10 +1,10 @@
 export function formatLessAdd(value: number): string {
-  const intValue = Math.round(value);
-  return intValue >= 0 ? `+${intValue}` : `${intValue}`;
+  const formattedValue = value.toFixed(2);
+  return value >= 0 ? `+${formattedValue}` : formattedValue;
 }
 
 export function calculateLessAddTotal(values: number[]): number {
-  return values.reduce((sum, val) => sum + Math.round(val), 0);
+  return values.reduce((sum, val) => sum + val, 0);
 }
 
 export function formatCurrency(value: number): string {

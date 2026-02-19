@@ -7,9 +7,10 @@ import Text "mo:core/Text";
 import Order "mo:core/Order";
 import Time "mo:core/Time";
 import Runtime "mo:core/Runtime";
-import Migration "migration";
 
-(with migration = Migration.run)
+
+// Use migration function specified in the migration module during upgrades
+
 actor {
   type FarmerID = Int;
 
