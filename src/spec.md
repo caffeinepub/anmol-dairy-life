@@ -1,11 +1,9 @@
 # Specification
 
 ## Summary
-**Goal:** Add Enter key navigation to move between form fields in the milk collection form for faster data entry.
+**Goal:** Enable Enter key navigation from Fat field to SNF field in the milk collection form.
 
 **Planned changes:**
-- Enable Enter key in farmer ID field to move focus to quantity field
-- Enable Enter key in quantity field to move focus to fat field
-- Enable Enter key in fat field to submit the form
+- Add Enter key handler to the Fat input field that moves focus to the SNF field
 
-**User-visible outcome:** Users can navigate through the milk collection form fields (farmer ID → quantity → fat → save) by pressing Enter, enabling faster keyboard-only data entry workflow.
+**User-visible outcome:** Users can press Enter on the Fat field to automatically move to the SNF field, completing the keyboard navigation flow through the entire form.

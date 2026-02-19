@@ -2,8 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-in-the-milk-collection-form-pressing-enter-in-the-farmer-id-field-should-move-focus-to-the-quantity-field",
-      "featureTitle": "In the milk collection form, pressing Enter in the farmer ID field should move focus to the quantity field",
+      "featureId": "feature-enable-enter-key-press-on-the-fat-input-field-to-move-focus-to-the-snf-input-field-in-the-milk-collection-form",
+      "featureTitle": "Enable Enter key press on the Fat input field to move focus to the SNF input field in the milk collection form",
       "files": [
         "frontend/src/components/dairy/MilkCollectionForm.tsx"
       ],
@@ -16,42 +16,6 @@
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-in-the-milk-collection-form-pressing-enter-in-the-quantity-field-should-move-focus-to-the-fat-field",
-      "featureTitle": "In the milk collection form, pressing Enter in the quantity field should move focus to the fat field",
-      "files": [
-        "frontend/src/components/dairy/MilkCollectionForm.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-in-the-milk-collection-form-pressing-enter-in-the-fat-field-should-trigger-the-save-action",
-      "featureTitle": "In the milk collection form, pressing Enter in the fat field should trigger the save action",
-      "files": [
-        "frontend/src/components/dairy/MilkCollectionForm.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
       ],
       "confidence": "high"
     }

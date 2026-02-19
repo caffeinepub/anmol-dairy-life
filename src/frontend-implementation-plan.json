@@ -1,50 +1,20 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add Enter key navigation between form fields",
+  "title": "Add Enter key navigation from Fat to SNF field",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Enable Enter key navigation from farmer ID field to quantity field in milk collection form",
+      "summary": "Enable Enter key press on the Fat input field to move focus to the SNF input field in the milk collection form",
       "acceptanceCriteria": [
-        "Pressing Enter in the farmer ID input moves focus to the quantity input",
-        "The Enter key behavior does not interfere with existing farmer lookup functionality"
+        "Pressing Enter while focused on the Fat field moves focus to the SNF field",
+        "The navigation works consistently with existing Enter key patterns in the form"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
           "operation": "modify",
-          "description": "Add onKeyDown handler to farmer ID input field that detects Enter key press and programmatically focuses the weight/quantity input field using a ref. Ensure the handler does not prevent the existing farmer lookup functionality from working."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Enable Enter key navigation from quantity field to fat field in milk collection form",
-      "acceptanceCriteria": [
-        "Pressing Enter in the quantity input moves focus to the fat input"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "operation": "modify",
-          "description": "Add onKeyDown handler to weight/quantity input field that detects Enter key press and programmatically focuses the fat input field using a ref."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Enable Enter key to trigger save action from fat field in milk collection form",
-      "acceptanceCriteria": [
-        "Pressing Enter in the fat input submits the form",
-        "Form validation runs before submission",
-        "Success/error feedback is displayed after submission attempt"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
-          "operation": "modify",
-          "description": "Add onKeyDown handler to fat input field that detects Enter key press and triggers the existing form submission logic (handleSubmit). Ensure all existing validation and error handling flows are preserved."
+          "description": "Add onKeyDown handler to the Fat input field that listens for Enter key press and programmatically moves focus to the SNF input field using a ref, maintaining consistency with the existing Enter key navigation pattern from Farmer ID to Quantity and Quantity to Fat"
         }
       ]
     }

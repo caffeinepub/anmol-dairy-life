@@ -7,26 +7,10 @@
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-in-the-milk-collection-form-pressing-enter-in-the-farmer-id-field-should-move-focus-to-the-quantity-field",
-      "title": "In the milk collection form, pressing Enter in the farmer ID field should move focus to the quantity field",
+      "id": "feature-enable-enter-key-press-on-the-fat-input-field-to-move-focus-to-the-snf-input-field-in-the-milk-collection-form",
+      "title": "Enable Enter key press on the Fat input field to move focus to the SNF input field in the milk collection form",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-in-the-milk-collection-form-pressing-enter-in-the-quantity-field-should-move-focus-to-the-fat-field",
-      "title": "In the milk collection form, pressing Enter in the quantity field should move focus to the fat field",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-in-the-milk-collection-form-pressing-enter-in-the-fat-field-should-trigger-the-save-action",
-      "title": "In the milk collection form, pressing Enter in the fat field should trigger the save action",
-      "reqIds": [
-        "REQ-3"
       ],
       "version": 1
     }
@@ -34,12 +18,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Use Enter key to move between form fields (farmer id → quantity → fat → save)",
+      "summary": "Enable Enter key navigation from Fat field to SNF/Save",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Add Enter key navigation between form fields",
+  "projectName": "Add Enter key navigation from Fat to SNF field",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

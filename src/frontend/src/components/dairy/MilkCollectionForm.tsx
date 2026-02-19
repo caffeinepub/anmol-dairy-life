@@ -21,6 +21,7 @@ export default function MilkCollectionForm() {
 
   const weightInputRef = useRef<HTMLInputElement>(null);
   const fatInputRef = useRef<HTMLInputElement>(null);
+  const snfInputRef = useRef<HTMLInputElement>(null);
 
   const currentDate = new Date().toLocaleDateString('en-IN');
   const currentSession = getCurrentSession();
@@ -115,10 +116,22 @@ export default function MilkCollectionForm() {
   const handleFatKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (farmer && weight && fat) {
-        if (farmer.milkType === MilkType.vlc && !snf) {
-          return; // Don't submit if SNF is required but missing
+      // If VLC milk type, move to SNF field
+      if (farmer && farmer.milkType === MilkType.vlc) {
+        snfInputRef.current?.focus();
+      } else {
+        // For Thekadari, trigger preview directly
+        if (farmer && weight && fat) {
+          handlePreview();
         }
+      }
+    }
+  };
+
+  const handleSnfKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (farmer && weight && fat && snf) {
         handlePreview();
       }
     }
@@ -210,10 +223,12 @@ export default function MilkCollectionForm() {
                     <Label htmlFor="snf">SNF (%)</Label>
                     <Input
                       id="snf"
+                      ref={snfInputRef}
                       type="number"
                       step="0.1"
                       value={snf}
                       onChange={(e) => setSnf(e.target.value)}
+                      onKeyDown={handleSnfKeyDown}
                       placeholder="Enter SNF"
                       aria-label="SNF percentage"
                       aria-required="true"
