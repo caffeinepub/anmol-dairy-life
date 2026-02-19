@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.5rem;
+        --background: 0.98 0.02 120;
+        --foreground: 0.15 0.03 120;
+        --card: 1 0 0;
+        --card-foreground: 0.15 0.03 120;
+        --popover: 1 0 0;
+        --popover-foreground: 0.15 0.03 120;
+        --primary: 0.55 0.18 145;
+        --primary-foreground: 0.98 0.01 145;
+        --secondary: 0.92 0.03 120;
+        --secondary-foreground: 0.25 0.03 120;
+        --muted: 0.95 0.02 120;
+        --muted-foreground: 0.50 0.02 120;
+        --accent: 0.88 0.04 145;
+        --accent-foreground: 0.20 0.03 145;
+        --destructive: 0.60 0.22 25;
+        --destructive-foreground: 0.98 0.01 25;
+        --border: 0.88 0.02 120;
+        --input: 0.88 0.02 120;
+        --ring: 0.55 0.18 145;
+        --chart-1: 0.65 0.20 145;
+        --chart-2: 0.70 0.18 85;
+        --chart-3: 0.60 0.22 200;
+        --chart-4: 0.75 0.16 40;
+        --chart-5: 0.68 0.19 280;
+    }
+
+    .dark {
+        --background: 0.12 0.02 120;
+        --foreground: 0.95 0.01 120;
+        --card: 0.15 0.02 120;
+        --card-foreground: 0.95 0.01 120;
+        --popover: 0.15 0.02 120;
+        --popover-foreground: 0.95 0.01 120;
+        --primary: 0.60 0.20 145;
+        --primary-foreground: 0.98 0.01 145;
+        --secondary: 0.20 0.02 120;
+        --secondary-foreground: 0.90 0.01 120;
+        --muted: 0.18 0.02 120;
+        --muted-foreground: 0.60 0.02 120;
+        --accent: 0.25 0.03 145;
+        --accent-foreground: 0.90 0.01 145;
+        --destructive: 0.55 0.25 25;
+        --destructive-foreground: 0.98 0.01 25;
+        --border: 0.25 0.02 120;
+        --input: 0.25 0.02 120;
+        --ring: 0.60 0.20 145;
+        --chart-1: 0.70 0.22 145;
+        --chart-2: 0.75 0.20 85;
+        --chart-3: 0.65 0.24 200;
+        --chart-4: 0.80 0.18 40;
+        --chart-5: 0.73 0.21 280;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+/* Print styles */
+@media print {
+    /* Hide everything except print content */
+    body * {
+        visibility: hidden;
+    }
+    
+    .print-content,
+    .print-content * {
+        visibility: visible;
+    }
+    
+    .print-content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    
+    /* Print-specific bill styling */
+    .print-bill {
+        padding: 20mm;
+        font-family: 'Inter', sans-serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+        background: #fff;
+    }
+    
+    .print-bill h1 {
+        font-size: 24pt;
+        font-weight: bold;
+        margin-bottom: 8pt;
+    }
+    
+    .print-bill table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16pt 0;
+    }
+    
+    .print-bill th,
+    .print-bill td {
+        border: 1pt solid #333;
+        padding: 8pt;
+        text-align: left;
+    }
+    
+    .print-bill th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+    
+    /* Prevent page breaks inside table rows */
+    .print-bill tr {
+        page-break-inside: avoid;
+    }
+    
+    /* Page margins for A4 */
+    @page {
+        size: A4;
+        margin: 15mm;
+    }
+}

@@ -1,0 +1,362 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 5,
+  "summary": "ANMOL DAIRY LIFE - A dairy management application with three main sections: Dairy (milk collection, bills, data reports, sell, cash), Transactions (search, farmer balances, PDF/SMS exports), and Settings (farmer management, rate settings, inventory). Supports two billing formulas: VLC for cow milk (based on FAT and SNF) and Thekadari for buffalo milk (quantity-adjusted based on FAT). Features automatic weekly billing on Mondays at 3am, inventory management, transaction tracking with color-coded balances, and SMS notifications.",
+  "architectural_notes": [
+    "Two billing systems: VLC (cow milk - FAT/SNF based) and Thekadari (buffalo milk - quantity adjusted by FAT)",
+    "Farmer profiles specify billing type (VLC or Thekadari) to ensure correct calculations",
+    "Automatic session detection: morning (after 3am), evening (after 3pm)",
+    "Weekly billing cycle: Monday 3am to next Monday 2:59am, auto-posts bills every Monday at 3am",
+    "Transaction types: weekly milk bills, cash payments/receipts, product sales - all tracked per farmer",
+    "Sales to farmers create negative balance entries in their transaction history",
+    "Inventory system tracks products and auto-deducts quantities on sales",
+    "PDF generation for bills and full transaction histories",
+    "SMS integration for transaction notifications and shareable transaction links",
+    "Print functionality targets bill content only, not full UI"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Professional dairy bill format template with header section, itemized entries table, and totals footer suitable for A4 printing (bill-template.dim_800x1000.png)",
+  "existing_features": [
+    {
+      "id": "feature-create-main-application-interface-with-three-primary-navigation-sections-dairy-transactions-and-settings",
+      "title": "Create main application interface with three primary navigation sections: Dairy, Transactions, and Settings",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-milk-collection-entry-system-with-automatic-date-today-and-session-morning-after-3am-evening-after-3pm-farmer-selection-by-customerid-with-auto-populated-name-and-milk-type-input-fields-conditional-on-milk-type-thekadari-weight-and-fat-vlc-weight-fat-snf-preview-before-save-showing-rate-and-calculated-amount-and-display-all-entries-for-current-session-at-bottom",
+      "title": "Implement Milk Collection entry system with automatic date (today) and session (Morning after 3am, Evening after 3pm), farmer selection by customerID with auto-populated name and milk type, input fields conditional on milk type (Thekadari: weight and FAT; VLC: weight, FAT, SNF), preview before save showing rate and calculated amount, and display all entries for current session at bottom",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-bill-generation-module-in-dairy-section-select-farmer-by-customerid-with-auto-filled-name-specify-from-date-and-to-date-range-calculate-bill-totals-including-less-add-as-integers-add-positive-subtract-negative-generate-pdf-share-pdf-and-print-print-only-the-bill-not-entire-tab",
+      "title": "Create Bill generation module in Dairy section: select farmer by customerID with auto-filled name, specify from date and to date range, calculate bill totals including Less/Add as integers (add positive, subtract negative), generate PDF, share PDF, and print (print only the bill, not entire tab)",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-data-reports-module-in-dairy-section-user-selects-specific-date-and-session-morning-evening-both-display-detailed-collection-data-including-quantity-fat-snf-less-add-as-integers-with-signs-net-milk-amount-show-aggregated-totals-total-quantity-average-fat-total-less-add-with-proper-add-subtract-calculation-total-net-milk-total-amount",
+      "title": "Create Data Reports module in Dairy section: user selects specific date and session (morning/evening/both), display detailed collection data including quantity, FAT, SNF, Less/Add (as integers with signs), Net Milk, Amount; show aggregated totals: Total Quantity, Average FAT, Total Less/Add (with proper add/subtract calculation), Total Net Milk, Total Amount",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-sell-module-in-dairy-section-with-automatic-fields-current-date-time-total-amount-price-quantity-and-manual-fields-farmerid-product-name-quantity-price-after-save-provide-print-option-if-sale-is-linked-to-a-farmer-add-transaction-entry-as-negative-balance-to-that-farmer-s-account",
+      "title": "Create Sell module in Dairy section with automatic fields (current date, time, Total Amount = price × quantity) and manual fields (farmerID, product name, quantity, price); after save provide print option; if sale is linked to a farmer, add transaction entry as negative balance to that farmer's account",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-cash-module-in-dairy-section-with-automatic-fields-current-date-time-farmer-name-and-manual-fields-farmerid-pay-receive-selection-where-pay-shows-as-negative-balance-and-receive-as-positive-balance-in-transactions-optional-comment-box-persist-cash-entries-as-transaction-records",
+      "title": "Create Cash module in Dairy section with automatic fields (current date, time, farmer name) and manual fields (farmerID, pay/receive selection where 'pay' shows as negative balance and 'receive' as positive balance in transactions, optional comment box); persist cash entries as transaction records",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-inventory-system-in-settings-add-product-functionality-with-product-name-and-quantity-in-stock-ability-to-add-stock-manually-automatic-stock-deduction-when-products-are-sold-through-the-sell-module",
+      "title": "Implement Inventory system in Settings: add product functionality with product name and quantity in stock, ability to add stock manually, automatic stock deduction when products are sold through the Sell module",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-transactions-section-with-search-functionality-at-top-display-all-farmers-with-their-current-balance-visible-next-to-name-each-farmer-entry-shows-combined-transaction-history-from-weekly-milk-bills-cash-entries-and-sell-records-with-proper-date-time-and-name-product-name-weekly-bill-entry-cash-color-code-balances-negative-in-red-positive-in-green",
+      "title": "Create Transactions section with search functionality at top, display all farmers with their current balance visible next to name; each farmer entry shows combined transaction history from weekly milk bills, cash entries, and sell records with proper date, time, and name (product name/weekly bill entry/cash); color-code balances (negative in red, positive in green)",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-pdf-export-and-sms-link-generation-in-transactions-section-create-pdf-generates-full-transaction-details-pdf-for-selected-farmer-sms-prepares-a-shareable-link-of-farmer-transaction-details-for-sms-delivery",
+      "title": "Add PDF export and SMS link generation in Transactions section: 'Create PDF' generates full transaction details PDF for selected farmer, 'SMS' prepares a shareable link of farmer transaction details for SMS delivery",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-settings-section-with-farmer-management-search-list-all-farmers-with-balance-tap-to-view-transactions-add-new-farmer-with-customerid-name-phone-milk-type-edit-farmer-details-rate-settings-for-vlc-and-thekadari-with-ability-to-update-rates-and-inventory-management",
+      "title": "Create Settings section with Farmer management (search, list all farmers with balance, tap to view transactions, add new farmer with customerID/name/phone/milk type, edit farmer details), Rate settings for VLC and Thekadari with ability to update rates, and Inventory management",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-less-add-values-display-with-proper-integral-signs-throughout-the-application-and-in-bill-totals-less-add-is-calculated-as-integers-with-positive-values-added-and-negative-values-subtracted",
+      "title": "Ensure Less/Add values display with proper integral signs (+/-) throughout the application, and in bill totals, Less/Add is calculated as integers with positive values added and negative values subtracted",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-bill-sharing-functionality-that-generates-and-shares-bills-as-pdf-files-when-user-selects-share-option",
+      "title": "Implement bill sharing functionality that generates and shares bills as PDF files when user selects share option",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-rate-settings-component-in-settings-section-to-display-and-allow-modification-of-global-vlc-and-thekadari-rates-with-immediate-effect-on-all-farmers",
+      "title": "Update Rate Settings component in Settings section to display and allow modification of global VLC and Thekadari rates with immediate effect on all farmers",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-pdf-generation-for-bills-to-match-the-format-shown-in-the-provided-reference-image-including-proper-layout-styling-headers-line-items-and-totals",
+      "title": "Enhance PDF generation for bills to match the format shown in the provided reference image, including proper layout, styling, headers, line items, and totals",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-print-functionality-to-ensure-only-the-bill-content-prints-with-proper-formatting-and-page-breaks-excluding-navigation-and-ui-elements",
+      "title": "Improve print functionality to ensure only the bill content prints with proper formatting and page breaks, excluding navigation and UI elements",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-sms-functionality-to-generate-and-send-properly-formatted-transaction-summary-messages-to-farmers-with-clear-balance-and-transaction-details",
+      "title": "Enhance SMS functionality to generate and send properly formatted transaction summary messages to farmers with clear balance and transaction details",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-edit-functionality-to-farmer-management-in-settings-section-allowing-modification-of-farmer-name-phone-number-milk-type-and-customer-id-with-validation",
+      "title": "Add edit functionality to Farmer Management in Settings section allowing modification of farmer name, phone number, milk type, and customer ID with validation",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-comprehensive-keyboard-navigation-throughout-the-entire-application-enabling-tab-navigation-between-all-interactive-elements-enter-space-for-button-activation-escape-to-close-dialogs-and-arrow-keys-for-list-navigation",
+      "title": "Implement comprehensive keyboard navigation throughout the entire application enabling tab navigation between all interactive elements, Enter/Space for button activation, Escape to close dialogs, and arrow keys for list navigation",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-aria-labels-roles-and-keyboard-event-handlers-to-all-custom-components-including-dialogs-dropdowns-tabs-and-cards-to-ensure-full-accessibility-and-keyboard-operability",
+      "title": "Add ARIA labels, roles, and keyboard event handlers to all custom components including dialogs, dropdowns, tabs, and cards to ensure full accessibility and keyboard operability",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Main interface with three tabs: Dairy, Transactions, Settings",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Dairy tab: milk collection, bill generation, data reports, sell, and cash modules",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Milk collection module with auto date/session, farmer selection, VLC/Thekadari input fields, preview before save",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Bill generation with farmer selection, date range, PDF generation/sharing/printing (print bill only)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Data reports showing collection data for specific dates with totals and averages",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Sell module with auto date/time, farmer/product selection, quantity/price, print option, inventory deduction",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Cash module with farmer selection, pay/receive entries, optional comments, transaction updates",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Transactions tab with search, all farmers list showing balances, combined transaction history (bills/cash/sell)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Transaction export: PDF generation and SMS link for farmer transaction details",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Settings tab: farmer management (add/edit/search with balance display), rate settings, inventory management",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Automatic weekly billing: Every Monday at 3am, calculate and post weekly milk bills to farmer transactions",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "SMS notifications sent to farmers on every transaction entry",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Inventory system: add products, track stock, auto-deduct on sales",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "VLC billing formula for cow milk: amount = quantity * [(FAT * Rate * 6/650) + (SNF * Rate * 4/900)]",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Thekadari billing formula for buffalo milk: Less/Add = (FAT-65) * quantity * 1.5/100, Net milk = quantity + Less/Add, Amount = Net milk * Rate",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Color-coded balances: negative in red, positive in green",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Display Less/Add with proper signs (+/-) and calculate as integers in bills and totals",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Implement Farmer data model with fields: customerID (unique numerical ID), name, phone number, milk type (VLC or Thekadari), and persistent storage for all farmer records",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Implement VLC billing formula for cow milk: Amount = quantity × [(FAT × Rate × 6/650) + (SNF × Rate × 4/900)], where Rate is a configurable fixed value stored per farmer or globally",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Implement Thekadari billing formula for buffalo milk with fixed CLR=25.0 and SNF=9.0: Less/Add = (FAT - 65) × quantity × 1.5/100, Net Milk = quantity + Less/Add, Amount = Net Milk × Rate, where Rate is a configurable fixed value",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-30",
+      "summary": "Implement automatic weekly billing system: every Monday at 3am, calculate all milk collection entries from previous week (Monday 3am to next Monday 2am), generate weekly milk bills for each farmer, create transaction entries labeled 'weekly milk bill' with positive balance, and add these entries to respective farmer transaction histories",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "Implement SMS notification system: send SMS to respective farmer on every transaction entry (weekly bills, cash entries, sell entries)",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-32",
+      "summary": "Implement global rate setting for VLC and Thekadari milk types: single configurable rate per milk type that applies to all farmers, modifiable from Rate Settings in Settings tab",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-33",
+      "summary": "Improve PDF generation, print functionality, and SMS options: use provided bill format image as template for PDF layout and styling",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-34",
+      "summary": "Add edit functionality for farmer details in Settings section: allow modification of name, phone, milk type, and customerID",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-35",
+      "summary": "Implement full keyboard navigation and accessibility: ensure all features work without mouse, support tab navigation, Enter/Space for actions, and arrow keys for lists",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-36",
+      "summary": "Modify backend to store global rates for VLC and Thekadari milk types instead of per-farmer rates, and provide methods to update these global rates",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-41",
+      "summary": "Add backend method to update farmer details including name, phone number, milk type, and customer ID",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "ANMOL DAIRY LIFE",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

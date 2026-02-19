@@ -1,0 +1,167 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-19T17:17:46.041Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 9,
+    "implemented": 7,
+    "items": [
+      {
+        "id": "REQ-18",
+        "summary": "Modify backend to store global rates for VLC and Thekadari milk types instead of per-farmer rates, and provide methods to update these global rates",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-19",
+        "summary": "Update Rate Settings component in Settings section to display and allow modification of global VLC and Thekadari rates with immediate effect on all farmers",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/settings/RateSettings.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/settings/RateSettings.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-20",
+        "summary": "Enhance PDF generation for bills to match the format shown in the provided reference image, including proper layout, styling, headers, line items, and totals",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/dairy/BillGenerator.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/dairy/BillGenerator.tsx"
+        ]
+      },
+      {
+        "id": "REQ-21",
+        "summary": "Improve print functionality to ensure only the bill content prints with proper formatting and page breaks, excluding navigation and UI elements",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/dairy/BillGenerator.tsx",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/dairy/BillGenerator.tsx",
+          "frontend/src/index.css"
+        ]
+      },
+      {
+        "id": "REQ-22",
+        "summary": "Enhance SMS functionality to generate and send properly formatted transaction summary messages to farmers with clear balance and transaction details",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/transactions/FarmerTransactionHistory.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/transactions/FarmerTransactionHistory.tsx"
+        ]
+      },
+      {
+        "id": "REQ-23",
+        "summary": "Add backend method to update farmer details including name, phone number, milk type, and customer ID",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-24",
+        "summary": "Add edit functionality to Farmer Management in Settings section allowing modification of farmer name, phone number, milk type, and customer ID with validation",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/settings/FarmerManagement.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/settings/FarmerManagement.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-25",
+        "summary": "Implement comprehensive keyboard navigation throughout the entire application enabling tab navigation between all interactive elements, Enter/Space for button activation, Escape to close dialogs, and arrow keys for list navigation",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/dairy/MilkCollectionForm.tsx",
+          "frontend/src/components/dairy/BillGenerator.tsx",
+          "frontend/src/components/dairy/CashModule.tsx",
+          "frontend/src/components/dairy/SellModule.tsx",
+          "frontend/src/components/settings/FarmerManagement.tsx",
+          "frontend/src/components/settings/InventoryManagement.tsx",
+          "frontend/src/components/transactions/TransactionsSection.tsx",
+          "frontend/src/components/transactions/FarmerTransactionHistory.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/dairy/MilkCollectionForm.tsx",
+          "frontend/src/components/dairy/BillGenerator.tsx",
+          "frontend/src/components/dairy/CashModule.tsx",
+          "frontend/src/components/dairy/SellModule.tsx",
+          "frontend/src/components/settings/FarmerManagement.tsx",
+          "frontend/src/components/settings/InventoryManagement.tsx",
+          "frontend/src/components/transactions/TransactionsSection.tsx",
+          "frontend/src/components/transactions/FarmerTransactionHistory.tsx"
+        ]
+      },
+      {
+        "id": "REQ-26",
+        "summary": "Add ARIA labels, roles, and keyboard event handlers to all custom components including dialogs, dropdowns, tabs, and cards to ensure full accessibility and keyboard operability",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/settings/FarmerManagement.tsx",
+          "frontend/src/components/settings/InventoryManagement.tsx",
+          "frontend/src/components/dairy/MilkCollectionForm.tsx",
+          "frontend/src/components/dairy/DataReports.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/settings/FarmerManagement.tsx",
+          "frontend/src/components/settings/InventoryManagement.tsx",
+          "frontend/src/components/dairy/MilkCollectionForm.tsx",
+          "frontend/src/components/dairy/DataReports.tsx",
+          "frontend/src/App.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "build-template/README.md",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/bill-template.dim_800x1000.png",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/dairy/BillGenerator.tsx",
+    "frontend/src/components/dairy/CashModule.tsx",
+    "frontend/src/components/dairy/DataReports.tsx",
+    "frontend/src/components/dairy/MilkCollectionForm.tsx",
+    "frontend/src/components/dairy/SellModule.tsx",
+    "frontend/src/components/settings/FarmerManagement.tsx",
+    "frontend/src/components/settings/InventoryManagement.tsx",
+    "frontend/src/components/settings/RateSettings.tsx",
+    "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
+    "frontend/src/components/transactions/TransactionsSection.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

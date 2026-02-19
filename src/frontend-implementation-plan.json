@@ -1,0 +1,216 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Implement global rate settings, enhance PDF/print/SMS features, add farmer edit functionality, and enable full keyboard navigation",
+  "requirements": [
+    {
+      "id": "REQ-19",
+      "summary": "Update Rate Settings component to display and modify global VLC and Thekadari rates with immediate backend persistence",
+      "acceptanceCriteria": [
+        "Rate Settings displays current global VLC rate with edit capability",
+        "Rate Settings displays current global Thekadari rate with edit capability",
+        "Changes to rates are saved to backend immediately",
+        "Success/error toast notifications appear after rate updates",
+        "Updated rates apply to all subsequent milk collection calculations"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/settings/RateSettings.tsx",
+          "operation": "modify",
+          "description": "Replace the informational alert with a functional rate management interface that fetches current global rates using useQuery with getRates backend method, displays editable input fields for VLC and Thekadari rates, and provides save buttons that call the updateRates backend method via useMutation. Include toast notifications for success/error feedback and loading states during save operations."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetRates query hook that calls backend.getRates() to retrieve current global VLC and Thekadari rates, and add useUpdateRates mutation hook that accepts vRate and tRate parameters and calls backend.updateRates(). Configure appropriate query invalidation to refresh rates after successful updates."
+        }
+      ]
+    },
+    {
+      "id": "REQ-20",
+      "summary": "Enhance PDF generation to match the professional dairy bill format shown in the reference image with proper layout, headers, line items, and totals",
+      "acceptanceCriteria": [
+        "PDF bill layout matches the structure of the provided reference image",
+        "PDF includes dairy business header with name and contact information",
+        "PDF displays farmer details (customer ID, name, phone)",
+        "PDF shows date range of bill period",
+        "PDF lists all collection entries with date, session, quantity, fat, SNF (if applicable), rate, and amount",
+        "PDF displays calculated totals including total quantity, average FAT, total less/add, net milk, and final amount",
+        "PDF styling uses professional fonts and spacing matching the reference image"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/dairy/BillGenerator.tsx",
+          "operation": "modify",
+          "description": "Replace the placeholder PDF generation logic with a comprehensive implementation that creates a professionally formatted bill matching the reference image at frontend/public/assets/generated/bill-template.dim_800x1000.png. Include dairy business header (ANMOL DAIRY LIFE with contact details), farmer information section (customer ID, name, phone), bill period date range, itemized table of all milk collection entries with columns for date, session, quantity, fat, SNF (when applicable), rate, and amount. Add totals section showing total quantity, average FAT percentage, total less/add adjustments, net milk quantity, and final payable amount. Use a PDF generation library (jsPDF or similar) with proper fonts, spacing, borders, and alignment to match the reference template. Verify the reference image structure before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-21",
+      "summary": "Improve print functionality to ensure only bill content prints with proper formatting, excluding navigation and UI elements",
+      "acceptanceCriteria": [
+        "Print preview shows only bill content without app navigation",
+        "Print layout matches the PDF format",
+        "Print CSS ensures proper page breaks for multi-page bills",
+        "Print output is clean and professional for physical distribution"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/dairy/BillGenerator.tsx",
+          "operation": "modify",
+          "description": "Enhance the print button handler to generate a print-optimized bill layout that matches the PDF format. Create a hidden printable div with the 'print-content' class containing the complete bill structure (header, farmer details, itemized entries table, totals section). When print is triggered, use window.print() to open the print dialog. The existing print media query in index.css will handle hiding non-print content automatically."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Enhance the existing @media print rule to include additional print-specific styles for page breaks (page-break-inside: avoid for table rows), margins, font sizes optimized for A4 paper, and ensure proper spacing for multi-page bills. Add print-specific table styling to match the PDF layout with borders and proper column widths."
+        }
+      ]
+    },
+    {
+      "id": "REQ-22",
+      "summary": "Enhance SMS functionality to generate properly formatted transaction summary messages with balance and transaction details",
+      "acceptanceCriteria": [
+        "SMS message includes farmer name and current balance",
+        "SMS message summarizes recent transactions with dates and amounts",
+        "SMS includes a shareable link to full transaction details",
+        "SMS format is concise and readable on mobile devices",
+        "Success confirmation appears after SMS is prepared for sending"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
+          "operation": "modify",
+          "description": "Replace the placeholder SMS button handler with a function that generates a formatted SMS message containing the farmer's name, current balance, a summary of the last 3-5 recent transactions (date, description, amount), and a shareable link to the transaction details page. Format the message to be concise and mobile-friendly (under 160 characters if possible, or structured for multi-part SMS). Use the Web Share API or prepare the message for SMS sharing via navigator.share() or a mailto/sms: URI scheme. Display a success toast notification after the message is prepared, indicating the SMS is ready to send."
+        }
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "summary": "Add edit functionality to Farmer Management allowing modification of farmer details with validation",
+      "acceptanceCriteria": [
+        "Each farmer in the list displays an edit button or icon",
+        "Clicking edit opens a dialog or form pre-populated with current farmer details",
+        "Form allows editing of name, phone, milk type (VLC/Thekadari), and customer ID",
+        "Customer ID field validates uniqueness before saving",
+        "Success/error toast appears after save attempt",
+        "Farmer list refreshes with updated information after successful edit"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/settings/FarmerManagement.tsx",
+          "operation": "modify",
+          "description": "Add an edit button/icon to each farmer card in the list. Create an edit farmer dialog similar to the add farmer dialog, pre-populated with the selected farmer's current details (name, phone, milk type, customer ID). Include form validation for required fields and customer ID uniqueness check by comparing against other farmers. Wire the save action to call the updateFarmerDetails backend method via a new mutation hook. Display success/error toast notifications based on the save result and refresh the farmer list by invalidating the getAllFarmers query after successful updates."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useUpdateFarmerDetails mutation hook that accepts farmer ID and updated fields (name, phone, milkType, customerID) and calls backend.updateFarmerDetails(). Configure query invalidation to refresh the farmer list after successful updates."
+        }
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "summary": "Implement comprehensive keyboard navigation enabling tab navigation, Enter/Space activation, Escape for dialogs, and arrow keys for lists",
+      "acceptanceCriteria": [
+        "All buttons, inputs, and interactive elements are reachable via Tab key",
+        "Shift+Tab navigates backwards through elements",
+        "Enter or Space activates focused buttons and opens dropdowns",
+        "Escape key closes open dialogs and dropdowns",
+        "Arrow keys navigate through lists and dropdown options",
+        "Focused elements have visible focus indicators (outline or highlight)",
+        "All forms can be completed and submitted using only keyboard",
+        "Tab navigation follows logical reading order",
+        "No keyboard traps prevent users from navigating away from elements"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Enhance the tab navigation buttons to support keyboard navigation. Add onKeyDown handlers to the Dairy, Transactions, and Settings tab buttons to support Enter/Space for activation and arrow key navigation between tabs (Left/Right arrows to switch tabs). Ensure tab buttons have visible focus indicators using Tailwind's focus:ring utility classes. Ensure the tab order follows the logical visual sequence."
+        },
+        {
+          "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
+          "operation": "modify",
+          "description": "Enhance form inputs to ensure all fields are keyboard accessible with proper tab order. Add keyboard handlers to the preview dialog to close it with Escape key. Ensure the submit button can be activated with Enter when the form has focus. Add visible focus indicators to all input fields and buttons. Ensure the session entries list below the form is keyboard navigable if interactive."
+        },
+        {
+          "path": "frontend/src/components/dairy/BillGenerator.tsx",
+          "operation": "modify",
+          "description": "Ensure the customer ID input, date pickers, and action buttons (PDF, Share, Print) are all keyboard accessible with proper tab order. Add keyboard handlers for Enter/Space to activate buttons. Ensure the Calendar component used in date range picker supports arrow key navigation for date selection. Add visible focus indicators to all interactive elements."
+        },
+        {
+          "path": "frontend/src/components/dairy/CashModule.tsx",
+          "operation": "modify",
+          "description": "Enhance form inputs to ensure all fields (customer ID, amount, transaction type radio buttons, comments) are keyboard accessible with proper tab order. Ensure radio buttons can be navigated with arrow keys and selected with Space. Add Enter key handler to submit the form when focused on input fields. Add visible focus indicators to all form elements."
+        },
+        {
+          "path": "frontend/src/components/dairy/SellModule.tsx",
+          "operation": "modify",
+          "description": "Enhance form inputs and dropdowns to ensure keyboard accessibility. Add keyboard handlers for product selection dropdown to support arrow key navigation and Enter/Space for selection. Ensure all input fields and the submit button are in proper tab order with visible focus indicators. Add Escape key handler to close dropdowns if open."
+        },
+        {
+          "path": "frontend/src/components/settings/FarmerManagement.tsx",
+          "operation": "modify",
+          "description": "Enhance the farmer list to support keyboard navigation. Make farmer cards focusable with tabIndex={0} and add onKeyDown handlers to activate actions (view details, edit) with Enter/Space keys. Add arrow key navigation to move between farmer cards in the list. Ensure the add farmer dialog and edit farmer dialog support Escape key to close, and all form fields within dialogs are keyboard accessible with proper tab order. Add visible focus indicators to all interactive elements including cards and buttons."
+        },
+        {
+          "path": "frontend/src/components/settings/InventoryManagement.tsx",
+          "operation": "modify",
+          "description": "Enhance dialogs and forms to support keyboard navigation. Add Escape key handlers to close the add product and update stock dialogs. Ensure all form inputs and buttons are in proper tab order with visible focus indicators. Make inventory table rows focusable if interactive, with Enter/Space to trigger actions."
+        },
+        {
+          "path": "frontend/src/components/transactions/TransactionsSection.tsx",
+          "operation": "modify",
+          "description": "Enhance the farmer search input to be keyboard accessible. Make farmer balance cards focusable with tabIndex={0} and add onKeyDown handlers to navigate to transaction history with Enter/Space keys. Add arrow key navigation to move between farmer cards in the list. Add visible focus indicators to all interactive elements."
+        },
+        {
+          "path": "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
+          "operation": "modify",
+          "description": "Ensure the back navigation and action buttons (PDF, SMS) are keyboard accessible with Enter/Space activation. Make transaction table rows focusable if interactive. Add visible focus indicators to all interactive elements."
+        }
+      ]
+    },
+    {
+      "id": "REQ-26",
+      "summary": "Add ARIA labels, roles, and keyboard event handlers to custom components for full accessibility and keyboard operability",
+      "acceptanceCriteria": [
+        "All dialogs have role='dialog' and proper ARIA labels",
+        "Tab navigation moves focus appropriately within dialogs",
+        "Custom dropdowns respond to arrow key navigation",
+        "Tab components support arrow key switching between tabs",
+        "Card elements are keyboard focusable when interactive",
+        "All keyboard interactions provide visual feedback",
+        "Screen reader users can understand and navigate all components"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/settings/FarmerManagement.tsx",
+          "operation": "modify",
+          "description": "Add ARIA attributes to the add farmer and edit farmer dialogs including role='dialog', aria-labelledby for dialog titles, and aria-describedby for dialog descriptions. Ensure dialog content containers trap focus appropriately when open using focus management. Add aria-label attributes to buttons and icons where text labels are not visible. Add role='list' to farmer card containers and role='listitem' to individual cards for proper screen reader announcement."
+        },
+        {
+          "path": "frontend/src/components/settings/InventoryManagement.tsx",
+          "operation": "modify",
+          "description": "Add ARIA attributes to dialogs including role='dialog', aria-labelledby, and aria-describedby. Add aria-label to icon buttons and action buttons where text is not visible. Ensure inventory table has proper ARIA table roles and headers are associated with data cells for screen reader accessibility."
+        },
+        {
+          "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
+          "operation": "modify",
+          "description": "Add aria-label attributes to form inputs where labels may not be explicitly visible. Add role='dialog' and aria-labelledby to the preview confirmation dialog. Ensure all interactive elements have appropriate ARIA roles and states (aria-disabled, aria-required, etc.). Add aria-live regions for dynamic success/error messages that appear after form submission."
+        },
+        {
+          "path": "frontend/src/components/dairy/DataReports.tsx",
+          "operation": "modify",
+          "description": "Add ARIA attributes to filter controls (date picker, session selector) with aria-label for screen reader context. Ensure the reports table has proper ARIA table structure with column headers associated to data cells. Add aria-live='polite' to the totals section so screen readers announce updates when filters change."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add role='tablist' to the tab button container and role='tab' to individual tab buttons. Add aria-selected='true/false' to indicate the active tab state. Associate tab panels with tab buttons using aria-controls and aria-labelledby. Ensure the tab navigation follows WAI-ARIA authoring practices for tab components with proper keyboard support already added in REQ-25."
+        }
+      ]
+    }
+  ]
+}

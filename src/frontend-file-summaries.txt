@@ -1,0 +1,21 @@
+{
+  "frontend/src/App.tsx": "Main application component with three-tab navigation (Dairy, Transactions, Settings), enhanced keyboard navigation with arrow keys for tab switching, ARIA attributes, and focus indicators.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend operations including farmers, collections, transactions, inventory, product sales, global rates management, and farmer details updates with proper cache invalidation.",
+  "frontend/src/utils/formatters.ts": "Utility functions for formatting Less/Add values with signs, currency, dates, and times consistently across the application.",
+  "frontend/src/utils/calculations.ts": "Calculation utilities for VLC and Thekadari milk billing formulas, session detection, and amount calculations using proper enum types from backend.",
+  "frontend/src/components/dairy/DairySection.tsx": "Container component for Dairy section with five sub-tabs: Milk Collection, Bill, Data Reports, Sell, and Cash.",
+  "frontend/src/components/dairy/MilkCollectionForm.tsx": "Milk collection entry form with automatic date/session, farmer lookup, conditional inputs based on milk type, preview dialog, calculation display using global rates from backend, and keyboard navigation support.",
+  "frontend/src/components/dairy/SessionEntriesList.tsx": "Displays all milk collection entries for the current session in a table with calculated amounts and Less/Add values using proper enum types.",
+  "frontend/src/components/dairy/BillGenerator.tsx": "Bill generation interface with farmer selection, date range picker, PDF generation, sharing, and print buttons with keyboard accessibility and hidden print content structure.",
+  "frontend/src/components/dairy/DataReports.tsx": "Data reports module with date and session filters, displaying collection data with totals and averages including Less/Add calculations, keyboard accessible controls, and ARIA labels.",
+  "frontend/src/components/dairy/SellModule.tsx": "Product sale module with automatic date/time, farmer selection, product dropdown with keyboard navigation, quantity/price inputs, print option, and comprehensive keyboard accessibility.",
+  "frontend/src/components/dairy/CashModule.tsx": "Cash transaction module with farmer selection, pay/receive radio buttons with arrow key navigation, amount input, optional comment field, and Enter key submission support.",
+  "frontend/src/components/transactions/TransactionsSection.tsx": "Transactions overview with search functionality, farmer list showing color-coded balances with keyboard navigation, and navigation to detailed transaction history with focus indicators.",
+  "frontend/src/components/transactions/FarmerTransactionHistory.tsx": "Detailed transaction history for a selected farmer with balance display, PDF export button, and enhanced SMS functionality that generates formatted messages with recent transactions and uses Web Share API or SMS URI fallback.",
+  "frontend/src/components/settings/SettingsSection.tsx": "Settings container with three tabs: Farmers, Rate Settings, and Inventory management.",
+  "frontend/src/components/settings/FarmerManagement.tsx": "Farmer management interface with search, add farmer dialog, edit farmer dialog with customer ID uniqueness validation, farmer list with balances, and comprehensive keyboard navigation and ARIA attributes.",
+  "frontend/src/components/settings/RateSettings.tsx": "Rate settings component with functional interface to display and modify global VLC and Thekadari rates, fetching current rates from backend and providing save buttons with toast notifications and keyboard support.",
+  "frontend/src/components/settings/InventoryManagement.tsx": "Inventory management with product list, add new product dialog, stock adjustment functionality, keyboard navigation, and ARIA attributes for accessibility.",
+  "frontend/src/index.css": "Global styles with OKLCH color system customized for dairy theme, enhanced print media queries for bill printing with proper page breaks, margins, and A4 paper formatting.",
+  "frontend/tailwind.config.js": "Tailwind configuration with custom fonts (Inter, Poppins), extended color palette for dairy theme, and custom shadows for depth."
+}
