@@ -66,7 +66,7 @@ export interface _SERVICE {
   >,
   'addTransaction' : ActorMethod<[FarmerID, string, number], bigint>,
   'getAllCollectionsForSession' : ActorMethod<
-    [Session],
+    [Session, bigint],
     Array<CollectionEntry>
   >,
   'getAllFarmers' : ActorMethod<[], Array<Farmer>>,
@@ -74,7 +74,11 @@ export interface _SERVICE {
   'getAllProductSales' : ActorMethod<[], Array<ProductSale>>,
   'getFarmer' : ActorMethod<[FarmerID], Farmer>,
   'getFarmerBalance' : ActorMethod<[FarmerID], number>,
-  'getFarmerTransactions' : ActorMethod<[FarmerID], Array<Transaction>>,
+  'getFarmerTransactions' : ActorMethod<[FarmerID, bigint], Array<Transaction>>,
+  'getPaginatedCollections' : ActorMethod<
+    [FarmerID, bigint],
+    Array<CollectionEntry>
+  >,
   'getRates' : ActorMethod<[], { 'vlc' : number, 'thekadari' : number }>,
   'updateFarmerDetails' : ActorMethod<
     [FarmerID, string, string, MilkType, FarmerID],

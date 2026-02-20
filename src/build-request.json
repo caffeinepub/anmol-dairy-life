@@ -1,34 +1,131 @@
 {
   "kind": "build_request",
-  "title": "Add Enter key navigation from Fat to SNF field",
+  "title": "Implement data pagination and performance optimizations",
+  "projectName": "Anmol Dairy Life",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Enable Enter key press on the Fat input field to move focus to the SNF input field in the milk collection form",
-      "target": "frontend",
+      "text": "Add pagination to milk collection data queries with a page size of 50-100 records per page",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-17"
         ],
         "quotes": [
-          "Also use enter key to move from fat to SNF/save"
+          "Pagination: Load 50-100 records at a time instead of everything"
         ]
       },
       "acceptanceCriteria": [
-        "Pressing Enter while focused on the Fat field moves focus to the SNF field",
-        "The navigation works consistently with existing Enter key patterns in the form"
+        "Backend provides paginated queries for collection entries with configurable page size",
+        "Pagination includes offset/limit parameters or cursor-based pagination",
+        "Total count is returned alongside paginated results"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add pagination controls to DataReports component to navigate through collection entries",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-17"
+        ],
+        "quotes": [
+          "Pagination: Load 50-100 records at a time instead of everything"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Previous/Next buttons to navigate between pages",
+        "Display current page number and total pages",
+        "Maintain keyboard accessibility for pagination controls",
+        "Preserve date and session filters when changing pages"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Implement backend indexed queries to filter collections by date and session before returning to frontend",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-17"
+        ],
+        "quotes": [
+          "Indexed queries: Filter data on the backend before sending to frontend"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend filters collections by date range before pagination",
+        "Backend filters by session type (morning/evening) when specified",
+        "Only matching records are returned to reduce data transfer"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Add lazy loading to bill generation so detailed collection entries are only fetched when user generates a bill",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-17"
+        ],
+        "quotes": [
+          "Lazy loading: Only fetch details when user clicks on a specific bill"
+        ]
+      },
+      "acceptanceCriteria": [
+        "BillGenerator component only fetches collection data when user submits customer ID and date range",
+        "Backend provides a query to fetch collections for specific customer and date range",
+        "Loading state is shown while fetching bill data"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Implement React Query caching strategy for frequently accessed data like rates and farmer list",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-17"
+        ],
+        "quotes": [
+          "Caching: Store frequently accessed data locally"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Rate settings use longer cache time (staleTime) as they change infrequently",
+        "Farmer list uses appropriate cache time to reduce backend calls",
+        "Cache is invalidated appropriately when data is modified"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Add pagination to transaction history display in FarmerTransactionHistory component",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-17"
+        ],
+        "quotes": [
+          "Pagination: Load 50-100 records at a time instead of everything"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend provides paginated transaction queries per farmer",
+        "Frontend displays 50-100 transactions per page with navigation controls",
+        "Keyboard navigation works with pagination controls",
+        "PDF export includes all transactions regardless of pagination"
       ]
     }
   ],
   "constraints": [
-    "Maintain existing Enter key navigation patterns from Farmer ID to Quantity and Quantity to Fat",
-    "Do not modify the Save button trigger behavior on Enter from SNF field"
+    "Maintain existing keyboard navigation and accessibility features",
+    "Preserve all existing functionality while adding performance optimizations",
+    "Keep the single-actor backend architecture",
+    "Do not modify immutable frontend paths (useInternetIdentity.ts, useActor.ts, main.tsx, ui components)"
   ],
   "nonGoals": [
-    "Changing the existing keyboard navigation from Farmer ID to Quantity",
-    "Changing the existing keyboard navigation from Quantity to Fat",
-    "Modifying any backend logic"
+    "Implementing infinite scroll (use traditional pagination instead)",
+    "Adding external caching layers or databases",
+    "Rewriting the entire data model",
+    "Removing any existing features"
   ],
   "imageRequirements": {
     "required": [],

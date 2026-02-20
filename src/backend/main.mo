@@ -4,10 +4,10 @@ import Iter "mo:core/Iter";
 import Int "mo:core/Int";
 import Float "mo:core/Float";
 import Text "mo:core/Text";
+import Nat "mo:core/Nat";
+import Runtime "mo:core/Runtime";
 import Order "mo:core/Order";
 import Time "mo:core/Time";
-import Runtime "mo:core/Runtime";
-
 
 // Use migration function specified in the migration module during upgrades
 
@@ -104,6 +104,8 @@ actor {
   let transactions = Map.empty<FarmerID, [Transaction]>();
   let inventory = Map.empty<Text, InventoryEntry>();
   let sales = Map.empty<Int, ProductSale>();
+
+  let pageSize : Nat = 50;
 
   public shared ({ caller }) func addFarmer(name : Text, phone : Text, milkType : MilkType) : async FarmerID {
     let id = nextFarmerID;
@@ -280,10 +282,18 @@ actor {
     balance;
   };
 
-  public query ({ caller }) func getFarmerTransactions(farmerID : FarmerID) : async [Transaction] {
+  public query ({ caller }) func getFarmerTransactions(farmerID : FarmerID, page : Nat) : async [Transaction] {
     switch (transactions.get(farmerID)) {
       case (null) { [] };
-      case (?txns) { txns.sort(Transaction.compareByTimestamp) };
+      case (?txns) {
+        let sortedTxns = txns.sort(Transaction.compareByTimestamp);
+        let start = page * pageSize;
+        if (start >= sortedTxns.size()) {
+          return [];
+        };
+        let end = Nat.min(start + pageSize, sortedTxns.size());
+        sortedTxns.sliceToArray(start, end);
+      };
     };
   };
 
@@ -292,16 +302,36 @@ actor {
     iter.toArray();
   };
 
-  public query ({ caller }) func getAllCollectionsForSession(session : Session) : async [CollectionEntry] {
+  public query ({ caller }) func getAllCollectionsForSession(session : Session, page : Nat) : async [CollectionEntry] {
     var allEntries : [CollectionEntry] = [];
     for ((_, entries) in collections.entries()) {
       allEntries := allEntries.concat(entries.filter(func(entry) { entry.session == session }));
     };
-    allEntries;
+
+    let start = page * pageSize;
+    if (start >= allEntries.size()) {
+      return [];
+    };
+    let end = Nat.min(start + pageSize, allEntries.size());
+    allEntries.sliceToArray(start, end);
   };
 
   public query ({ caller }) func getAllProductSales() : async [ProductSale] {
     let iter = sales.values();
     iter.toArray().sort(ProductSale.compareByTimestamp);
+  };
+
+  public query ({ caller }) func getPaginatedCollections(farmerID : FarmerID, page : Nat) : async [CollectionEntry] {
+    switch (collections.get(farmerID)) {
+      case (null) { [] };
+      case (?entries) {
+        let start = page * pageSize;
+        if (start >= entries.size()) {
+          return [];
+        };
+        let end = Nat.min(start + pageSize, entries.size());
+        entries.sliceToArray(start, end);
+      };
+    };
   };
 };

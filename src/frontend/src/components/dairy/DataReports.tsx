@@ -7,7 +7,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter } from '@/components/ui/table';
 import { useGetAllCollectionsForSession, useGetAllFarmers } from '@/hooks/useQueries';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 import { formatCurrency, formatLessAdd } from '@/utils/formatters';
 import { calculateAmount } from '@/utils/calculations';
@@ -16,9 +16,11 @@ import { Session, MilkType, CollectionEntry } from '../../backend';
 export default function DataReports() {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [sessionFilter, setSessionFilter] = useState<'morning' | 'evening' | 'both'>('both');
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 50;
 
-  const morningQuery = useGetAllCollectionsForSession(Session.morning);
-  const eveningQuery = useGetAllCollectionsForSession(Session.evening);
+  const morningQuery = useGetAllCollectionsForSession(Session.morning, currentPage);
+  const eveningQuery = useGetAllCollectionsForSession(Session.evening, currentPage);
   const farmersQuery = useGetAllFarmers();
 
   const farmers = farmersQuery.data || [];
@@ -69,6 +71,29 @@ export default function DataReports() {
 
   const avgFat = totals.count > 0 ? totals.fat / totals.count : 0;
 
+  const hasNextPage = filteredCollections.length === pageSize;
+  const hasPrevPage = currentPage > 0;
+
+  const handlePrevPage = () => {
+    if (hasPrevPage) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (hasNextPage) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft' && hasPrevPage) {
+      handlePrevPage();
+    } else if (e.key === 'ArrowRight' && hasNextPage) {
+      handleNextPage();
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -114,48 +139,85 @@ export default function DataReports() {
         {filteredCollections.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">No data for selected filters</p>
         ) : (
-          <div className="overflow-x-auto">
-            <Table role="table" aria-label="Collection data report">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Farmer</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>FAT</TableHead>
-                  <TableHead>SNF</TableHead>
-                  <TableHead>Less/Add</TableHead>
-                  <TableHead>Net Milk</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCollections.map((entry, index) => {
-                  const calc = calculateAmount(entry.milkType, entry.weight, entry.fat, entry.snf || undefined, entry.rate);
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>{getFarmerName(entry.farmerID)}</TableCell>
-                      <TableCell>{entry.weight.toFixed(2)} kg</TableCell>
-                      <TableCell>{entry.fat.toFixed(1)}%</TableCell>
-                      <TableCell>{entry.snf ? `${entry.snf.toFixed(1)}%` : '-'}</TableCell>
-                      <TableCell>{calc.lessAdd !== undefined ? formatLessAdd(calc.lessAdd) : '-'}</TableCell>
-                      <TableCell>{calc.netMilk ? calc.netMilk.toFixed(2) : entry.weight.toFixed(2)} kg</TableCell>
-                      <TableCell className="text-right">{formatCurrency(calc.amount)}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell className="font-bold">Totals</TableCell>
-                  <TableCell className="font-bold">{totals.quantity.toFixed(2)} kg</TableCell>
-                  <TableCell className="font-bold">{avgFat.toFixed(1)}%</TableCell>
-                  <TableCell>-</TableCell>
-                  <TableCell className="font-bold">{formatLessAdd(totals.lessAdd)}</TableCell>
-                  <TableCell className="font-bold">{totals.netMilk.toFixed(2)} kg</TableCell>
-                  <TableCell className="text-right font-bold">{formatCurrency(totals.amount)}</TableCell>
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </div>
+          <>
+            <div className="overflow-x-auto">
+              <Table role="table" aria-label="Collection data report">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Farmer</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>FAT</TableHead>
+                    <TableHead>SNF</TableHead>
+                    <TableHead>Less/Add</TableHead>
+                    <TableHead>Net Milk</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredCollections.map((entry, index) => {
+                    const calc = calculateAmount(entry.milkType, entry.weight, entry.fat, entry.snf || undefined, entry.rate);
+                    return (
+                      <TableRow key={index}>
+                        <TableCell>{getFarmerName(entry.farmerID)}</TableCell>
+                        <TableCell>{entry.weight.toFixed(2)} kg</TableCell>
+                        <TableCell>{entry.fat.toFixed(1)}%</TableCell>
+                        <TableCell>{entry.snf ? `${entry.snf.toFixed(1)}%` : '-'}</TableCell>
+                        <TableCell>{calc.lessAdd !== undefined ? formatLessAdd(calc.lessAdd) : '-'}</TableCell>
+                        <TableCell>{calc.netMilk ? calc.netMilk.toFixed(2) : entry.weight.toFixed(2)} kg</TableCell>
+                        <TableCell className="text-right">{formatCurrency(calc.amount)}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell className="font-bold">Totals</TableCell>
+                    <TableCell className="font-bold">{totals.quantity.toFixed(2)} kg</TableCell>
+                    <TableCell className="font-bold">{avgFat.toFixed(1)}%</TableCell>
+                    <TableCell>-</TableCell>
+                    <TableCell className="font-bold">{formatLessAdd(totals.lessAdd)}</TableCell>
+                    <TableCell className="font-bold">{totals.netMilk.toFixed(2)} kg</TableCell>
+                    <TableCell className="text-right font-bold">{formatCurrency(totals.amount)}</TableCell>
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </div>
+
+            <div 
+              className="flex items-center justify-between pt-4 border-t"
+              onKeyDown={handleKeyDown}
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePrevPage}
+                disabled={!hasPrevPage}
+                className="flex items-center gap-2"
+                aria-label="Previous page (Arrow Left)"
+                tabIndex={0}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              
+              <span className="text-sm text-muted-foreground">
+                Page {currentPage + 1}
+              </span>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleNextPage}
+                disabled={!hasNextPage}
+                className="flex items-center gap-2"
+                aria-label="Next page (Arrow Right)"
+                tabIndex={0}
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </>
         )}
       </CardContent>
     </Card>

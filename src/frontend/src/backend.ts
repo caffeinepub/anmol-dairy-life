@@ -144,13 +144,14 @@ export interface backendInterface {
     addInventoryEntry(productName: string, quantity: number): Promise<void>;
     addProductSale(farmerID: FarmerID | null, productName: string, quantity: number, pricePerUnit: number): Promise<bigint>;
     addTransaction(farmerID: FarmerID, description: string, amount: number): Promise<bigint>;
-    getAllCollectionsForSession(session: Session): Promise<Array<CollectionEntry>>;
+    getAllCollectionsForSession(session: Session, page: bigint): Promise<Array<CollectionEntry>>;
     getAllFarmers(): Promise<Array<Farmer>>;
     getAllInventory(): Promise<Array<InventoryEntry>>;
     getAllProductSales(): Promise<Array<ProductSale>>;
     getFarmer(id: FarmerID): Promise<Farmer>;
     getFarmerBalance(farmerID: FarmerID): Promise<number>;
-    getFarmerTransactions(farmerID: FarmerID): Promise<Array<Transaction>>;
+    getFarmerTransactions(farmerID: FarmerID, page: bigint): Promise<Array<Transaction>>;
+    getPaginatedCollections(farmerID: FarmerID, page: bigint): Promise<Array<CollectionEntry>>;
     getRates(): Promise<{
         vlc: number;
         thekadari: number;
@@ -232,17 +233,17 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getAllCollectionsForSession(arg0: Session): Promise<Array<CollectionEntry>> {
+    async getAllCollectionsForSession(arg0: Session, arg1: bigint): Promise<Array<CollectionEntry>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAllCollectionsForSession(to_candid_Session_n2(this._uploadFile, this._downloadFile, arg0));
+                const result = await this.actor.getAllCollectionsForSession(to_candid_Session_n2(this._uploadFile, this._downloadFile, arg0), arg1);
                 return from_candid_vec_n7(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAllCollectionsForSession(to_candid_Session_n2(this._uploadFile, this._downloadFile, arg0));
+            const result = await this.actor.getAllCollectionsForSession(to_candid_Session_n2(this._uploadFile, this._downloadFile, arg0), arg1);
             return from_candid_vec_n7(this._uploadFile, this._downloadFile, result);
         }
     }
@@ -316,18 +317,32 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getFarmerTransactions(arg0: FarmerID): Promise<Array<Transaction>> {
+    async getFarmerTransactions(arg0: FarmerID, arg1: bigint): Promise<Array<Transaction>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getFarmerTransactions(arg0);
+                const result = await this.actor.getFarmerTransactions(arg0, arg1);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getFarmerTransactions(arg0);
+            const result = await this.actor.getFarmerTransactions(arg0, arg1);
             return result;
+        }
+    }
+    async getPaginatedCollections(arg0: FarmerID, arg1: bigint): Promise<Array<CollectionEntry>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getPaginatedCollections(arg0, arg1);
+                return from_candid_vec_n7(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getPaginatedCollections(arg0, arg1);
+            return from_candid_vec_n7(this._uploadFile, this._downloadFile, result);
         }
     }
     async getRates(): Promise<{

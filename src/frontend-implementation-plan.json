@@ -1,20 +1,89 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add Enter key navigation from Fat to SNF field",
+  "title": "Implement data pagination and performance optimizations",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Enable Enter key press on the Fat input field to move focus to the SNF input field in the milk collection form",
+      "id": "REQ-2",
+      "summary": "Add pagination controls to DataReports component to navigate through collection entries",
       "acceptanceCriteria": [
-        "Pressing Enter while focused on the Fat field moves focus to the SNF field",
-        "The navigation works consistently with existing Enter key patterns in the form"
+        "Previous/Next buttons to navigate between pages",
+        "Display current page number and total pages",
+        "Maintain keyboard accessibility for pagination controls",
+        "Preserve date and session filters when changing pages"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/dairy/MilkCollectionForm.tsx",
+          "path": "frontend/src/components/dairy/DataReports.tsx",
           "operation": "modify",
-          "description": "Add onKeyDown handler to the Fat input field that listens for Enter key press and programmatically moves focus to the SNF input field using a ref, maintaining consistency with the existing Enter key navigation pattern from Farmer ID to Quantity and Quantity to Fat"
+          "description": "Add pagination state (currentPage, pageSize) to component. Add pagination controls UI with Previous/Next buttons below the data table. Display current page and total pages. Implement keyboard navigation (ArrowLeft/ArrowRight or PageUp/PageDown) for pagination controls with proper tabIndex. Ensure date and session filter state persists across page changes. Update the data fetching logic to pass page parameter to backend query."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update the collections query hook to accept pagination parameters (page number, page size). Ensure the query key includes pagination parameters so React Query caches pages separately. Return both the paginated data and total count if available from backend."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Add lazy loading to bill generation so detailed collection entries are only fetched when user generates a bill",
+      "acceptanceCriteria": [
+        "BillGenerator component only fetches collection data when user submits customer ID and date range",
+        "Loading state is shown while fetching bill data"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/dairy/BillGenerator.tsx",
+          "operation": "modify",
+          "description": "Refactor data fetching to use a lazy query pattern that only triggers when the user submits the form with customer ID and date range. Remove any automatic data fetching on component mount. Add a loading state indicator (spinner or skeleton) while collection data is being fetched. Ensure the backend query includes farmerID and date range parameters to fetch only relevant collections. Display results only after successful data fetch."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a new lazy query hook for fetching bill-specific collection data by farmerID and date range. Configure the hook with enabled: false so it only runs when explicitly triggered. Ensure proper query key structure to cache bills by farmerID and date range combination."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Implement React Query caching strategy for frequently accessed data like rates and farmer list",
+      "acceptanceCriteria": [
+        "Rate settings use longer cache time (staleTime) as they change infrequently",
+        "Farmer list uses appropriate cache time to reduce backend calls",
+        "Cache is invalidated appropriately when data is modified"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update the rates query hook to include a longer staleTime (e.g., 5-10 minutes) and cacheTime since rates change infrequently. Update the farmers list query hook with appropriate staleTime (e.g., 2-3 minutes) to reduce backend calls while keeping data reasonably fresh. Ensure mutation hooks for updating rates and farmers properly invalidate the relevant query cache using queryClient.invalidateQueries. Add gcTime (formerly cacheTime) configuration to keep unused data in cache for a reasonable duration."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Add pagination to transaction history display in FarmerTransactionHistory component",
+      "acceptanceCriteria": [
+        "Frontend displays 50-100 transactions per page with navigation controls",
+        "Keyboard navigation works with pagination controls",
+        "PDF export includes all transactions regardless of pagination"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
+          "operation": "modify",
+          "description": "Add pagination state (currentPage, pageSize of 50-100) to the component. Add pagination controls with Previous/Next buttons below the transaction table. Display current page and total pages. Implement keyboard navigation for pagination controls with proper tabIndex and arrow key support. Update data fetching to request paginated transactions from backend using the page parameter. For PDF export functionality, fetch all transactions (or use a separate non-paginated query) to ensure the PDF includes the complete transaction history regardless of current pagination state."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update the farmer transactions query hook to accept pagination parameters (page number). Ensure the query key includes both farmerID and page number for proper cache separation. Add a separate query hook or parameter for fetching all transactions for PDF export purposes without pagination limits."
+        },
+        {
+          "path": "frontend/src/utils/pdfGenerator.ts",
+          "operation": "modify",
+          "description": "Ensure the PDF generation function accepts all transactions as a parameter rather than relying on paginated data. Update the function signature if needed to accept a complete transaction list for rendering in the PDF document."
         }
       ]
     }

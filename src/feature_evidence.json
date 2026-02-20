@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-enable-enter-key-press-on-the-fat-input-field-to-move-focus-to-the-snf-input-field-in-the-milk-collection-form",
-      "featureTitle": "Enable Enter key press on the Fat input field to move focus to the SNF input field in the milk collection form",
+      "featureId": "feature-add-pagination-controls-to-datareports-component-to-navigate-through-collection-entries",
+      "featureTitle": "Add pagination controls to DataReports component to navigate through collection entries",
       "files": [
-        "frontend/src/components/dairy/MilkCollectionForm.tsx"
+        "frontend/src/components/dairy/DataReports.tsx",
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -15,7 +16,64 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-1"
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-lazy-loading-to-bill-generation-so-detailed-collection-entries-are-only-fetched-when-user-generates-a-bill",
+      "featureTitle": "Add lazy loading to bill generation so detailed collection entries are only fetched when user generates a bill",
+      "files": [
+        "frontend/src/components/dairy/BillGenerator.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-react-query-caching-strategy-for-frequently-accessed-data-like-rates-and-farmer-list",
+      "featureTitle": "Implement React Query caching strategy for frequently accessed data like rates and farmer list",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-pagination-to-transaction-history-display-in-farmertransactionhistory-component",
+      "featureTitle": "Add pagination to transaction history display in FarmerTransactionHistory component",
+      "files": [
+        "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/utils/pdfGenerator.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
       ],
       "confidence": "high"
     }

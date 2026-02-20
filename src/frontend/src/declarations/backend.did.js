@@ -78,7 +78,7 @@ export const idlService = IDL.Service({
     ),
   'addTransaction' : IDL.Func([FarmerID, IDL.Text, IDL.Float64], [IDL.Int], []),
   'getAllCollectionsForSession' : IDL.Func(
-      [Session],
+      [Session, IDL.Nat],
       [IDL.Vec(CollectionEntry)],
       ['query'],
     ),
@@ -88,8 +88,13 @@ export const idlService = IDL.Service({
   'getFarmer' : IDL.Func([FarmerID], [Farmer], ['query']),
   'getFarmerBalance' : IDL.Func([FarmerID], [IDL.Float64], ['query']),
   'getFarmerTransactions' : IDL.Func(
-      [FarmerID],
+      [FarmerID, IDL.Nat],
       [IDL.Vec(Transaction)],
+      ['query'],
+    ),
+  'getPaginatedCollections' : IDL.Func(
+      [FarmerID, IDL.Nat],
+      [IDL.Vec(CollectionEntry)],
       ['query'],
     ),
   'getRates' : IDL.Func(
@@ -177,7 +182,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'getAllCollectionsForSession' : IDL.Func(
-        [Session],
+        [Session, IDL.Nat],
         [IDL.Vec(CollectionEntry)],
         ['query'],
       ),
@@ -187,8 +192,13 @@ export const idlFactory = ({ IDL }) => {
     'getFarmer' : IDL.Func([FarmerID], [Farmer], ['query']),
     'getFarmerBalance' : IDL.Func([FarmerID], [IDL.Float64], ['query']),
     'getFarmerTransactions' : IDL.Func(
-        [FarmerID],
+        [FarmerID, IDL.Nat],
         [IDL.Vec(Transaction)],
+        ['query'],
+      ),
+    'getPaginatedCollections' : IDL.Func(
+        [FarmerID, IDL.Nat],
+        [IDL.Vec(CollectionEntry)],
         ['query'],
       ),
     'getRates' : IDL.Func(

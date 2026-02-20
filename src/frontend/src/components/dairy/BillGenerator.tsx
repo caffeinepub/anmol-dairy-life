@@ -3,10 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { useGetFarmer, useGetFarmerTransactions } from '@/hooks/useQueries';
+import { useGetFarmer, useGetCollectionsForBill } from '@/hooks/useQueries';
 import { formatCurrency, formatDateTime, formatLessAdd } from '@/utils/formatters';
 import { calculateAmount } from '@/utils/calculations';
-import { Printer } from 'lucide-react';
+import { Printer, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { MilkType, Session, type CollectionEntry } from '../../backend';
 
@@ -14,34 +14,37 @@ export default function BillGenerator() {
   const [customerID, setCustomerID] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [shouldFetchBill, setShouldFetchBill] = useState(false);
 
   const farmerQuery = useGetFarmer(customerID ? BigInt(customerID) : null);
-  const transactionsQuery = useGetFarmerTransactions(customerID ? BigInt(customerID) : null);
+  const collectionsQuery = useGetCollectionsForBill(
+    customerID ? BigInt(customerID) : null,
+    shouldFetchBill
+  );
 
   const farmer = farmerQuery.data;
-  const transactions = transactionsQuery.data || [];
+  const allCollections = collectionsQuery.data || [];
 
-  // Filter collection entries from transactions
-  const collectionEntries = transactions
-    .filter((txn) => txn.description.includes('Milk collection'))
-    .filter((txn) => {
-      if (!startDate || !endDate) return true;
-      const txnDate = new Date(Number(txn.timestamp) / 1000000);
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      return txnDate >= start && txnDate <= end;
-    });
+  // Filter collections by date range
+  const filteredCollections = allCollections.filter((entry) => {
+    if (!startDate || !endDate) return true;
+    const entryDate = new Date(Number(entry.date) / 1000000);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999); // Include the entire end date
+    return entryDate >= start && entryDate <= end;
+  });
 
-  const totalAmount = collectionEntries.reduce((sum, txn) => sum + txn.amount, 0);
-  const totalWeight = collectionEntries.length * 10; // Placeholder
-  const totalDeductions = transactions
-    .filter((txn) => txn.amount < 0 && !txn.description.includes('Milk collection'))
-    .reduce((sum, txn) => sum + Math.abs(txn.amount), 0);
-  const netPayable = totalAmount - totalDeductions;
+  const totalAmount = filteredCollections.reduce((sum, entry) => {
+    const calc = calculateAmount(entry.milkType, entry.weight, entry.fat, entry.snf || undefined, entry.rate);
+    return sum + calc.amount;
+  }, 0);
+
+  const totalWeight = filteredCollections.reduce((sum, entry) => sum + entry.weight, 0);
 
   const handleGenerateBill = () => {
     if (!farmer) {
-      toast.error('Please select a farmer');
+      toast.error('Please enter a valid customer ID');
       return;
     }
 
@@ -50,12 +53,37 @@ export default function BillGenerator() {
       return;
     }
 
+    if (!shouldFetchBill) {
+      toast.error('Please click "Load Bill Data" first');
+      return;
+    }
+
+    if (filteredCollections.length === 0) {
+      toast.error('No collections found for the selected date range');
+      return;
+    }
+
     window.print();
     toast.success('Bill generated successfully');
   };
 
+  const handleLoadBillData = () => {
+    if (!customerID) {
+      toast.error('Please enter customer ID');
+      return;
+    }
+
+    if (!startDate || !endDate) {
+      toast.error('Please select date range');
+      return;
+    }
+
+    setShouldFetchBill(true);
+    toast.success('Loading bill data...');
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'p' && farmer && startDate && endDate) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'p' && farmer && startDate && endDate && shouldFetchBill) {
       e.preventDefault();
       handleGenerateBill();
     }
@@ -63,7 +91,7 @@ export default function BillGenerator() {
 
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'p' && farmer && startDate && endDate) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p' && farmer && startDate && endDate && shouldFetchBill) {
         e.preventDefault();
         handleGenerateBill();
       }
@@ -71,7 +99,12 @@ export default function BillGenerator() {
 
     document.addEventListener('keydown', handleGlobalKeyDown);
     return () => document.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [farmer, startDate, endDate]);
+  }, [farmer, startDate, endDate, shouldFetchBill, filteredCollections]);
+
+  // Reset fetch state when inputs change
+  useEffect(() => {
+    setShouldFetchBill(false);
+  }, [customerID, startDate, endDate]);
 
   return (
     <>
@@ -90,173 +123,182 @@ export default function BillGenerator() {
                 value={customerID}
                 onChange={(e) => setCustomerID(e.target.value)}
                 placeholder="Enter customer ID"
-                aria-label="Customer ID"
                 tabIndex={0}
               />
             </div>
 
-            {farmer && (
-              <>
-                <div className="space-y-2">
-                  <Label>Farmer Name</Label>
-                  <div className="p-2 border rounded-md bg-muted">
-                    <span className="font-medium">{farmer.name}</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="startDate">Start Date</Label>
-                    <Input
-                      id="startDate"
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      aria-label="Start date"
-                      tabIndex={0}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="endDate">End Date</Label>
-                    <Input
-                      id="endDate"
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      aria-label="End date"
-                      tabIndex={0}
-                    />
-                  </div>
-                </div>
-
-                {startDate && endDate && (
-                  <div className="p-4 bg-muted rounded-lg space-y-2">
-                    <div className="flex justify-between">
-                      <span>Total Entries:</span>
-                      <span className="font-medium">{collectionEntries.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Total Amount:</span>
-                      <span className="font-medium">{formatCurrency(totalAmount)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Deductions:</span>
-                      <span className="font-medium text-red-600">-{formatCurrency(totalDeductions)}</span>
-                    </div>
-                    <div className="flex justify-between text-lg font-bold border-t pt-2">
-                      <span>Net Payable:</span>
-                      <span className="text-primary">{formatCurrency(netPayable)}</span>
-                    </div>
-                  </div>
-                )}
-
-                <Button
-                  onClick={handleGenerateBill}
-                  disabled={!startDate || !endDate}
-                  className="w-full flex items-center gap-2"
-                  aria-label="Generate and print bill"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="bill-start-date">Start Date</Label>
+                <Input
+                  id="bill-start-date"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
                   tabIndex={0}
-                >
-                  <Printer className="h-4 w-4" />
-                  Generate Bill (Ctrl+P)
-                </Button>
-              </>
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="bill-end-date">End Date</Label>
+                <Input
+                  id="bill-end-date"
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  tabIndex={0}
+                />
+              </div>
+            </div>
+
+            {farmer && (
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-sm">
+                  <strong>Farmer:</strong> {farmer.name}
+                </p>
+                <p className="text-sm">
+                  <strong>Phone:</strong> {farmer.phone}
+                </p>
+                <p className="text-sm">
+                  <strong>Milk Type:</strong> {farmer.milkType.toUpperCase()}
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <Button
+                onClick={handleLoadBillData}
+                disabled={!customerID || !startDate || !endDate || collectionsQuery.isFetching}
+                className="flex items-center gap-2"
+                tabIndex={0}
+              >
+                {collectionsQuery.isFetching ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  'Load Bill Data'
+                )}
+              </Button>
+
+              <Button
+                onClick={handleGenerateBill}
+                disabled={!shouldFetchBill || filteredCollections.length === 0 || collectionsQuery.isFetching}
+                variant="default"
+                className="flex items-center gap-2"
+                aria-label="Generate PDF (Ctrl+P)"
+                tabIndex={0}
+              >
+                <Printer className="h-4 w-4" />
+                Generate PDF
+              </Button>
+            </div>
+
+            {shouldFetchBill && !collectionsQuery.isFetching && (
+              <div className="p-4 bg-primary/10 rounded-lg">
+                <p className="text-sm">
+                  <strong>Total Collections:</strong> {filteredCollections.length}
+                </p>
+                <p className="text-sm">
+                  <strong>Total Weight:</strong> {totalWeight.toFixed(2)} kg
+                </p>
+                <p className="text-sm">
+                  <strong>Total Amount:</strong> {formatCurrency(totalAmount)}
+                </p>
+              </div>
             )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Bill Content - Hidden on screen, visible in print */}
-      {farmer && startDate && endDate && (
-        <div className="bill-content">
-          <div className="print-bill">
-            <div className="bill-header">
-              <h1>ANMOL DAIRY LIFE</h1>
-              <p>Milk Collection Bill</p>
+      {/* Printable Bill */}
+      {shouldFetchBill && farmer && filteredCollections.length > 0 && (
+        <div className="print-only">
+          <div className="max-w-4xl mx-auto p-8 bg-white">
+            <div className="text-center mb-8 border-b-2 border-gray-800 pb-4">
+              <h1 className="text-3xl font-bold">Milk Collection Bill</h1>
+              <p className="text-sm text-gray-600 mt-2">
+                Generated on {new Date().toLocaleDateString('en-IN')}
+              </p>
             </div>
 
-            <div className="bill-info-grid">
-              <div className="bill-left-section">
-                <div className="info-row">
-                  <span className="info-label">Farmer Name:</span>
-                  <span className="info-value">{farmer.name}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Customer ID:</span>
-                  <span className="info-value">{farmer.customerID.toString()}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Phone:</span>
-                  <span className="info-value">{farmer.phone}</span>
-                </div>
+            <div className="mb-8 p-4 bg-gray-50 rounded">
+              <h2 className="text-xl font-semibold mb-3">Farmer Details</h2>
+              <div className="grid grid-cols-2 gap-2">
+                <p>
+                  <strong>Name:</strong> {farmer.name}
+                </p>
+                <p>
+                  <strong>Customer ID:</strong> {farmer.customerID.toString()}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {farmer.phone}
+                </p>
+                <p>
+                  <strong>Milk Type:</strong> {farmer.milkType.toUpperCase()}
+                </p>
               </div>
-              <div className="bill-center-section">
-                <div className="info-row">
-                  <span className="info-label">Bill Period:</span>
-                  <span className="info-value">{startDate} to {endDate}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Milk Type:</span>
-                  <span className="info-value">{farmer.milkType === MilkType.vlc ? 'VLC (Cow)' : 'Thekadari (Buffalo)'}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Total Entries:</span>
-                  <span className="info-value">{collectionEntries.length}</span>
-                </div>
+              <div className="mt-3 pt-3 border-t border-gray-300">
+                <p>
+                  <strong>Period:</strong> {startDate} to {endDate}
+                </p>
               </div>
             </div>
 
-            <table className="bill-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Session</th>
-                  <th>Weight (kg)</th>
-                  <th>FAT %</th>
-                  {farmer.milkType === MilkType.vlc && <th>SNF %</th>}
-                  <th>Rate</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {collectionEntries.map((txn) => (
-                  <tr key={txn.id.toString()}>
-                    <td>{formatDateTime(txn.timestamp)}</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    {farmer.milkType === MilkType.vlc && <td>-</td>}
-                    <td>-</td>
-                    <td>{formatCurrency(txn.amount)}</td>
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-3">Collection Details</h2>
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="bg-gray-100 border-b-2 border-gray-800">
+                    <th className="p-2 text-left">Date</th>
+                    <th className="p-2 text-left">Session</th>
+                    <th className="p-2 text-right">Quantity</th>
+                    <th className="p-2 text-right">FAT</th>
+                    <th className="p-2 text-right">SNF</th>
+                    <th className="p-2 text-right">Rate</th>
+                    <th className="p-2 text-right">Amount</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className="bill-totals-box">
-              <div className="totals-row">
-                <span className="totals-label">Total Amount:</span>
-                <span className="totals-value">{formatCurrency(totalAmount)}</span>
-              </div>
-              <div className="totals-row">
-                <span className="totals-label">Deductions:</span>
-                <span className="totals-value">-{formatCurrency(totalDeductions)}</span>
-              </div>
-              <div className="totals-row totals-final">
-                <span className="totals-label">Net Payable:</span>
-                <span className="totals-value">{formatCurrency(netPayable)}</span>
-              </div>
+                </thead>
+                <tbody>
+                  {filteredCollections.map((entry, index) => {
+                    const calc = calculateAmount(
+                      entry.milkType,
+                      entry.weight,
+                      entry.fat,
+                      entry.snf || undefined,
+                      entry.rate
+                    );
+                    return (
+                      <tr key={index} className="border-b border-gray-200">
+                        <td className="p-2">
+                          {new Date(Number(entry.date) / 1000000).toLocaleDateString('en-IN')}
+                        </td>
+                        <td className="p-2 capitalize">{entry.session}</td>
+                        <td className="p-2 text-right">{entry.weight.toFixed(2)} kg</td>
+                        <td className="p-2 text-right">{entry.fat.toFixed(1)}%</td>
+                        <td className="p-2 text-right">{entry.snf ? `${entry.snf.toFixed(1)}%` : '-'}</td>
+                        <td className="p-2 text-right">{formatCurrency(entry.rate)}</td>
+                        <td className="p-2 text-right">{formatCurrency(calc.amount)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot>
+                  <tr className="bg-gray-100 border-t-2 border-gray-800 font-bold">
+                    <td colSpan={2} className="p-2">
+                      Total
+                    </td>
+                    <td className="p-2 text-right">{totalWeight.toFixed(2)} kg</td>
+                    <td colSpan={3}></td>
+                    <td className="p-2 text-right">{formatCurrency(totalAmount)}</td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
 
-            <div className="bill-footer">
-              <div className="signature-section">
-                <div className="signature-line"></div>
-                <p className="signature-label">Farmer's Signature</p>
-              </div>
-              <div className="signature-section">
-                <div className="signature-line"></div>
-                <p className="signature-label">Authorized Signature</p>
-              </div>
+            <div className="mt-8 pt-4 border-t-2 border-gray-800 text-center text-xs text-gray-600">
+              <p>This is a computer-generated document. No signature is required.</p>
             </div>
           </div>
         </div>

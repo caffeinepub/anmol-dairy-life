@@ -13,6 +13,8 @@ export function useGetAllFarmers() {
       return actor.getAllFarmers();
     },
     enabled: !!actor && !isFetching,
+    staleTime: 3 * 60 * 1000, // 3 minutes - farmers list doesn't change frequently
+    gcTime: 10 * 60 * 1000, // 10 minutes cache
   });
 }
 
@@ -75,6 +77,8 @@ export function useGetRates() {
       return actor.getRates();
     },
     enabled: !!actor && !isFetching,
+    staleTime: 10 * 60 * 1000, // 10 minutes - rates change infrequently
+    gcTime: 30 * 60 * 1000, // 30 minutes cache
   });
 }
 
@@ -93,17 +97,46 @@ export function useUpdateRates() {
   });
 }
 
-// Collections
-export function useGetAllCollectionsForSession(session: Session) {
+// Collections - Paginated
+export function useGetAllCollectionsForSession(session: Session, page: number = 0) {
   const { actor, isFetching } = useActor();
 
   return useQuery<CollectionEntry[]>({
-    queryKey: ['collections', session],
+    queryKey: ['collections', session, page],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getAllCollectionsForSession(session);
+      return actor.getAllCollectionsForSession(session, BigInt(page));
     },
     enabled: !!actor && !isFetching,
+  });
+}
+
+// Lazy query for bill generation - only fetches when explicitly triggered
+export function useGetCollectionsForBill(farmerID: FarmerID | null, enabled: boolean = false) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<CollectionEntry[]>({
+    queryKey: ['collections', 'bill', farmerID?.toString()],
+    queryFn: async () => {
+      if (!actor || !farmerID) return [];
+      // Fetch all pages for the farmer
+      const allCollections: CollectionEntry[] = [];
+      let page = 0;
+      let hasMore = true;
+      
+      while (hasMore) {
+        const pageData = await actor.getPaginatedCollections(farmerID, BigInt(page));
+        if (pageData.length === 0) {
+          hasMore = false;
+        } else {
+          allCollections.push(...pageData);
+          page++;
+        }
+      }
+      
+      return allCollections;
+    },
+    enabled: !!actor && !isFetching && !!farmerID && enabled,
   });
 }
 
@@ -136,7 +169,7 @@ export function useAddCollectionEntry() {
   });
 }
 
-// Transactions
+// Transactions - Paginated
 export function useGetFarmerBalance(farmerID: FarmerID | null) {
   const { actor, isFetching } = useActor();
 
@@ -150,16 +183,45 @@ export function useGetFarmerBalance(farmerID: FarmerID | null) {
   });
 }
 
-export function useGetFarmerTransactions(farmerID: FarmerID | null) {
+export function useGetFarmerTransactions(farmerID: FarmerID | null, page: number = 0) {
   const { actor, isFetching } = useActor();
 
   return useQuery<Transaction[]>({
-    queryKey: ['transactions', farmerID?.toString()],
+    queryKey: ['transactions', farmerID?.toString(), page],
     queryFn: async () => {
       if (!actor || !farmerID) return [];
-      return actor.getFarmerTransactions(farmerID);
+      return actor.getFarmerTransactions(farmerID, BigInt(page));
     },
     enabled: !!actor && !isFetching && !!farmerID,
+  });
+}
+
+// Fetch all transactions for PDF export (non-paginated)
+export function useGetAllFarmerTransactions(farmerID: FarmerID | null, enabled: boolean = false) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Transaction[]>({
+    queryKey: ['transactions', 'all', farmerID?.toString()],
+    queryFn: async () => {
+      if (!actor || !farmerID) return [];
+      // Fetch all pages
+      const allTransactions: Transaction[] = [];
+      let page = 0;
+      let hasMore = true;
+      
+      while (hasMore) {
+        const pageData = await actor.getFarmerTransactions(farmerID, BigInt(page));
+        if (pageData.length === 0) {
+          hasMore = false;
+        } else {
+          allTransactions.push(...pageData);
+          page++;
+        }
+      }
+      
+      return allTransactions;
+    },
+    enabled: !!actor && !isFetching && !!farmerID && enabled,
   });
 }
 

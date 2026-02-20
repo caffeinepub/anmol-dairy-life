@@ -62,13 +62,14 @@ export interface backendInterface {
     addInventoryEntry(productName: string, quantity: number): Promise<void>;
     addProductSale(farmerID: FarmerID | null, productName: string, quantity: number, pricePerUnit: number): Promise<bigint>;
     addTransaction(farmerID: FarmerID, description: string, amount: number): Promise<bigint>;
-    getAllCollectionsForSession(session: Session): Promise<Array<CollectionEntry>>;
+    getAllCollectionsForSession(session: Session, page: bigint): Promise<Array<CollectionEntry>>;
     getAllFarmers(): Promise<Array<Farmer>>;
     getAllInventory(): Promise<Array<InventoryEntry>>;
     getAllProductSales(): Promise<Array<ProductSale>>;
     getFarmer(id: FarmerID): Promise<Farmer>;
     getFarmerBalance(farmerID: FarmerID): Promise<number>;
-    getFarmerTransactions(farmerID: FarmerID): Promise<Array<Transaction>>;
+    getFarmerTransactions(farmerID: FarmerID, page: bigint): Promise<Array<Transaction>>;
+    getPaginatedCollections(farmerID: FarmerID, page: bigint): Promise<Array<CollectionEntry>>;
     getRates(): Promise<{
         vlc: number;
         thekadari: number;

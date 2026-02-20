@@ -47,7 +47,7 @@ export function generateTransactionPDF({ farmer, balance, transactions }: PDFGen
       </div>
       
       <div>
-        <h2 style="margin: 0 0 15px 0; font-size: 20px; color: #333;">Transaction Records</h2>
+        <h2 style="margin: 0 0 15px 0; font-size: 20px; color: #333;">Transaction Records (${transactions.length} total)</h2>
         ${transactions.length === 0 ? 
           '<p style="text-align: center; color: #666; padding: 40px 0;">No transactions found</p>' :
           `<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
