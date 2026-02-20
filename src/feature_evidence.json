@@ -2,11 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-new-route-farmer-portal-farmerid-that-displays-a-farmer-s-bill-and-transaction-history-in-a-read-only-format",
-      "featureTitle": "Create a new route '/farmer-portal/:farmerId' that displays a farmer's bill and transaction history in a read-only format",
+      "featureId": "feature-add-edit-functionality-to-cash-payment-and-cash-received-transactions-in-the-cashmodule-component-allowing-users-to-modify-the-amount-date-and-description-of-existing-cash-transactions",
+      "featureTitle": "Add edit functionality to Cash Payment and Cash Received transactions in the CashModule component, allowing users to modify the amount, date, and description of existing cash transactions",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+        "frontend/src/components/dairy/CashModule.tsx",
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -21,10 +21,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-display-farmer-details-name-customer-id-at-the-top-of-the-read-only-portal-page",
-      "featureTitle": "Display farmer details (name, customer ID) at the top of the read-only portal page",
+      "featureId": "feature-add-edit-functionality-to-product-sale-entries-in-the-sellmodule-component-allowing-users-to-modify-the-product-quantity-price-customer-name-and-date-of-existing-sales",
+      "featureTitle": "Add edit functionality to product sale entries in the SellModule component, allowing users to modify the product, quantity, price, customer name, and date of existing sales",
       "files": [
-        "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+        "frontend/src/components/dairy/SellModule.tsx",
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -39,10 +40,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-show-the-farmer-s-current-balance-prominently-on-the-read-only-portal-page",
-      "featureTitle": "Show the farmer's current balance prominently on the read-only portal page",
+      "featureId": "feature-add-edit-functionality-to-milk-collection-entries-allowing-users-to-modify-the-weight-fat-percentage-snf-value-and-date-of-existing-collection-records",
+      "featureTitle": "Add edit functionality to milk collection entries, allowing users to modify the weight, fat percentage, SNF value, and date of existing collection records",
       "files": [
-        "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+        "frontend/src/components/dairy/DataReports.tsx",
+        "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -53,60 +55,6 @@
       ],
       "testIds": [
         "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-display-a-complete-list-of-all-transactions-for-the-farmer-in-chronological-order-on-the-portal-page",
-      "featureTitle": "Display a complete list of all transactions for the farmer in chronological order on the portal page",
-      "files": [
-        "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-the-farmer-portal-page-has-no-navigation-links-edit-buttons-add-buttons-or-delete-functionality",
-      "featureTitle": "Ensure the farmer portal page has no navigation links, edit buttons, add buttons, or delete functionality",
-      "files": [
-        "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-style-the-farmer-portal-page-with-a-clean-print-friendly-layout-suitable-for-viewing-on-mobile-devices",
-      "featureTitle": "Style the farmer portal page with a clean, print-friendly layout suitable for viewing on mobile devices",
-      "files": [
-        "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
       ],
       "confidence": "high"
     }

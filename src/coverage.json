@@ -1,92 +1,78 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-20T10:15:33.505Z",
+  "generatedAt": "2026-02-20T12:16:58.938Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 6,
+    "total": 4,
+    "implemented": 3,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Create a new route '/farmer-portal/:farmerId' that displays a farmer's bill and transaction history in a read-only format",
+        "summary": "Add edit functionality to Cash Payment and Cash Received transactions in the CashModule component, allowing users to modify the amount, date, and description of existing cash transactions",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+          "frontend/src/components/dairy/CashModule.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx",
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+          "frontend/src/components/dairy/CashModule.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Display farmer details (name, customer ID) at the top of the read-only portal page",
+        "summary": "Add edit functionality to product sale entries in the SellModule component, allowing users to modify the product, quantity, price, customer name, and date of existing sales",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+          "frontend/src/components/dairy/SellModule.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+          "frontend/src/components/dairy/SellModule.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Show the farmer's current balance prominently on the read-only portal page",
+        "summary": "Add edit functionality to milk collection entries, allowing users to modify the weight, fat percentage, SNF value, and date of existing collection records",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+          "frontend/src/components/dairy/DataReports.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+          "frontend/src/components/dairy/DataReports.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
         "id": "REQ-4",
-        "summary": "Display a complete list of all transactions for the farmer in chronological order on the portal page",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Ensure the farmer portal page has no navigation links, edit buttons, add buttons, or delete functionality",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
-        ]
-      },
-      {
-        "id": "REQ-6",
-        "summary": "Style the farmer portal page with a clean, print-friendly layout suitable for viewing on mobile devices",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
-        ]
+        "summary": "Create backend functions to support updating existing CollectionEntry, Transaction, and ProductSale records by their IDs",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/dairy/CashModule.tsx",
+    "frontend/src/components/dairy/DataReports.tsx",
+    "frontend/src/components/dairy/SellModule.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

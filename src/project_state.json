@@ -1,56 +1,35 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
-  "architectural_notes": [],
+  "summary": "Dairy management app with milk collection, sales, and cash payment tracking features",
+  "architectural_notes": [
+    "App includes Cash Payment, Sell, and Milk Collection functionality",
+    "Cash Payment replaced previous Cash Received feature in Version 25"
+  ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-create-a-new-route-farmer-portal-farmerid-that-displays-a-farmer-s-bill-and-transaction-history-in-a-read-only-format",
-      "title": "Create a new route '/farmer-portal/:farmerId' that displays a farmer's bill and transaction history in a read-only format",
+      "id": "feature-add-edit-functionality-to-cash-payment-and-cash-received-transactions-in-the-cashmodule-component-allowing-users-to-modify-the-amount-date-and-description-of-existing-cash-transactions",
+      "title": "Add edit functionality to Cash Payment and Cash Received transactions in the CashModule component, allowing users to modify the amount, date, and description of existing cash transactions",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-display-farmer-details-name-customer-id-at-the-top-of-the-read-only-portal-page",
-      "title": "Display farmer details (name, customer ID) at the top of the read-only portal page",
+      "id": "feature-add-edit-functionality-to-product-sale-entries-in-the-sellmodule-component-allowing-users-to-modify-the-product-quantity-price-customer-name-and-date-of-existing-sales",
+      "title": "Add edit functionality to product sale entries in the SellModule component, allowing users to modify the product, quantity, price, customer name, and date of existing sales",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-show-the-farmer-s-current-balance-prominently-on-the-read-only-portal-page",
-      "title": "Show the farmer's current balance prominently on the read-only portal page",
+      "id": "feature-add-edit-functionality-to-milk-collection-entries-allowing-users-to-modify-the-weight-fat-percentage-snf-value-and-date-of-existing-collection-records",
+      "title": "Add edit functionality to milk collection entries, allowing users to modify the weight, fat percentage, SNF value, and date of existing collection records",
       "reqIds": [
         "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-display-a-complete-list-of-all-transactions-for-the-farmer-in-chronological-order-on-the-portal-page",
-      "title": "Display a complete list of all transactions for the farmer in chronological order on the portal page",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-the-farmer-portal-page-has-no-navigation-links-edit-buttons-add-buttons-or-delete-functionality",
-      "title": "Ensure the farmer portal page has no navigation links, edit buttons, add buttons, or delete functionality",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-style-the-farmer-portal-page-with-a-clean-print-friendly-layout-suitable-for-viewing-on-mobile-devices",
-      "title": "Style the farmer portal page with a clean, print-friendly layout suitable for viewing on mobile devices",
-      "reqIds": [
-        "REQ-6"
       ],
       "version": 1
     }
@@ -58,11 +37,26 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add read-only page for farmers to view their bills and transactions without edit permissions",
+      "summary": "Add edit functionality for Cash, Sell, and Milk Collection entries",
       "reqIds": [],
+      "status": "in_progress"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Show recently added entries (from one day) in Cash and Sell tabs",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Create backend functions to support updating existing CollectionEntry, Transaction, and ProductSale records by their IDs",
+      "reqIds": [
+        "REQ-4"
+      ],
       "status": "pending"
     }
   ],
+  "gameProjectType": "none",
   "projectName": "Anmol Dairy Life",
   "clarification_mode": "instant",
   "clarification_rounds": 0

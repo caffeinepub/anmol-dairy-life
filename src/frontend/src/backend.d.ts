@@ -22,6 +22,7 @@ export interface ProductSale {
     quantity: number;
 }
 export interface CollectionEntry {
+    id: bigint;
     fat: number;
     snf?: number;
     weight: number;
@@ -74,7 +75,10 @@ export interface backendInterface {
         vlc: number;
         thekadari: number;
     }>;
+    updateCollectionEntry(farmerID: FarmerID, entryID: bigint, weight: number, fat: number, snf: number | null, rate: number, session: Session, milkType: MilkType): Promise<void>;
     updateFarmerDetails(id: FarmerID, name: string, phone: string, milkType: MilkType, customerID: FarmerID): Promise<void>;
     updateInventory(productName: string, quantity: number): Promise<void>;
+    updateProductSale(saleID: bigint, farmerID: FarmerID | null, productName: string, quantity: number, pricePerUnit: number): Promise<void>;
     updateRates(vRate: number, tRate: number): Promise<void>;
+    updateTransaction(farmerID: FarmerID, transactionID: bigint, description: string, amount: number): Promise<void>;
 }

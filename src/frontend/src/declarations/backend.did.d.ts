@@ -11,6 +11,7 @@ import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export interface CollectionEntry {
+  'id' : bigint,
   'fat' : number,
   'snf' : [] | [number],
   'weight' : number,
@@ -80,12 +81,33 @@ export interface _SERVICE {
     Array<CollectionEntry>
   >,
   'getRates' : ActorMethod<[], { 'vlc' : number, 'thekadari' : number }>,
+  'updateCollectionEntry' : ActorMethod<
+    [
+      FarmerID,
+      bigint,
+      number,
+      number,
+      [] | [number],
+      number,
+      Session,
+      MilkType,
+    ],
+    undefined
+  >,
   'updateFarmerDetails' : ActorMethod<
     [FarmerID, string, string, MilkType, FarmerID],
     undefined
   >,
   'updateInventory' : ActorMethod<[string, number], undefined>,
+  'updateProductSale' : ActorMethod<
+    [bigint, [] | [FarmerID], string, number, number],
+    undefined
+  >,
   'updateRates' : ActorMethod<[number, number], undefined>,
+  'updateTransaction' : ActorMethod<
+    [FarmerID, bigint, string, number],
+    undefined
+  >,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

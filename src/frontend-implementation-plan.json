@@ -1,111 +1,75 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add read-only farmer portal page",
+  "title": "Add edit functionality for Cash, Sell, and Milk Collection entries",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Create a new route '/farmer-portal/:farmerId' that displays a farmer's bill and transaction history in a read-only format",
+      "summary": "Add edit functionality to Cash Payment and Cash Received transactions in the CashModule component",
       "acceptanceCriteria": [
-        "New route is accessible via direct URL with farmer ID parameter",
-        "Page displays the farmer's complete transaction history",
-        "Page shows the farmer's current bill/balance information",
-        "No edit buttons, forms, or interactive controls are present",
-        "Navigation to other sections of the app is not available from this page"
+        "Each cash transaction row displays an edit button or icon",
+        "Clicking edit opens a form pre-populated with the existing transaction data",
+        "Users can modify amount, date, and description fields",
+        "Saving the edit updates the transaction in the backend",
+        "The transaction list refreshes to show the updated entry"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/dairy/CashModule.tsx",
           "operation": "modify",
-          "description": "Add new route '/farmer-portal/:farmerId' to the router configuration. This route should render the FarmerPortalView component without the main app navigation chrome, similar to how the PDF route is structured. Ensure the route is registered alongside existing routes."
+          "description": "Add edit mode state and UI to the CashModule component. For each transaction in the displayed list, add an Edit button/icon. When clicked, populate the existing form fields with the transaction data (amount, date, description) and switch to edit mode. Add logic to call the backend updateTransaction function when saving edits, then invalidate the farmerTransactions query to refresh the list. Use the backend interface method updateTransaction(farmerID, transactionID, description, amount)."
         },
         {
-          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
-          "operation": "create",
-          "description": "Create the main farmer portal view component that displays farmer details, current balance, and transaction history in a read-only format. Fetch farmer data, balance, and transactions using existing hooks (useFarmer, useFarmerBalance, useFarmerTransactions). Layout should be clean and mobile-friendly with no navigation, edit buttons, or interactive controls."
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a new mutation hook useUpdateTransaction that calls actor.updateTransaction with the transaction ID, farmer ID, updated description, and amount. Configure the mutation to invalidate the farmerTransactions query on success to trigger a refresh of the transaction list."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Display farmer details (name, customer ID) at the top of the read-only portal page",
+      "summary": "Add edit functionality to product sale entries in the SellModule component",
       "acceptanceCriteria": [
-        "Farmer name is displayed prominently",
-        "Customer ID is shown",
-        "Information is read-only and cannot be modified"
+        "Each sale entry displays an edit button or icon",
+        "Clicking edit opens a form pre-populated with the existing sale data",
+        "Users can modify product selection, quantity, price, customer name, and date",
+        "Saving the edit updates the sale record in the backend and adjusts inventory accordingly",
+        "The sales list refreshes to show the updated entry"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
+          "path": "frontend/src/components/dairy/SellModule.tsx",
           "operation": "modify",
-          "description": "Add a header section displaying the farmer's name and customer ID prominently at the top of the portal view. Use the Farmer data fetched via useFarmer hook. Style the header to be clear and readable on mobile devices."
+          "description": "Add edit mode state and UI to the SellModule component. Display a list of recent product sales with an Edit button/icon for each entry. When clicked, populate the form fields with the existing sale data (product name, quantity, price per unit, customer/farmer selection, date) and switch to edit mode. Add logic to call the backend updateProductSale function when saving edits, then invalidate the allProductSales query to refresh the list. Use the backend interface method updateProductSale(saleID, farmerID, productName, quantity, pricePerUnit)."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a new mutation hook useUpdateProductSale that calls actor.updateProductSale with the sale ID, optional farmer ID, product name, quantity, and price per unit. Configure the mutation to invalidate both the allProductSales and allInventory queries on success to reflect updated sales data and inventory adjustments."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Show the farmer's current balance prominently on the read-only portal page",
+      "summary": "Add edit functionality to milk collection entries in DataReports, allowing users to modify weight, fat, SNF, and date",
       "acceptanceCriteria": [
-        "Current balance is displayed in a clear, prominent format",
-        "Balance uses consistent currency formatting",
-        "Balance updates reflect all transactions"
+        "Each milk collection entry displays an edit button or icon in the data reports view",
+        "Clicking edit opens a form pre-populated with the existing collection data",
+        "Users can modify weight, fat percentage, SNF value, and date fields",
+        "The amount is automatically recalculated based on the updated values",
+        "Saving the edit updates the collection entry in the backend",
+        "The collection list refreshes to show the updated entry with recalculated totals"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
+          "path": "frontend/src/components/dairy/DataReports.tsx",
           "operation": "modify",
-          "description": "Add a balance display section showing the farmer's current balance using the useFarmerBalance hook. Apply currency formatting using the existing formatCurrency utility from frontend/src/utils/formatters.ts. Position the balance prominently below the farmer details header."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Display a complete list of all transactions for the farmer in chronological order on the portal page",
-      "acceptanceCriteria": [
-        "All transactions are listed with date, type, and amount",
-        "Transactions are sorted by date (newest first or oldest first)",
-        "Transaction details include payment/receipt type and any comments",
-        "List supports pagination if there are many transactions"
-      ],
-      "file_operations": [
+          "description": "Add edit mode state and UI to the DataReports component. For each collection entry row in the table, add an Edit button/icon. When clicked, open a dialog or inline form pre-populated with the collection data (weight, fat, SNF, date, session). Allow users to modify these fields and display the recalculated amount based on the current rates and milk type using the existing calculation utilities. Add logic to call the backend updateCollectionEntry function when saving edits, then invalidate the paginatedCollections query to refresh the list. Use the backend interface method updateCollectionEntry(farmerID, entryID, weight, fat, snf, rate, session, milkType)."
+        },
         {
-          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add a transaction history section that displays all transactions fetched via useFarmerTransactions hook with pagination support. Show transaction date (formatted using formatDate from formatters.ts), description, and amount for each entry. Display transactions in chronological order. Include simple pagination controls if needed to handle large transaction lists."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Ensure the farmer portal page has no navigation links, edit buttons, add buttons, or delete functionality",
-      "acceptanceCriteria": [
-        "No edit, add, or delete buttons are present",
-        "No navigation menu or links to other app sections",
-        "No forms or input fields are available",
-        "Page is strictly read-only"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
-          "operation": "modify",
-          "description": "Ensure the FarmerPortalView component contains only read-only display elements. Do not include any buttons, forms, input fields, navigation menus, or links to other sections. The component should be purely informational with no interactive controls for editing or navigation."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Style the farmer portal page with a clean, print-friendly layout suitable for viewing on mobile devices",
-      "acceptanceCriteria": [
-        "Layout is responsive and works well on mobile screens",
-        "Typography is clear and readable",
-        "Page can be printed if needed",
-        "Design is simple and focused on information display"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
-          "operation": "modify",
-          "description": "Apply responsive styling using Tailwind CSS classes to ensure the portal view works well on mobile screens. Use clear typography with appropriate text sizes and spacing. Add print-specific styles similar to those in frontend/src/index.css to ensure the page prints cleanly when needed. Keep the design minimal and focused on information display."
+          "description": "Add a new mutation hook useUpdateCollectionEntry that calls actor.updateCollectionEntry with the farmer ID, entry ID, updated weight, fat, SNF, rate, session, and milk type. Configure the mutation to invalidate the paginatedCollections and sessionCollections queries on success to trigger a refresh of the collection lists and recalculated totals."
         }
       ]
     }

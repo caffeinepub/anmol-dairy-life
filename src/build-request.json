@@ -1,133 +1,101 @@
 {
   "kind": "build_request",
-  "title": "Add read-only farmer portal page",
+  "title": "Add edit functionality for Cash, Sell, and Milk Collection entries",
   "projectName": "Anmol Dairy Life",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Create a new route '/farmer-portal/:farmerId' that displays a farmer's bill and transaction history in a read-only format",
-      "target": "frontend",
+      "text": "Add edit functionality to Cash Payment and Cash Received transactions in the CashModule component, allowing users to modify the amount, date, and description of existing cash transactions",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-user-final"
+          "msg-19"
         ],
         "quotes": [
-          "What if we can add an extra page from which farmer can excess only their bill and transaction",
-          "Can not change any details"
+          "Add edit option in sell/cash/milk collection entrys"
         ]
       },
       "acceptanceCriteria": [
-        "New route is accessible via direct URL with farmer ID parameter",
-        "Page displays the farmer's complete transaction history",
-        "Page shows the farmer's current bill/balance information",
-        "No edit buttons, forms, or interactive controls are present",
-        "Navigation to other sections of the app is not available from this page"
+        "Each cash transaction row displays an edit button or icon",
+        "Clicking edit opens a form pre-populated with the existing transaction data",
+        "Users can modify amount, date, and description fields",
+        "Saving the edit updates the transaction in the backend",
+        "The transaction list refreshes to show the updated entry"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Display farmer details (name, customer ID) at the top of the read-only portal page",
-      "target": "frontend",
+      "text": "Add edit functionality to product sale entries in the SellModule component, allowing users to modify the product, quantity, price, customer name, and date of existing sales",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-user-final"
+          "msg-19"
         ],
         "quotes": [
-          "farmer can excess only their bill and transaction"
+          "Add edit option in sell/cash/milk collection entrys"
         ]
       },
       "acceptanceCriteria": [
-        "Farmer name is displayed prominently",
-        "Customer ID is shown",
-        "Information is read-only and cannot be modified"
+        "Each sale entry displays an edit button or icon",
+        "Clicking edit opens a form pre-populated with the existing sale data",
+        "Users can modify product selection, quantity, price, customer name, and date",
+        "Saving the edit updates the sale record in the backend and adjusts inventory accordingly",
+        "The sales list refreshes to show the updated entry"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Show the farmer's current balance prominently on the read-only portal page",
-      "target": "frontend",
+      "text": "Add edit functionality to milk collection entries, allowing users to modify the weight, fat percentage, SNF value, and date of existing collection records",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-user-final"
+          "msg-19"
         ],
         "quotes": [
-          "farmer can excess only their bill"
+          "Add edit option in sell/cash/milk collection entrys"
         ]
       },
       "acceptanceCriteria": [
-        "Current balance is displayed in a clear, prominent format",
-        "Balance uses consistent currency formatting",
-        "Balance updates reflect all transactions"
+        "Each milk collection entry displays an edit button or icon in the data reports view",
+        "Clicking edit opens a form pre-populated with the existing collection data",
+        "Users can modify weight, fat percentage, SNF value, and date fields",
+        "The amount is automatically recalculated based on the updated values",
+        "Saving the edit updates the collection entry in the backend",
+        "The collection list refreshes to show the updated entry with recalculated totals"
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Display a complete list of all transactions for the farmer in chronological order on the portal page",
-      "target": "frontend",
+      "text": "Create backend functions to support updating existing CollectionEntry, Transaction, and ProductSale records by their IDs",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-user-final"
-        ],
-        "quotes": [
-          "farmer can excess only their bill and transaction"
+          "msg-19"
         ]
       },
       "acceptanceCriteria": [
-        "All transactions are listed with date, type, and amount",
-        "Transactions are sorted by date (newest first or oldest first)",
-        "Transaction details include payment/receipt type and any comments",
-        "List supports pagination if there are many transactions"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Ensure the farmer portal page has no navigation links, edit buttons, add buttons, or delete functionality",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-final"
-        ],
-        "quotes": [
-          "Can not change any details"
-        ]
-      },
-      "acceptanceCriteria": [
-        "No edit, add, or delete buttons are present",
-        "No navigation menu or links to other app sections",
-        "No forms or input fields are available",
-        "Page is strictly read-only"
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Style the farmer portal page with a clean, print-friendly layout suitable for viewing on mobile devices",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-final"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Layout is responsive and works well on mobile screens",
-        "Typography is clear and readable",
-        "Page can be printed if needed",
-        "Design is simple and focused on information display"
+        "Backend provides an updateCollectionEntry function that accepts entry ID and updated fields",
+        "Backend provides an updateTransaction function that accepts transaction ID and updated fields",
+        "Backend provides an updateProductSale function that accepts sale ID and updated fields",
+        "All update functions validate that the entry exists before modifying",
+        "Update functions return success/failure status",
+        "Updated entries maintain their original creation timestamps"
       ]
     }
   ],
   "constraints": [
-    "Do not modify the existing PDF generation route (/pdf/:farmerId)",
-    "Do not change the main application navigation or routing structure",
-    "Do not modify backend actor or data models",
-    "Maintain consistency with existing frontend styling patterns"
+    "Maintain the existing single-actor Motoko architecture",
+    "Preserve all existing keyboard shortcuts and navigation patterns",
+    "Do not modify immutable frontend paths including useInternetIdentity, useActor, main.tsx, and UI components",
+    "Keep the current pagination and data fetching patterns intact"
   ],
   "nonGoals": [
-    "Adding authentication or access control to the farmer portal route",
-    "Enabling farmers to edit their own details",
-    "Creating a separate farmer login system",
-    "Adding SMS or notification features",
-    "Modifying the existing transaction management functionality"
+    "Bulk editing of multiple entries at once",
+    "Delete functionality for entries",
+    "Audit trail or history of edits",
+    "Permission-based edit restrictions",
+    "Undo/redo functionality"
   ],
   "imageRequirements": {
     "required": [],

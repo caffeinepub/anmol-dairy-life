@@ -19,6 +19,7 @@ export const MilkType = IDL.Variant({
 });
 export const Time = IDL.Int;
 export const CollectionEntry = IDL.Record({
+  'id' : IDL.Int,
   'fat' : IDL.Float64,
   'snf' : IDL.Opt(IDL.Float64),
   'weight' : IDL.Float64,
@@ -102,13 +103,37 @@ export const idlService = IDL.Service({
       [IDL.Record({ 'vlc' : IDL.Float64, 'thekadari' : IDL.Float64 })],
       ['query'],
     ),
+  'updateCollectionEntry' : IDL.Func(
+      [
+        FarmerID,
+        IDL.Int,
+        IDL.Float64,
+        IDL.Float64,
+        IDL.Opt(IDL.Float64),
+        IDL.Float64,
+        Session,
+        MilkType,
+      ],
+      [],
+      [],
+    ),
   'updateFarmerDetails' : IDL.Func(
       [FarmerID, IDL.Text, IDL.Text, MilkType, FarmerID],
       [],
       [],
     ),
   'updateInventory' : IDL.Func([IDL.Text, IDL.Float64], [], []),
+  'updateProductSale' : IDL.Func(
+      [IDL.Int, IDL.Opt(FarmerID), IDL.Text, IDL.Float64, IDL.Float64],
+      [],
+      [],
+    ),
   'updateRates' : IDL.Func([IDL.Float64, IDL.Float64], [], []),
+  'updateTransaction' : IDL.Func(
+      [FarmerID, IDL.Int, IDL.Text, IDL.Float64],
+      [],
+      [],
+    ),
 });
 
 export const idlInitArgs = [];
@@ -119,6 +144,7 @@ export const idlFactory = ({ IDL }) => {
   const MilkType = IDL.Variant({ 'vlc' : IDL.Null, 'thekadari' : IDL.Null });
   const Time = IDL.Int;
   const CollectionEntry = IDL.Record({
+    'id' : IDL.Int,
     'fat' : IDL.Float64,
     'snf' : IDL.Opt(IDL.Float64),
     'weight' : IDL.Float64,
@@ -206,13 +232,37 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Record({ 'vlc' : IDL.Float64, 'thekadari' : IDL.Float64 })],
         ['query'],
       ),
+    'updateCollectionEntry' : IDL.Func(
+        [
+          FarmerID,
+          IDL.Int,
+          IDL.Float64,
+          IDL.Float64,
+          IDL.Opt(IDL.Float64),
+          IDL.Float64,
+          Session,
+          MilkType,
+        ],
+        [],
+        [],
+      ),
     'updateFarmerDetails' : IDL.Func(
         [FarmerID, IDL.Text, IDL.Text, MilkType, FarmerID],
         [],
         [],
       ),
     'updateInventory' : IDL.Func([IDL.Text, IDL.Float64], [], []),
+    'updateProductSale' : IDL.Func(
+        [IDL.Int, IDL.Opt(FarmerID), IDL.Text, IDL.Float64, IDL.Float64],
+        [],
+        [],
+      ),
     'updateRates' : IDL.Func([IDL.Float64, IDL.Float64], [], []),
+    'updateTransaction' : IDL.Func(
+        [FarmerID, IDL.Int, IDL.Text, IDL.Float64],
+        [],
+        [],
+      ),
   });
 };
 

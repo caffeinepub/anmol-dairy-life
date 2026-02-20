@@ -1,14 +1,15 @@
 # Specification
 
 ## Summary
-**Goal:** Add a read-only farmer portal page where farmers can view their bill and transaction history without any ability to modify data.
+**Goal:** Add edit functionality to Cash, Sell, and Milk Collection entries so users can modify existing records.
 
 **Planned changes:**
-- Create new route `/farmer-portal/:farmerId` for read-only access
-- Display farmer details (name, customer ID) at the top
-- Show current balance prominently
-- List all transactions in chronological order
-- Remove all navigation, edit, add, and delete functionality from this page
-- Style with clean, mobile-friendly, print-ready layout
+- Add edit buttons to each cash transaction entry (Cash Payment and Cash Received)
+- Add edit buttons to each product sale entry
+- Add edit buttons to each milk collection entry in data reports
+- Create edit forms pre-populated with existing data for all three entry types
+- Implement backend update functions for CollectionEntry, Transaction, and ProductSale records
+- Auto-recalculate milk collection amounts when fat/SNF/weight values are edited
+- Refresh entry lists after successful edits
 
-**User-visible outcome:** Farmers can access a dedicated page showing their complete bill and transaction history in a read-only format by visiting a URL with their farmer ID.
+**User-visible outcome:** Users can click an edit button on any cash transaction, product sale, or milk collection entry to modify its details, with changes immediately reflected in the lists.

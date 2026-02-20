@@ -6,7 +6,6 @@ import TransactionsSection from '@/components/transactions/TransactionsSection';
 import SettingsSection from '@/components/settings/SettingsSection';
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
 import PDFView from '@/components/pdf/PDFView';
-import FarmerPortalView from '@/components/farmer-portal/FarmerPortalView';
 import { useGlobalKeyboardShortcuts } from '@/hooks/useGlobalKeyboardShortcuts';
 import { Milk, Receipt, Settings } from 'lucide-react';
 
@@ -209,22 +208,8 @@ function PDFRouteComponent() {
   return <PDFView farmerId={farmerIdBigInt} />;
 }
 
-// Farmer portal route - read-only view for farmers
-const farmerPortalRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/farmer-portal/$farmerId',
-  component: FarmerPortalRouteComponent,
-});
-
-function FarmerPortalRouteComponent() {
-  const { farmerId } = farmerPortalRoute.useParams();
-  const farmerIdBigInt = BigInt(farmerId);
-  
-  return <FarmerPortalView farmerId={farmerIdBigInt} />;
-}
-
 // Create router
-const routeTree = rootRoute.addChildren([indexRoute, pdfRoute, farmerPortalRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, pdfRoute]);
 const router = createRouter({ routeTree });
 
 function App() {

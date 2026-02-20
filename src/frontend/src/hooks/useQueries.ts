@@ -169,6 +169,39 @@ export function useAddCollectionEntry() {
   });
 }
 
+export function useUpdateCollectionEntry() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: {
+      farmerID: FarmerID;
+      entryID: bigint;
+      weight: number;
+      fat: number;
+      snf: number | null;
+      rate: number;
+      session: Session;
+      milkType: MilkType;
+    }) => {
+      if (!actor) throw new Error('Actor not initialized');
+      return actor.updateCollectionEntry(
+        data.farmerID,
+        data.entryID,
+        data.weight,
+        data.fat,
+        data.snf,
+        data.rate,
+        data.session,
+        data.milkType
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['collections'] });
+    },
+  });
+}
+
 // Transactions - Paginated
 export function useGetFarmerBalance(farmerID: FarmerID | null) {
   const { actor, isFetching } = useActor();
@@ -233,6 +266,27 @@ export function useAddTransaction() {
     mutationFn: async (data: { farmerID: FarmerID; description: string; amount: number }) => {
       if (!actor) throw new Error('Actor not initialized');
       return actor.addTransaction(data.farmerID, data.description, data.amount);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['balance'] });
+    },
+  });
+}
+
+export function useUpdateTransaction() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: {
+      farmerID: FarmerID;
+      transactionID: bigint;
+      description: string;
+      amount: number;
+    }) => {
+      if (!actor) throw new Error('Actor not initialized');
+      return actor.updateTransaction(data.farmerID, data.transactionID, data.description, data.amount);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
@@ -312,6 +366,30 @@ export function useAddProductSale() {
     }) => {
       if (!actor) throw new Error('Actor not initialized');
       return actor.addProductSale(data.farmerID, data.productName, data.quantity, data.pricePerUnit);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sales'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['balance'] });
+    },
+  });
+}
+
+export function useUpdateProductSale() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: {
+      saleID: bigint;
+      farmerID: FarmerID | null;
+      productName: string;
+      quantity: number;
+      pricePerUnit: number;
+    }) => {
+      if (!actor) throw new Error('Actor not initialized');
+      return actor.updateProductSale(data.saleID, data.farmerID, data.productName, data.quantity, data.pricePerUnit);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sales'] });

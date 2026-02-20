@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useGetFarmer, useGetCollectionsForBill } from '@/hooks/useQueries';
-import { formatCurrency, formatDateTime, formatLessAdd } from '@/utils/formatters';
+import { formatCurrency, formatDateTime } from '@/utils/formatters';
 import { calculateAmount } from '@/utils/calculations';
 import { Printer, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -42,6 +42,17 @@ export default function BillGenerator() {
 
   const totalWeight = filteredCollections.reduce((sum, entry) => sum + entry.weight, 0);
 
+  // Format date for display in bill
+  const formatDateForBill = (dateString: string): string => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
   const handleGenerateBill = () => {
     if (!farmer) {
       toast.error('Please enter a valid customer ID');
@@ -50,6 +61,11 @@ export default function BillGenerator() {
 
     if (!startDate || !endDate) {
       toast.error('Please select date range');
+      return;
+    }
+
+    if (new Date(startDate) > new Date(endDate)) {
+      toast.error('Start date cannot be after end date');
       return;
     }
 
@@ -75,6 +91,11 @@ export default function BillGenerator() {
 
     if (!startDate || !endDate) {
       toast.error('Please select date range');
+      return;
+    }
+
+    if (new Date(startDate) > new Date(endDate)) {
+      toast.error('Start date cannot be after end date');
       return;
     }
 
@@ -135,6 +156,7 @@ export default function BillGenerator() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
+                  max={endDate || undefined}
                   tabIndex={0}
                 />
               </div>
@@ -146,6 +168,7 @@ export default function BillGenerator() {
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
+                  min={startDate || undefined}
                   tabIndex={0}
                 />
               </div>
@@ -241,7 +264,7 @@ export default function BillGenerator() {
               </div>
               <div className="mt-3 pt-3 border-t border-gray-300">
                 <p>
-                  <strong>Period:</strong> {startDate} to {endDate}
+                  <strong>Billing Period:</strong> {formatDateForBill(startDate)} to {formatDateForBill(endDate)}
                 </p>
               </div>
             </div>

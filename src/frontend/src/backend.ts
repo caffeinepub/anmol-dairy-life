@@ -104,6 +104,7 @@ export interface ProductSale {
     quantity: number;
 }
 export interface CollectionEntry {
+    id: bigint;
     fat: number;
     snf?: number;
     weight: number;
@@ -156,9 +157,12 @@ export interface backendInterface {
         vlc: number;
         thekadari: number;
     }>;
+    updateCollectionEntry(farmerID: FarmerID, entryID: bigint, weight: number, fat: number, snf: number | null, rate: number, session: Session, milkType: MilkType): Promise<void>;
     updateFarmerDetails(id: FarmerID, name: string, phone: string, milkType: MilkType, customerID: FarmerID): Promise<void>;
     updateInventory(productName: string, quantity: number): Promise<void>;
+    updateProductSale(saleID: bigint, farmerID: FarmerID | null, productName: string, quantity: number, pricePerUnit: number): Promise<void>;
     updateRates(vRate: number, tRate: number): Promise<void>;
+    updateTransaction(farmerID: FarmerID, transactionID: bigint, description: string, amount: number): Promise<void>;
 }
 import type { CollectionEntry as _CollectionEntry, Farmer as _Farmer, FarmerID as _FarmerID, MilkType as _MilkType, ProductSale as _ProductSale, Session as _Session, Time as _Time } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
@@ -362,6 +366,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async updateCollectionEntry(arg0: FarmerID, arg1: bigint, arg2: number, arg3: number, arg4: number | null, arg5: number, arg6: Session, arg7: MilkType): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateCollectionEntry(arg0, arg1, arg2, arg3, to_candid_opt_n1(this._uploadFile, this._downloadFile, arg4), arg5, to_candid_Session_n2(this._uploadFile, this._downloadFile, arg6), to_candid_MilkType_n4(this._uploadFile, this._downloadFile, arg7));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateCollectionEntry(arg0, arg1, arg2, arg3, to_candid_opt_n1(this._uploadFile, this._downloadFile, arg4), arg5, to_candid_Session_n2(this._uploadFile, this._downloadFile, arg6), to_candid_MilkType_n4(this._uploadFile, this._downloadFile, arg7));
+            return result;
+        }
+    }
     async updateFarmerDetails(arg0: FarmerID, arg1: string, arg2: string, arg3: MilkType, arg4: FarmerID): Promise<void> {
         if (this.processError) {
             try {
@@ -390,6 +408,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async updateProductSale(arg0: bigint, arg1: FarmerID | null, arg2: string, arg3: number, arg4: number): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateProductSale(arg0, to_candid_opt_n6(this._uploadFile, this._downloadFile, arg1), arg2, arg3, arg4);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateProductSale(arg0, to_candid_opt_n6(this._uploadFile, this._downloadFile, arg1), arg2, arg3, arg4);
+            return result;
+        }
+    }
     async updateRates(arg0: number, arg1: number): Promise<void> {
         if (this.processError) {
             try {
@@ -401,6 +433,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.updateRates(arg0, arg1);
+            return result;
+        }
+    }
+    async updateTransaction(arg0: FarmerID, arg1: bigint, arg2: string, arg3: number): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateTransaction(arg0, arg1, arg2, arg3);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateTransaction(arg0, arg1, arg2, arg3);
             return result;
         }
     }
@@ -472,6 +518,7 @@ function from_candid_record_n20(_uploadFile: (file: ExternalBlob) => Promise<Uin
     };
 }
 function from_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: bigint;
     fat: number;
     snf: [] | [number];
     weight: number;
@@ -481,6 +528,7 @@ function from_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint
     milkType: _MilkType;
     session: _Session;
 }): {
+    id: bigint;
     fat: number;
     snf?: number;
     weight: number;
@@ -491,6 +539,7 @@ function from_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint
     session: Session;
 } {
     return {
+        id: value.id,
         fat: value.fat,
         snf: record_opt_to_undefined(from_candid_opt_n10(_uploadFile, _downloadFile, value.snf)),
         weight: value.weight,

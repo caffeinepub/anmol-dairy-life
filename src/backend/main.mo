@@ -8,9 +8,10 @@ import Nat "mo:core/Nat";
 import Runtime "mo:core/Runtime";
 import Order "mo:core/Order";
 import Time "mo:core/Time";
+import Migration "migration";
 
 // Use migration function specified in the migration module during upgrades
-
+(with migration = Migration.run)
 actor {
   type FarmerID = Int;
 
@@ -38,6 +39,7 @@ actor {
   };
 
   type CollectionEntry = {
+    id : Int;
     date : Time.Time;
     session : Session;
     farmerID : FarmerID;
@@ -171,6 +173,7 @@ actor {
     session : Session,
   ) : async () {
     let entry : CollectionEntry = {
+      id = nextFarmerID;
       date = Time.now();
       session;
       farmerID;
@@ -189,12 +192,34 @@ actor {
       case (?existing) { existing.concat([entry]) };
     };
     collections.add(farmerID, updatedEntries);
+    nextFarmerID += 1;
+  };
+
+  public shared ({ caller }) func updateCollectionEntry(
+    farmerID : FarmerID,
+    entryID : Int,
+    weight : Float,
+    fat : Float,
+    snf : ?Float,
+    rate : Float,
+    session : Session,
+    milkType : MilkType,
+  ) : async () {
+    switch (collections.get(farmerID)) {
+      case (null) { Runtime.trap("No entries found for this farmer") };
+      case (?entries) {
+        let updatedEntries = entries.map(
+          func(e) { if (e.id == entryID) { { e with weight; fat; snf; rate; session; milkType } } else { e } }
+        );
+        collections.add(farmerID, updatedEntries);
+      };
+    };
   };
 
   public shared ({ caller }) func addTransaction(farmerID : FarmerID, description : Text, amount : Float) : async Int {
-    let newID = nextFarmerID;
+    let transactionID = nextFarmerID;
     let transaction : Transaction = {
-      id = newID;
+      id = transactionID;
       timestamp = Time.now();
       farmerID;
       description;
@@ -206,7 +231,33 @@ actor {
       case (?existing) { existing.concat([transaction]) };
     };
     transactions.add(farmerID, updatedTransactions);
-    newID;
+    nextFarmerID += 1;
+    transactionID;
+  };
+
+  public shared ({ caller }) func updateTransaction(
+    farmerID : FarmerID,
+    transactionID : Int,
+    description : Text,
+    amount : Float,
+  ) : async () {
+    switch (transactions.get(farmerID)) {
+      case (null) { Runtime.trap("No transactions found for this farmer") };
+      case (?txns) {
+        let updatedTxns = txns.map(
+          func(t) {
+            if (t.id == transactionID) {
+              {
+                t with
+                description;
+                amount;
+              };
+            } else { t };
+          }
+        );
+        transactions.add(farmerID, updatedTxns);
+      };
+    };
   };
 
   public shared ({ caller }) func addInventoryEntry(productName : Text, quantity : Float) : async () {
@@ -267,6 +318,46 @@ actor {
     };
 
     saleID;
+  };
+
+  public shared ({ caller }) func updateProductSale(
+    saleID : Int,
+    farmerID : ?FarmerID,
+    productName : Text,
+    quantity : Float,
+    pricePerUnit : Float,
+  ) : async () {
+    switch (sales.get(saleID)) {
+      case (null) { Runtime.trap("Sale does not exist") };
+      case (?_) {
+        let updatedSale : ProductSale = {
+          id = saleID;
+          farmerID;
+          productName;
+          quantity;
+          pricePerUnit;
+          totalAmount = quantity * pricePerUnit;
+          timestamp = Time.now();
+        };
+        sales.add(saleID, updatedSale);
+
+        switch (inventory.get(productName)) {
+          case (null) { Runtime.trap("Product does not exist") };
+          case (?entry) {
+            let updatedEntry : InventoryEntry = {
+              product = entry.product;
+              quantityInStock = entry.quantityInStock - quantity;
+            };
+            inventory.add(productName, updatedEntry);
+          };
+        };
+
+        switch (farmerID) {
+          case (null) { () };
+          case (?id) { ignore addTransaction(id, "Product sale: " # productName, -(updatedSale.totalAmount : Float)) };
+        };
+      };
+    };
   };
 
   public query ({ caller }) func getFarmerBalance(farmerID : FarmerID) : async Float {
