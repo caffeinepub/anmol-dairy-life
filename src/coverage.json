@@ -1,98 +1,92 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-20T08:23:05.068Z",
+  "generatedAt": "2026-02-20T10:15:33.505Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
     "total": 6,
-    "implemented": 4,
+    "implemented": 6,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Add pagination to milk collection data queries with a page size of 50-100 records per page",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
+        "summary": "Create a new route '/farmer-portal/:farmerId' that displays a farmer's bill and transaction history in a read-only format",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+        ]
       },
       {
         "id": "REQ-2",
-        "summary": "Add pagination controls to DataReports component to navigate through collection entries",
+        "summary": "Display farmer details (name, customer ID) at the top of the read-only portal page",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/dairy/DataReports.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/dairy/DataReports.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Implement backend indexed queries to filter collections by date and session before returning to frontend",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
+        "summary": "Show the farmer's current balance prominently on the read-only portal page",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
+        ]
       },
       {
         "id": "REQ-4",
-        "summary": "Add lazy loading to bill generation so detailed collection entries are only fetched when user generates a bill",
+        "summary": "Display a complete list of all transactions for the farmer in chronological order on the portal page",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/dairy/BillGenerator.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/dairy/BillGenerator.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
         ]
       },
       {
         "id": "REQ-5",
-        "summary": "Implement React Query caching strategy for frequently accessed data like rates and farmer list",
+        "summary": "Ensure the farmer portal page has no navigation links, edit buttons, add buttons, or delete functionality",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
         ]
       },
       {
         "id": "REQ-6",
-        "summary": "Add pagination to transaction history display in FarmerTransactionHistory component",
+        "summary": "Style the farmer portal page with a clean, print-friendly layout suitable for viewing on mobile devices",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/utils/pdfGenerator.ts"
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/utils/pdfGenerator.ts"
+          "frontend/src/components/farmer-portal/FarmerPortalView.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/dairy/BillGenerator.tsx",
-    "frontend/src/components/dairy/DataReports.tsx",
-    "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useQueries.ts",
-    "frontend/src/utils/pdfGenerator.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

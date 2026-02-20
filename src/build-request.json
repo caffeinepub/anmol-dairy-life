@@ -1,131 +1,133 @@
 {
   "kind": "build_request",
-  "title": "Implement data pagination and performance optimizations",
+  "title": "Add read-only farmer portal page",
   "projectName": "Anmol Dairy Life",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add pagination to milk collection data queries with a page size of 50-100 records per page",
-      "target": "backend",
+      "text": "Create a new route '/farmer-portal/:farmerId' that displays a farmer's bill and transaction history in a read-only format",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-17"
+          "msg-user-final"
         ],
         "quotes": [
-          "Pagination: Load 50-100 records at a time instead of everything"
+          "What if we can add an extra page from which farmer can excess only their bill and transaction",
+          "Can not change any details"
         ]
       },
       "acceptanceCriteria": [
-        "Backend provides paginated queries for collection entries with configurable page size",
-        "Pagination includes offset/limit parameters or cursor-based pagination",
-        "Total count is returned alongside paginated results"
+        "New route is accessible via direct URL with farmer ID parameter",
+        "Page displays the farmer's complete transaction history",
+        "Page shows the farmer's current bill/balance information",
+        "No edit buttons, forms, or interactive controls are present",
+        "Navigation to other sections of the app is not available from this page"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add pagination controls to DataReports component to navigate through collection entries",
+      "text": "Display farmer details (name, customer ID) at the top of the read-only portal page",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-17"
+          "msg-user-final"
         ],
         "quotes": [
-          "Pagination: Load 50-100 records at a time instead of everything"
+          "farmer can excess only their bill and transaction"
         ]
       },
       "acceptanceCriteria": [
-        "Previous/Next buttons to navigate between pages",
-        "Display current page number and total pages",
-        "Maintain keyboard accessibility for pagination controls",
-        "Preserve date and session filters when changing pages"
+        "Farmer name is displayed prominently",
+        "Customer ID is shown",
+        "Information is read-only and cannot be modified"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Implement backend indexed queries to filter collections by date and session before returning to frontend",
-      "target": "backend",
+      "text": "Show the farmer's current balance prominently on the read-only portal page",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-17"
+          "msg-user-final"
         ],
         "quotes": [
-          "Indexed queries: Filter data on the backend before sending to frontend"
+          "farmer can excess only their bill"
         ]
       },
       "acceptanceCriteria": [
-        "Backend filters collections by date range before pagination",
-        "Backend filters by session type (morning/evening) when specified",
-        "Only matching records are returned to reduce data transfer"
+        "Current balance is displayed in a clear, prominent format",
+        "Balance uses consistent currency formatting",
+        "Balance updates reflect all transactions"
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Add lazy loading to bill generation so detailed collection entries are only fetched when user generates a bill",
-      "target": "both",
+      "text": "Display a complete list of all transactions for the farmer in chronological order on the portal page",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-17"
+          "msg-user-final"
         ],
         "quotes": [
-          "Lazy loading: Only fetch details when user clicks on a specific bill"
+          "farmer can excess only their bill and transaction"
         ]
       },
       "acceptanceCriteria": [
-        "BillGenerator component only fetches collection data when user submits customer ID and date range",
-        "Backend provides a query to fetch collections for specific customer and date range",
-        "Loading state is shown while fetching bill data"
+        "All transactions are listed with date, type, and amount",
+        "Transactions are sorted by date (newest first or oldest first)",
+        "Transaction details include payment/receipt type and any comments",
+        "List supports pagination if there are many transactions"
       ]
     },
     {
       "id": "REQ-5",
-      "text": "Implement React Query caching strategy for frequently accessed data like rates and farmer list",
+      "text": "Ensure the farmer portal page has no navigation links, edit buttons, add buttons, or delete functionality",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-17"
+          "msg-user-final"
         ],
         "quotes": [
-          "Caching: Store frequently accessed data locally"
+          "Can not change any details"
         ]
       },
       "acceptanceCriteria": [
-        "Rate settings use longer cache time (staleTime) as they change infrequently",
-        "Farmer list uses appropriate cache time to reduce backend calls",
-        "Cache is invalidated appropriately when data is modified"
+        "No edit, add, or delete buttons are present",
+        "No navigation menu or links to other app sections",
+        "No forms or input fields are available",
+        "Page is strictly read-only"
       ]
     },
     {
       "id": "REQ-6",
-      "text": "Add pagination to transaction history display in FarmerTransactionHistory component",
-      "target": "both",
+      "text": "Style the farmer portal page with a clean, print-friendly layout suitable for viewing on mobile devices",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-17"
-        ],
-        "quotes": [
-          "Pagination: Load 50-100 records at a time instead of everything"
+          "msg-user-final"
         ]
       },
       "acceptanceCriteria": [
-        "Backend provides paginated transaction queries per farmer",
-        "Frontend displays 50-100 transactions per page with navigation controls",
-        "Keyboard navigation works with pagination controls",
-        "PDF export includes all transactions regardless of pagination"
+        "Layout is responsive and works well on mobile screens",
+        "Typography is clear and readable",
+        "Page can be printed if needed",
+        "Design is simple and focused on information display"
       ]
     }
   ],
   "constraints": [
-    "Maintain existing keyboard navigation and accessibility features",
-    "Preserve all existing functionality while adding performance optimizations",
-    "Keep the single-actor backend architecture",
-    "Do not modify immutable frontend paths (useInternetIdentity.ts, useActor.ts, main.tsx, ui components)"
+    "Do not modify the existing PDF generation route (/pdf/:farmerId)",
+    "Do not change the main application navigation or routing structure",
+    "Do not modify backend actor or data models",
+    "Maintain consistency with existing frontend styling patterns"
   ],
   "nonGoals": [
-    "Implementing infinite scroll (use traditional pagination instead)",
-    "Adding external caching layers or databases",
-    "Rewriting the entire data model",
-    "Removing any existing features"
+    "Adding authentication or access control to the farmer portal route",
+    "Enabling farmers to edit their own details",
+    "Creating a separate farmer login system",
+    "Adding SMS or notification features",
+    "Modifying the existing transaction management functionality"
   ],
   "imageRequirements": {
     "required": [],

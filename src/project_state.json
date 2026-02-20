@@ -1,46 +1,54 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Billing application with performance optimization for data handling",
-  "architectural_notes": [
-    "App deployed on Internet Computer blockchain with 8GB storage limit per canister",
-    "Data stored across decentralized network nodes with automatic redundancy",
-    "Web application accessible via browser (not native mobile APK)",
-    "Zero ongoing hosting costs with indefinite URL validity"
-  ],
-  "known_issues": [
-    "Potential performance degradation with large datasets without pagination",
-    "Initial load fetches all data which may slow down with scale"
-  ],
+  "summary": "New project",
+  "architectural_notes": [],
+  "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-add-pagination-controls-to-datareports-component-to-navigate-through-collection-entries",
-      "title": "Add pagination controls to DataReports component to navigate through collection entries",
+      "id": "feature-create-a-new-route-farmer-portal-farmerid-that-displays-a-farmer-s-bill-and-transaction-history-in-a-read-only-format",
+      "title": "Create a new route '/farmer-portal/:farmerId' that displays a farmer's bill and transaction history in a read-only format",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-farmer-details-name-customer-id-at-the-top-of-the-read-only-portal-page",
+      "title": "Display farmer details (name, customer ID) at the top of the read-only portal page",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-lazy-loading-to-bill-generation-so-detailed-collection-entries-are-only-fetched-when-user-generates-a-bill",
-      "title": "Add lazy loading to bill generation so detailed collection entries are only fetched when user generates a bill",
+      "id": "feature-show-the-farmer-s-current-balance-prominently-on-the-read-only-portal-page",
+      "title": "Show the farmer's current balance prominently on the read-only portal page",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-a-complete-list-of-all-transactions-for-the-farmer-in-chronological-order-on-the-portal-page",
+      "title": "Display a complete list of all transactions for the farmer in chronological order on the portal page",
       "reqIds": [
         "REQ-4"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-react-query-caching-strategy-for-frequently-accessed-data-like-rates-and-farmer-list",
-      "title": "Implement React Query caching strategy for frequently accessed data like rates and farmer list",
+      "id": "feature-ensure-the-farmer-portal-page-has-no-navigation-links-edit-buttons-add-buttons-or-delete-functionality",
+      "title": "Ensure the farmer portal page has no navigation links, edit buttons, add buttons, or delete functionality",
       "reqIds": [
         "REQ-5"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-pagination-to-transaction-history-display-in-farmertransactionhistory-component",
-      "title": "Add pagination to transaction history display in FarmerTransactionHistory component",
+      "id": "feature-style-the-farmer-portal-page-with-a-clean-print-friendly-layout-suitable-for-viewing-on-mobile-devices",
+      "title": "Style the farmer portal page with a clean, print-friendly layout suitable for viewing on mobile devices",
       "reqIds": [
         "REQ-6"
       ],
@@ -50,42 +58,8 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Implement pagination to load 50-100 records at a time",
+      "summary": "Add read-only page for farmers to view their bills and transactions without edit permissions",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Add indexed queries to filter data on backend",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Implement lazy loading for bill details",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Add caching for frequently accessed data",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Add pagination to milk collection data queries with a page size of 50-100 records per page",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Implement backend indexed queries to filter collections by date and session before returning to frontend",
-      "reqIds": [
-        "REQ-3"
-      ],
       "status": "pending"
     }
   ],

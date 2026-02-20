@@ -1,89 +1,111 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Implement data pagination and performance optimizations",
+  "title": "Add read-only farmer portal page",
   "requirements": [
     {
-      "id": "REQ-2",
-      "summary": "Add pagination controls to DataReports component to navigate through collection entries",
+      "id": "REQ-1",
+      "summary": "Create a new route '/farmer-portal/:farmerId' that displays a farmer's bill and transaction history in a read-only format",
       "acceptanceCriteria": [
-        "Previous/Next buttons to navigate between pages",
-        "Display current page number and total pages",
-        "Maintain keyboard accessibility for pagination controls",
-        "Preserve date and session filters when changing pages"
+        "New route is accessible via direct URL with farmer ID parameter",
+        "Page displays the farmer's complete transaction history",
+        "Page shows the farmer's current bill/balance information",
+        "No edit buttons, forms, or interactive controls are present",
+        "Navigation to other sections of the app is not available from this page"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/dairy/DataReports.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Add pagination state (currentPage, pageSize) to component. Add pagination controls UI with Previous/Next buttons below the data table. Display current page and total pages. Implement keyboard navigation (ArrowLeft/ArrowRight or PageUp/PageDown) for pagination controls with proper tabIndex. Ensure date and session filter state persists across page changes. Update the data fetching logic to pass page parameter to backend query."
+          "description": "Add new route '/farmer-portal/:farmerId' to the router configuration. This route should render the FarmerPortalView component without the main app navigation chrome, similar to how the PDF route is structured. Ensure the route is registered alongside existing routes."
         },
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
+          "operation": "create",
+          "description": "Create the main farmer portal view component that displays farmer details, current balance, and transaction history in a read-only format. Fetch farmer data, balance, and transactions using existing hooks (useFarmer, useFarmerBalance, useFarmerTransactions). Layout should be clean and mobile-friendly with no navigation, edit buttons, or interactive controls."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Display farmer details (name, customer ID) at the top of the read-only portal page",
+      "acceptanceCriteria": [
+        "Farmer name is displayed prominently",
+        "Customer ID is shown",
+        "Information is read-only and cannot be modified"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
           "operation": "modify",
-          "description": "Update the collections query hook to accept pagination parameters (page number, page size). Ensure the query key includes pagination parameters so React Query caches pages separately. Return both the paginated data and total count if available from backend."
+          "description": "Add a header section displaying the farmer's name and customer ID prominently at the top of the portal view. Use the Farmer data fetched via useFarmer hook. Style the header to be clear and readable on mobile devices."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Show the farmer's current balance prominently on the read-only portal page",
+      "acceptanceCriteria": [
+        "Current balance is displayed in a clear, prominent format",
+        "Balance uses consistent currency formatting",
+        "Balance updates reflect all transactions"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
+          "operation": "modify",
+          "description": "Add a balance display section showing the farmer's current balance using the useFarmerBalance hook. Apply currency formatting using the existing formatCurrency utility from frontend/src/utils/formatters.ts. Position the balance prominently below the farmer details header."
         }
       ]
     },
     {
       "id": "REQ-4",
-      "summary": "Add lazy loading to bill generation so detailed collection entries are only fetched when user generates a bill",
+      "summary": "Display a complete list of all transactions for the farmer in chronological order on the portal page",
       "acceptanceCriteria": [
-        "BillGenerator component only fetches collection data when user submits customer ID and date range",
-        "Loading state is shown while fetching bill data"
+        "All transactions are listed with date, type, and amount",
+        "Transactions are sorted by date (newest first or oldest first)",
+        "Transaction details include payment/receipt type and any comments",
+        "List supports pagination if there are many transactions"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/dairy/BillGenerator.tsx",
+          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
           "operation": "modify",
-          "description": "Refactor data fetching to use a lazy query pattern that only triggers when the user submits the form with customer ID and date range. Remove any automatic data fetching on component mount. Add a loading state indicator (spinner or skeleton) while collection data is being fetched. Ensure the backend query includes farmerID and date range parameters to fetch only relevant collections. Display results only after successful data fetch."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add a new lazy query hook for fetching bill-specific collection data by farmerID and date range. Configure the hook with enabled: false so it only runs when explicitly triggered. Ensure proper query key structure to cache bills by farmerID and date range combination."
+          "description": "Add a transaction history section that displays all transactions fetched via useFarmerTransactions hook with pagination support. Show transaction date (formatted using formatDate from formatters.ts), description, and amount for each entry. Display transactions in chronological order. Include simple pagination controls if needed to handle large transaction lists."
         }
       ]
     },
     {
       "id": "REQ-5",
-      "summary": "Implement React Query caching strategy for frequently accessed data like rates and farmer list",
+      "summary": "Ensure the farmer portal page has no navigation links, edit buttons, add buttons, or delete functionality",
       "acceptanceCriteria": [
-        "Rate settings use longer cache time (staleTime) as they change infrequently",
-        "Farmer list uses appropriate cache time to reduce backend calls",
-        "Cache is invalidated appropriately when data is modified"
+        "No edit, add, or delete buttons are present",
+        "No navigation menu or links to other app sections",
+        "No forms or input fields are available",
+        "Page is strictly read-only"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
           "operation": "modify",
-          "description": "Update the rates query hook to include a longer staleTime (e.g., 5-10 minutes) and cacheTime since rates change infrequently. Update the farmers list query hook with appropriate staleTime (e.g., 2-3 minutes) to reduce backend calls while keeping data reasonably fresh. Ensure mutation hooks for updating rates and farmers properly invalidate the relevant query cache using queryClient.invalidateQueries. Add gcTime (formerly cacheTime) configuration to keep unused data in cache for a reasonable duration."
+          "description": "Ensure the FarmerPortalView component contains only read-only display elements. Do not include any buttons, forms, input fields, navigation menus, or links to other sections. The component should be purely informational with no interactive controls for editing or navigation."
         }
       ]
     },
     {
       "id": "REQ-6",
-      "summary": "Add pagination to transaction history display in FarmerTransactionHistory component",
+      "summary": "Style the farmer portal page with a clean, print-friendly layout suitable for viewing on mobile devices",
       "acceptanceCriteria": [
-        "Frontend displays 50-100 transactions per page with navigation controls",
-        "Keyboard navigation works with pagination controls",
-        "PDF export includes all transactions regardless of pagination"
+        "Layout is responsive and works well on mobile screens",
+        "Typography is clear and readable",
+        "Page can be printed if needed",
+        "Design is simple and focused on information display"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/transactions/FarmerTransactionHistory.tsx",
+          "path": "frontend/src/components/farmer-portal/FarmerPortalView.tsx",
           "operation": "modify",
-          "description": "Add pagination state (currentPage, pageSize of 50-100) to the component. Add pagination controls with Previous/Next buttons below the transaction table. Display current page and total pages. Implement keyboard navigation for pagination controls with proper tabIndex and arrow key support. Update data fetching to request paginated transactions from backend using the page parameter. For PDF export functionality, fetch all transactions (or use a separate non-paginated query) to ensure the PDF includes the complete transaction history regardless of current pagination state."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Update the farmer transactions query hook to accept pagination parameters (page number). Ensure the query key includes both farmerID and page number for proper cache separation. Add a separate query hook or parameter for fetching all transactions for PDF export purposes without pagination limits."
-        },
-        {
-          "path": "frontend/src/utils/pdfGenerator.ts",
-          "operation": "modify",
-          "description": "Ensure the PDF generation function accepts all transactions as a parameter rather than relying on paginated data. Update the function signature if needed to accept a complete transaction list for rendering in the PDF document."
+          "description": "Apply responsive styling using Tailwind CSS classes to ensure the portal view works well on mobile screens. Use clear typography with appropriate text sizes and spacing. Add print-specific styles similar to those in frontend/src/index.css to ensure the page prints cleanly when needed. Keep the design minimal and focused on information display."
         }
       ]
     }

@@ -1,14 +1,14 @@
 # Specification
 
 ## Summary
-**Goal:** Improve application performance by implementing data pagination and query optimizations to handle large datasets efficiently.
+**Goal:** Add a read-only farmer portal page where farmers can view their bill and transaction history without any ability to modify data.
 
 **Planned changes:**
-- Add pagination to milk collection data queries with 50-100 records per page
-- Implement pagination controls in DataReports component with Previous/Next navigation
-- Add backend indexed filtering by date and session before returning data to frontend
-- Implement lazy loading for bill generation - only fetch data when user submits request
-- Add React Query caching for frequently accessed data like rates and farmer list
-- Add pagination to transaction history display with 50-100 transactions per page
+- Create new route `/farmer-portal/:farmerId` for read-only access
+- Display farmer details (name, customer ID) at the top
+- Show current balance prominently
+- List all transactions in chronological order
+- Remove all navigation, edit, add, and delete functionality from this page
+- Style with clean, mobile-friendly, print-ready layout
 
-**User-visible outcome:** Users will experience faster load times when viewing collection data, transaction history, and generating bills. Navigation through large datasets will be smooth with Previous/Next page controls, and frequently accessed data like rates will load instantly from cache.
+**User-visible outcome:** Farmers can access a dedicated page showing their complete bill and transaction history in a read-only format by visiting a URL with their farmer ID.

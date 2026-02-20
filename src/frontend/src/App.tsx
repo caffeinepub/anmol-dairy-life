@@ -1,13 +1,32 @@
 import { useState } from 'react';
+import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet } from '@tanstack/react-router';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DairySection from '@/components/dairy/DairySection';
 import TransactionsSection from '@/components/transactions/TransactionsSection';
 import SettingsSection from '@/components/settings/SettingsSection';
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
+import PDFView from '@/components/pdf/PDFView';
+import FarmerPortalView from '@/components/farmer-portal/FarmerPortalView';
 import { useGlobalKeyboardShortcuts } from '@/hooks/useGlobalKeyboardShortcuts';
 import { Milk, Receipt, Settings } from 'lucide-react';
 
-function App() {
+// Root route for main app layout
+const rootRoute = createRootRoute({
+  component: RootComponent,
+});
+
+function RootComponent() {
+  return <Outlet />;
+}
+
+// Main app route with full layout
+const indexRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: MainApp,
+});
+
+function MainApp() {
   const [activeTab, setActiveTab] = useState('dairy');
   const [showHelp, setShowHelp] = useState(false);
 
@@ -174,6 +193,42 @@ function App() {
       <KeyboardShortcutsHelp open={showHelp} onOpenChange={setShowHelp} />
     </div>
   );
+}
+
+// PDF-only route without main app layout
+const pdfRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/pdf/$farmerId',
+  component: PDFRouteComponent,
+});
+
+function PDFRouteComponent() {
+  const { farmerId } = pdfRoute.useParams();
+  const farmerIdBigInt = BigInt(farmerId);
+  
+  return <PDFView farmerId={farmerIdBigInt} />;
+}
+
+// Farmer portal route - read-only view for farmers
+const farmerPortalRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/farmer-portal/$farmerId',
+  component: FarmerPortalRouteComponent,
+});
+
+function FarmerPortalRouteComponent() {
+  const { farmerId } = farmerPortalRoute.useParams();
+  const farmerIdBigInt = BigInt(farmerId);
+  
+  return <FarmerPortalView farmerId={farmerIdBigInt} />;
+}
+
+// Create router
+const routeTree = rootRoute.addChildren([indexRoute, pdfRoute, farmerPortalRoute]);
+const router = createRouter({ routeTree });
+
+function App() {
+  return <RouterProvider router={router} />;
 }
 
 export default App;
